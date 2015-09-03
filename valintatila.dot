@@ -1,0 +1,25 @@
+digraph finite_state_machine {
+  rankdir=LR;
+  node [shape = circle];
+  create -> kesken [label="Oppija lähettää hakemuksen"];
+  kesken -> hylatty [label="Virkailija hylkää"];
+  kesken -> hyvaksytty [label="Virkailija hyväksyy"];
+  kesken -> peruutettu [label="Virkailija peruu oppijan puolesta"];
+  kesken -> varalla [label="Hyväksytty alemmalle hakutoiveelle"];
+  varalla -> varasijalta_hyvaksytty [label="Vapautunut paikka tarjotaan oppijalle"];
+  hyvaksytty -> peruuntunut [label="Oppija vastaanottaa toisen paikan"];
+  kesken -> perunut [label="Oppija peruu paikan OHPn kautta"];
+  hyvaksytty -> perunut [label="Oppija ilmoittaa peruvansa paikan"];
+  kesken -> harkinnanvaraisesti_hyvaksytty [label="Virkailija tekee manuaalisen hyväksymisen"]
+
+  harkinnanvaraisesti_hyvaksytty [label="HARKINNANVARAISESTI\n_HYVAKSYTTY"]
+  varasijalta_hyvaksytty [label="VARASIJALTA_HYVAKSYTTY"]
+  hylatty [label="HYLÄTTY"];
+  hyvaksytty [label="HYVAKSYTTY"];
+  kesken [label="KESKEN"];
+  peruuntunut [label="PERUUNTUNUT"];
+  peruutettu [label="PERUUTETTU"];
+  perunut [label="PERUNUT"];
+  varalla [label="VARALLA"];
+  create [label="HAKU" shape=doublecircle];
+}
