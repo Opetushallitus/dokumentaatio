@@ -9,6 +9,8 @@ ja siirtymuat on koitettu kuvata alla tilakoneina.
 *Tämä dokumentti on koostettu kehityksen avuksi. Tämä dokumentti ei ole
 virallinen vaatimusmäärittely.*
 
+![Hakutoiveen käsittely erilaisissa hakutyypeissä](hakuprosessi.png)
+
 
 ## Laskennan tulos
 

@@ -1,0 +1,35 @@
+digraph haku {
+  rankdir=LR;
+  node [shape = circle];
+  Vastaanotto -> Ilmoittautuminen
+  subgraph cluster_lisahaku {
+      label="Lisähaku"
+      color=blue
+      VALINTA_y
+  }
+  subgraph cluster_erillishaku {
+      label="Erillishaku"
+      color=blue
+      VALINTA_e
+  }
+  subgraph cluster_yhteishaku {
+      label="Yhteishaku"
+      color=blue
+      Laskenta -> Sijoittelu
+      Sijoittelu -> Sijoittelu
+  }
+  VALINTA_e -> Vastaanotto
+  VALINTA_y -> Vastaanotto
+  Sijoittelu -> Vastaanotto
+  Hakutoive -> VALINTA_e
+  Hakutoive -> VALINTA_y
+  Hakutoive -> Laskenta
+  Hakutoive -> Koe
+  Koe -> Laskenta
+  Koe -> VALINTA_e
+  Koe -> VALINTA_y
+  VALINTA_e[label="Valinta"]
+  VALINTA_y[label="Valinta"]
+}
+
+
