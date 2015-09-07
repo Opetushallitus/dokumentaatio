@@ -9,7 +9,7 @@ tiloja. Tilojen väliset tilasiirtymät voivat tapahtua joko automaattisesti tai
 virkailijan tai opiskelijan toimesta, riippuen siitä minkä tyyppinen haku ja
 mikä tilasiirtymä on kysessä.
 
-![Hakutoiveen käsittely erilaisissa hakutyypeissä](hakuprosessi.png)
+![Hakutoiveen käsittely erilaisissa hakutyypeissä](img/hakuprosessi.png)
 
 
 ## Laskennan tulos
@@ -59,12 +59,12 @@ asettavat hyväksymistiedon käsin.
 
 ### Lisähaku
 
-![Lisähaussa käytetyt valintatilat](lisahaku_valintatila.png)
+![Lisähaussa käytetyt valintatilat](img/lisahaku_valintatila.png)
 
 
 ### Erillishaku
 
-![Erillishaussa käytetyt valintatilat](erillishaku_valintatila.png)
+![Erillishaussa käytetyt valintatilat](img/erillishaku_valintatila.png)
 
 
 ## Vastaanoton tila
@@ -94,7 +94,7 @@ virkailijan tai hakijan itsensä toimesta.
 - `VASTAANOTTANUT_SITOVASTI`: Hakija sitoutuu paikan vastaanottoon ja hylkää
   muut hakutoiveensa
 
-![Vastaanottotilan siirtymät](vastaanotto.png)
+![Vastaanottotilan siirtymät](img/vastaanotto.png)
 
 
 ## Ilmoittautumisen tila (läsnäoloilmoitus)

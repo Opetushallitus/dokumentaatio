@@ -11,8 +11,9 @@ if ! which dot &> /dev/null; then
 fi
 
 if [ $# -eq 0 ]; then
-  for FILE in *.dot; do
-    dot -Tpng ${FILE} > "${FILE%.*}".png
+  for FILE in dot/*.dot; do
+    FILENAME=$(basename $FILE)
+    dot -Tpng ${FILE} > "img/${FILENAME%.*}".png
   done
 elif [ $# = 1 ]; then
     TARGET="${1%.*}.png"
