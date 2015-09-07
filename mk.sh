@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -eu
+
 if ! which dot &> /dev/null; then
   echo "You need Graphviz to compile the files try following:"
   echo "  OS X:   brew install graphviz"
