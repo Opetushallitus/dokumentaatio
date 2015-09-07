@@ -84,14 +84,14 @@ kääntää ajamalla oheinen `./mk.sh` komento.
 
 ### Valintatila
 
-![Lisähaussa käytetyt valintatilat](lisahaku.png)
+![Lisähaussa käytetyt valintatilat](lisahaku_valintatila.png)
 
 
 ## Erillishaku
 
 ### Valintatila
 
-![Erillishaussa käytetyt valintatilat](valintatila.png)
+![Erillishaussa käytetyt valintatilat](erillishaku_valintatila.png)
 
 
 ## Vastaanotto
