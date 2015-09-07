@@ -80,16 +80,19 @@ Kielteisen valintatilan seurauksena vastaanottotieto on saatettu jo asettaa
 valmiiksi, muutoin vastaanottotieto asetetaan hakijan ilmoituksen mukaan joko
 virkailijan tai hakijan itsensä toimesta.
 
-- `ILMOITETTU`
-- `VASTAANOTTANUT`
-- `VASTAANOTTANUT_LASNA`
-- `VASTAANOTTANUT_POISSAOLEVA`
-- `EI_VASTAANOTETTU_MAARA_AIKANA`
-- `PERUNUT`
-- `PERUUTETTU`
-- `EHDOLLISESTI_VASTAANOTTANUT`
-- `VASTAANOTTANUT_SITOVASTI`
-- `KESKEN`
+- `KESKEN`: Odottaa hakijan vastaanottopäätöstä
+- `ILMOITETTU`: ???
+- `VASTAANOTTANUT`: ???
+- `VASTAANOTTANUT_LASNA`: ???
+- `VASTAANOTTANUT_POISSAOLEVA`: ???
+- `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut vastaanottopäätöstään
+  määräaikaan mennessä
+- `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta
+- `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan puolesta
+- `EHDOLLISESTI_VASTAANOTTANUT`: Hakija vastaanottaa paikan jos korkeamman
+  prioriteetin hakutoivetta vastaava paikka ei vapaudu määräaikaan mennessä
+- `VASTAANOTTANUT_SITOVASTI`: Hakija sitoutuu paikan vastaanottoon ja hylkää
+  muut hakutoiveensa
 
 ![Vastaanottotilan siirtymät](vastaanotto.png)
 
