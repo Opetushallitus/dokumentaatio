@@ -14,12 +14,17 @@ mikä tilasiirtymä on kysessä.
 
 ## Laskennan tulos
 
-Tila joka mahdollistaa hakutoiveen siirtymisen sijoitteluun.
+Jos haussa käytetään sijoittelua, suoritetaan hakijoiden kesken *laskenta*.
+Laskenta valitsee ne hakijat (hakijoiden hakutoiveet) jatkoon jotka ylittävät
+kyseisen hakukohteen asettamat vaatimukset, esimerkiksi pääsykoepisteiden
+alarajan.
 
-- `HYVAKSYTTAVISSA`
-- `HYLATTY`
-- `MAARITTELEMATON`
-- `HYVAKSYTTY_HARKINNANVARAISESTI`
+- `HYVAKSYTTAVISSA`: Hakutoive pääsee automatisoidusti jatkoon hakukohteelle
+  määritellyn laskentakaavan pohjalta
+- `HYLATTY`: Hakijan lähtotiedot eivät riittäneet jatkoon
+- `MAARITTELEMATON`: ???
+- `HYVAKSYTTY_HARKINNANVARAISESTI`: Virkailija päästää poikkeustapauksessa
+  hakutoiveen manuaalisesti jatkoon
 
 
 ## Valintatila / sijoittelun tila
