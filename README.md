@@ -56,14 +56,14 @@ asettavat hyväksymistiedon käsin.
   `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu
 
 
-### Lisähaku
+### Valinta ilman sijoittelua
 
-![Lisähaussa käytetyt valintatilat](img/lisahaku_valintatila.png)
+![Valinnan tilat ilman sijoittelua tehtävässä haussa](img/valintatila_ilman_sijoittelua.png)
 
 
-### Erillishaku
+### Valinta sijoittelun kanssa
 
-![Erillishaussa käytetyt valintatilat](img/erillishaku_valintatila.png)
+![Valinnan tilat sijoittelua käyttävän haun kanssa](img/valintatila_sijoittelulla.png)
 
 
 ## Vastaanoton tila
