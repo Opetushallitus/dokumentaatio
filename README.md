@@ -60,6 +60,15 @@ Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
+Kun hakijan *valintatila* on määäritetty virkailijan tai sijoittelun toimesta,
+virkailija *julkaisee* tiedon hakijalle. Tällöin valintatila ilmestyy
+hakijalle OHP:hen, edelleen mahdollistaen paikan vastaanottotiedon asettamisen
+siinä tapauksessa että hakutoive on hyväksytty.
+
+Kielteisen valintatilan seurauksena vastaanottotieto on saatettu jo asettaa
+valmiiksi, muutoin vastaanottotieto asetetaan hakijan ilmoituksen mukaan joko
+virkailijan tai hakijan itsensä toimesta.
+
 - `ILMOITETTU`
 - `VASTAANOTTANUT`
 - `VASTAANOTTANUT_LASNA`
