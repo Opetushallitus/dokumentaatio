@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if ! which dot &> /dev/null; then
+  echo "You need Graphviz to compile the files try following:"
+  echo "  OS X:   brew install graphviz"
+  echo "  RHEL:   sudo yum install graphviz"
+  echo "  Debian: sudo apt-get install graphviz"
+  exit 1
+fi
+
 if [ $# -eq 0 ]; then
   for FILE in *.dot; do
     dot -Tpng ${FILE} > "${FILE%.*}".png
