@@ -27,7 +27,7 @@ alarajan.
   hakutoiveen manuaalisesti jatkoon
 
 
-## Valintatila / sijoittelun tila
+## Valinnan tila
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
@@ -67,7 +67,7 @@ asettavat hyväksymistiedon käsin.
 ![Erillishaussa käytetyt valintatilat](erillishaku_valintatila.png)
 
 
-## Valintatuloksen tila
+## Vastaanoton tila
 
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
