@@ -31,14 +31,29 @@ alarajan.
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
-- `HYVAKSYTTY`: Hakija voi ottaa paikan vastaan
-- `HARKINNANVARAISESTI_HYVAKSYTTY`: Hakutoive on siirretty virkailijan toimesta manuaalisesti eteenpäin
-- `VARASIJALTA_HYVAKSYTTY`: Hakija voi ottaa paikan vastaan (alunperin varasijalla)
-- `VARALLA`: Hakija voi tulla kohteeseen valituksi (jossain vaiheessa)
-- `HYLATTY`: Hakija ei voi koskaan tulla valituksi kohteeseen
-- `PERUNUT`: Hakija ei ole vastaanottanut paikkaa. Hakija ei voi tulla enää valituksi matalamman prioriteetin kohteissa
-- `PERUUTETTU`: Virkailija on perunut paikan. Sama toiminnallisuuks kuil HYLATTY
-- `PERUUNTUNUT`: Hakija on tullut valituksi parempaan paikkaan (korkeampi hakutoive)
+Jos *haku* käyttää sijoittelua, *valintatila* päivittyy automaattisesti sitä
+mukaa kun *hyväksytyt* hakijat päättävät vastaanotosta (katso "Valintatuloksen
+tila"). Vapautuvia paikkoja annetaan *varalla* oleville henkilöille sitä mukaa
+kun ensisijaisesti valituksi tulleet opiskelijat tekevät päätöksensä
+*vastaanotosta*. Hakija voi tehdä vastaanoton vasta kun virkailija on
+*julkaissut* tiedon valintatilasta. Jos haku ei käytä sijoittelua, virkailijat
+asettavat hyväksymistiedon käsin.
+
+- `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
+  vastaanottopäätöksen
+- `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
+  hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen
+- `VARASIJALTA_HYVAKSYTTY`: Nostettu varasijalta hyväksytyksi kun paikkoja on
+  vapautunut
+- `VARALLA`: Odottaa muiden hakijoiden perumisista vapautuvia paikkoja
+- `HYLATTY`: Hakutoive on hylätty virkailijan toimesta eikä hakija ei voi
+  tulla valituksi kohteeseen
+- `PERUNUT`: Hakija ei ole vastaanottanut paikkaa. Hakija ei voi tulla enää
+  valituksi matalamman prioriteetin kohteissa.
+- `PERUUTETTU`: Virkailija on perunut paikan opiskelijan puolesta.
+  Toiminnallisesti sama kuin `HYLATTY`.
+- `PERUUNTUNUT`: Hakijan korkeamman prioriteetin hakutoive on mennyt
+  `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu
 - `KESKEN`: ??? onko mahdollinen
 
 
