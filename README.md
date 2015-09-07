@@ -12,6 +12,15 @@ virallinen vaatimusmäärittely.*
 ![Hakutoiveen käsittely erilaisissa hakutyypeissä](hakuprosessi.png)
 
 
+## Dokumentaation kehitys
+
+### Kaavioiden luonti
+
+Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne käännetään kuviksi
+[Graphviz työkalulla](http://www.graphviz.org/). Kaikki `.dot` tiedostot voi
+kääntää ajamalla oheinen `./mk.sh` komento.
+
+
 ## Laskennan tulos
 
 Tila joka mahdollistaa hakutoiveen siirtymisen sijoitteluun.
@@ -37,6 +46,16 @@ Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 - `KESKEN`: ??? onko mahdollinen
 
 
+### Lisähaku
+
+![Lisähaussa käytetyt valintatilat](lisahaku_valintatila.png)
+
+
+### Erillishaku
+
+![Erillishaussa käytetyt valintatilat](erillishaku_valintatila.png)
+
+
 ## Valintatuloksen tila
 
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
@@ -51,6 +70,8 @@ Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 - `EHDOLLISESTI_VASTAANOTTANUT`
 - `VASTAANOTTANUT_SITOVASTI`
 - `KESKEN`
+
+![Vastaanottotilan siirtymät](vastaanotto.png)
 
 
 ## Ilmoittautumisen tila (läsnäoloilmoitus)
@@ -70,30 +91,3 @@ hän viimeiseksi läsnäolotietonsa.
 - `POISSA`: Poissa, keväällä alkava koulutus
 
 
-# Hakujen tilasiirtymät
-
-
-## Kaavioiden päivitys
-
-Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne käännetään kuviksi
-[Graphviz työkalulla](http://www.graphviz.org/). Kaikki `.dot` tiedostot voi
-kääntää ajamalla oheinen `./mk.sh` komento.
-
-
-## Lisähaku
-
-### Valintatila
-
-![Lisähaussa käytetyt valintatilat](lisahaku_valintatila.png)
-
-
-## Erillishaku
-
-### Valintatila
-
-![Erillishaussa käytetyt valintatilat](erillishaku_valintatila.png)
-
-
-## Vastaanotto
-
-![Vastaanottotilan siirtymät](vastaanotto.png)
