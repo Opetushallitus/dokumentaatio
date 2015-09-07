@@ -1,25 +1,17 @@
 digraph finite_state_machine {
   rankdir=LR;
-  node [shape = circle];
-  create -> kesken [label="Oppija lähettää hakemuksen"];
-  kesken -> hylatty [label="Virkailija hylkää"];
-  kesken -> hyvaksytty [label="Virkailija hyväksyy"];
-  kesken -> peruutettu [label="Virkailija peruu oppijan puolesta"];
-  kesken -> varalla [label="Hyväksytty alemmalle hakutoiveelle"];
-  varalla -> varasijalta_hyvaksytty [label="Vapautunut paikka tarjotaan oppijalle"];
-  hyvaksytty -> peruuntunut [label="Oppija vastaanottaa toisen paikan"];
-  kesken -> perunut [label="Oppija peruu paikan OHPn kautta"];
-  hyvaksytty -> perunut [label="Oppija ilmoittaa peruvansa paikan"];
-  kesken -> harkinnanvaraisesti_hyvaksytty [label="Virkailija tekee manuaalisen hyväksymisen"]
+  node [shape=doublecircle];
+  Hakutoive -> HYLATTY [label="Virkailija hylkää"];
+  Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"];
+  Hakutoive -> PERUUTETTU [label="Virkailija peruu oppijan puolesta"];
+  Hakutoive -> VARALLA [label="Hyväksytty alemmalle hakutoiveelle"];
+  VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut paikka tarjotaan oppijalle"];
+  HYVAKSYTTY -> PERUUNTUNUT [label="Oppija vastaanottaa toisen paikan"];
+  Hakutoive -> PERUNUT [label="Oppija peruu paikan OHP:n kautta"];
+  HYVAKSYTTY -> PERUNUT [label="Oppija ilmoittaa peruvansa paikan"];
+  Hakutoive -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa hyväksymisen"];
 
-  harkinnanvaraisesti_hyvaksytty [label="HARKINNANVARAISESTI\n_HYVAKSYTTY"]
-  varasijalta_hyvaksytty [label="VARASIJALTA_HYVAKSYTTY"]
-  hylatty [label="HYLÄTTY"];
-  hyvaksytty [label="HYVAKSYTTY"];
-  kesken [label="KESKEN"];
-  peruuntunut [label="PERUUNTUNUT"];
-  peruutettu [label="PERUUTETTU"];
-  perunut [label="PERUNUT"];
-  varalla [label="VARALLA"];
-  create [label="HAKU" shape=doublecircle];
+  HARKINNANVARAISESTI_HYVAKSYTTY [label="HARKINNAN\nVARAISESTI\n_HYVAKSYTTY"];
+  VARASIJALTA_HYVAKSYTTY [label="VARASIJALTA\n_HYVAKSYTTY"];
+  VARALLA[shape=circle];
 }

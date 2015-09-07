@@ -1,15 +1,16 @@
 digraph finite_state_machine {
   rankdir=LR;
   node [shape = circle];
-  kesken -> hylatty [label="Virkailija hylkää"];
-  kesken -> hyvaksytty [label="Virkailija hyväksyy"];
-  hylatty -> hyvaksytty [label="Virkailija korjaa tilan"]
-  hyvaksytty -> hylatty [label="Virkailija korjaa tilan"]
 
-  hylatty [label="HYLÄTTY"];
-  hyvaksytty [label="HYVAKSYTTY"];
-  kesken [label="KESKEN"];
-  create -> kesken [label="Oppija lähettää hakemuksen"];
-  create [label="HAKU" shape=doublecircle];
+  {
+      rank=same
+      HYVAKSYTTY -> HYLATTY [dir=both label="Virkailija korjaa tilan"]
+      HYVAKSYTTY [shape=doublecircle];
+      HYLATTY [shape=doublecircle];
+  }
+
+  Hakutoive -> HYLATTY [label="Virkailija hylkää"]
+  Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"]
+  Hakutoive [shape=doublecircle];
 }
 

@@ -54,7 +54,6 @@ asettavat hyväksymistiedon käsin.
   Toiminnallisesti sama kuin `HYLATTY`.
 - `PERUUNTUNUT`: Hakijan korkeamman prioriteetin hakutoive on mennyt
   `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu
-- `KESKEN`: ??? onko mahdollinen
 
 
 ### Lisähaku
