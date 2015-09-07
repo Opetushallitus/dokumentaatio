@@ -104,12 +104,12 @@ Synonyymit: ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto
 Jos opiskelija on vastaanottanut paikan johon hänet on hyväksytty, ilmoittaa
 hän viimeiseksi läsnäolotietonsa.
 
-- `EI_TEHTY`
-- `LASNA_KOKO_LUKUVUOSI`
-- `POISSA_KOKO_LUKUVUOSI`
-- `EI_ILMOITTAUTUNUT`
-- `LASNA_SYKSY`: Läsnä syksy, poissa kevät
-- `POISSA_SYKSY`: Poissa syksy, läsnä kevät
+- `EI_TEHTY`: ???
+- `LASNA_KOKO_LUKUVUOSI`: ???
+- `POISSA_KOKO_LUKUVUOSI`: ???
+- `EI_ILMOITTAUTUNUT`: ???
+- `LASNA_SYKSY`: Läsnä syksyn, poissa kevät
+- `POISSA_SYKSY`: Poissa syksyn, läsnä kevät
 - `LASNA`: Läsnä, keväällä alkava koulutus
 - `POISSA`: Poissa, keväällä alkava koulutus
 
