@@ -80,16 +80,20 @@ Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne käännetään kuviks
 kääntää ajamalla oheinen `./mk.sh` komento.
 
 
-## Vastaanotto
-
-![](vastaanotto.png)
-
-
 ## Lisähaku
 
-![](lisahaku.png)
+### Valintatila
+
+![Lisähaussa käytetyt valintatilat](lisahaku.png)
 
 
 ## Erillishaku
 
-![](valintatila.png)
+### Valintatila
+
+![Erillishaussa käytetyt valintatilat](valintatila.png)
+
+
+## Vastaanotto
+
+![Vastaanottotilan siirtymät](vastaanotto.png)
