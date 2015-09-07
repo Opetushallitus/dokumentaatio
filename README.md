@@ -118,6 +118,6 @@ hän viimeiseksi läsnäolotietonsa.
 
 ## Kaavioiden luonti
 
-Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne käännetään kuviksi
+Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne muunnetaan kuviksi
 [Graphviz työkalulla](http://www.graphviz.org/). Kaikki `.dot` tiedostot voi
-kääntää ajamalla oheinen `./mk.sh` komento.
+muuntaa kuviksi ajamalla oheinen `./render-graphs.sh` komento.
