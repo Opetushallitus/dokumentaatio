@@ -5,12 +5,15 @@ digraph finite_state_machine {
   {
       rank=same
       HYVAKSYTTY -> HYLATTY [dir=both label="Virkailija korjaa tilan"]
-      HYVAKSYTTY [shape=doublecircle];
-      HYLATTY [shape=doublecircle];
   }
+
+  HYVAKSYTTY, HYLATTY -> Julkaistu
+  Julkaistu -> Vastaanotto [style=dotted]
+  Vastaanotto [shape=none]
 
   Hakutoive -> HYLATTY [label="Virkailija hylkää"]
   Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"]
   Hakutoive [shape=doublecircle];
+  Julkaistu [shape=doublecircle];
 }
 
