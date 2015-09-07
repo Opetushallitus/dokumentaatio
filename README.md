@@ -1,13 +1,13 @@
 # Hakemuksen ja vastaanoton tilasiirtymät
 
-Hakemuksen luonnin ja opiskelupaikkaan ilmoittautumisen sisältyy kolme eri
-vaihetta: *valinta*, *vastaanotto* ja *ilmoittautuminen*. Kussakin vaiheessa
-prosessin kokonaistilaa kuvaa joukko vaiheiden tiloja. Tilasiirtymät voivat
-tapahtua joko automaattisesti tai virkailijan tai opiskelijan toimesta. Tilat
-ja siirtymuat on koitettu kuvata alla tilakoneina.
-
 *Tämä dokumentti on koostettu kehityksen avuksi. Tämä dokumentti ei ole
 virallinen vaatimusmäärittely.*
+
+Kun *hakija* hakee *hakukohteeseen*, asettaa hän *hakemuksessa* listan
+*hakutoiveta*. Hakutoiveen etenemistä hakuprosessissa kuvataan joukolla
+tiloja. Tilojen väliset tilasiirtymät voivat tapahtua joko automaattisesti tai
+virkailijan tai opiskelijan toimesta, riippuen siitä minkä tyyppinen haku ja
+mikä tilasiirtymä on kysessä.
 
 ![Hakutoiveen käsittely erilaisissa hakutyypeissä](hakuprosessi.png)
 
