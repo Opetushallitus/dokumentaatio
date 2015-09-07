@@ -12,15 +12,6 @@ mikä tilasiirtymä on kysessä.
 ![Hakutoiveen käsittely erilaisissa hakutyypeissä](hakuprosessi.png)
 
 
-## Dokumentaation kehitys
-
-### Kaavioiden luonti
-
-Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne käännetään kuviksi
-[Graphviz työkalulla](http://www.graphviz.org/). Kaikki `.dot` tiedostot voi
-kääntää ajamalla oheinen `./mk.sh` komento.
-
-
 ## Laskennan tulos
 
 Tila joka mahdollistaa hakutoiveen siirtymisen sijoitteluun.
@@ -100,3 +91,10 @@ hän viimeiseksi läsnäolotietonsa.
 - `POISSA`: Poissa, keväällä alkava koulutus
 
 
+# Dokumentaation kehitys
+
+## Kaavioiden luonti
+
+Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne käännetään kuviksi
+[Graphviz työkalulla](http://www.graphviz.org/). Kaikki `.dot` tiedostot voi
+kääntää ajamalla oheinen `./mk.sh` komento.
