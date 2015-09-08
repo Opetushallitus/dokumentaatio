@@ -2,15 +2,27 @@ digraph g {
   rankdir=LR;
   node [shape=circle];
 
-  CREATE -> KESKEN [label="Virkailija julkaisee hyväksymistiedon"];
-  CREATE -> KESKEN [label="Sijoittelu hyväksyy"];
-  KESKEN -> VASTAANOTTANUT [label="Virkailija hylkää"];
-  KESKEN -> EI_VASTAANOTETTU_MAARA_AIKANA [label="OHP:sta ei vastaanotettu ajoissa\n"];
-  KESKEN -> PERUNUT [label="Virkailija peruu oppijan puolesta"];
-  KESKEN -> PERUUTETTU;
-  KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [label="Vapautunut paikka tarjotaan oppijalle"];
+  Valinta -> KESKEN [label="HYVAKSYTTY valinta\nja tieto julkaistu"];
+  KESKEN -> VASTAANOTTANUT [label="2. asteen vastaanotto"];
+  KESKEN -> EI_VASTAANOTETTU_MAARA_AIKANA [label="Hakija ei tehnyt\nvastaanottoa\nmääräaikana"];
+  KESKEN -> PERUNUT [label="Hakija peruu OHP:sta"];
+  KESKEN -> PERUUTETTU [label="Virkailija peruu\nhakijan pyynnöstä"];
+  KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [label="Hakija odottaa vielä\nkorkeamman prioriteetin\npaikkaa"];
+  KESKEN -> VASTAANOTTANUT_SITOVASTI [label="Hakija on tyytyväinen\nensimmäiseen tarjottuun\npaikkaan"];
+  EHDOLLISESTI_VASTAANOTTANUT -> EHDOLLISESTI_VASTAANOTTANUT [label="Korkeamman prioriteetin\nhakutoive vapautuu"];
+  EHDOLLISESTI_VASTAANOTTANUT -> VASTAANOTTANUT_SITOVASTI [label="Korkeimman\nprioriteetin\nhakutoive vapautuu"];
+  EHDOLLISESTI_VASTAANOTTANUT -> VASTAANOTTANUT_SITOVASTI [label="Määräaika umpeutuu\nilman korkeamman\nprioriteetin paikkoja"];
 
-  CREATE [label="Hyväksytty" shape=doublecircle];
-  EI_VASTAANOTETTU_MAARA_AIKANA [label="EI_VASTAANOTETTU\n_MAARA_AIKANA"]
+  {
+    rank=same;
+    VASTAANOTTANUT, VASTAANOTTANUT_SITOVASTI;
+  }
+  VASTAANOTTANUT, VASTAANOTTANUT_SITOVASTI -> Ilmoittautuminen [style=dotted];
+
+  Valinta, VASTAANOTTANUT_SITOVASTI, PERUUTETTU, PERUNUT, EI_VASTAANOTETTU_MAARA_AIKANA, VASTAANOTTANUT [shape=doublecircle];
+  EI_VASTAANOTETTU_MAARA_AIKANA [label="EI\n_VASTAANOTETTU\n_MAARA\n_AIKANA"]
   EHDOLLISESTI_VASTAANOTTANUT [label="EHDOLLISESTI\n_VASTAANOTTANUT"]
+  VASTAANOTTANUT_SITOVASTI [label="VASTAANOTTANUT\n_SITOVASTI"]
+
+  Ilmoittautuminen [shape=none];
 }
