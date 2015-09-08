@@ -12,6 +12,19 @@ mikä tilasiirtymä on kysessä.
 ![Hakutoiveen käsittely erilaisissa hakutyypeissä](img/hakuprosessi.png)
 
 
+## Valintakoelaskenta
+
+Kutsutaan hakijan ylimpään hakutoiveeseen tai kaavan mukaan esim. äidinkielen
+mukaan kielikokeeseen.
+
+
+### Välisijoittelu
+
+Käytetään jos kaikkia hakijoita ei kutsuta valintakokeeseen vaan osa
+hakijoista kutsutaan kokeeseen siihen hakukohteeseen johon kaavan mukaiset
+pisteet riittävät.
+
+
 ## Valintalaskennan tila
 
 Jos haussa käytetään sijoittelua, suoritetaan hakijoiden kesken *valintalaskenta*.
