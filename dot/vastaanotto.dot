@@ -1,17 +1,16 @@
-digraph finite_state_machine {
+digraph g {
   rankdir=LR;
-  node [shape = circle];
+  node [shape=circle];
+
   CREATE -> KESKEN [label="Virkailija julkaisee hyväksymistiedon"];
   CREATE -> KESKEN [label="Sijoittelu hyväksyy"];
   KESKEN -> VASTAANOTTANUT [label="Virkailija hylkää"];
   KESKEN -> EI_VASTAANOTETTU_MAARA_AIKANA [label="OHP:sta ei vastaanotettu ajoissa\n"];
   KESKEN -> PERUNUT [label="Virkailija peruu oppijan puolesta"];
-  KESKEN -> PERUUTETTU
+  KESKEN -> PERUUTETTU;
   KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [label="Vapautunut paikka tarjotaan oppijalle"];
 
   CREATE [label="Hyväksytty" shape=doublecircle];
-  EI_VASTAANOTETTU_MAARA_AIKANA  [label="EI_VASTAANOTETTU\n_MAARA_AIKANA"]
+  EI_VASTAANOTETTU_MAARA_AIKANA [label="EI_VASTAANOTETTU\n_MAARA_AIKANA"]
   EHDOLLISESTI_VASTAANOTTANUT [label="EHDOLLISESTI\n_VASTAANOTTANUT"]
 }
-
-

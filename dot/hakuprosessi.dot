@@ -1,40 +1,37 @@
-digraph haku {
+digraph g {
   rankdir=LR;
-  node [shape = circle];
+  node [shape=circle];
+
   subgraph cluster_virkailija {
-      color=gray
-      subgraph cluster_lisahaku {
-          label="Haku ilman sijoittelua"
-          color=blue
-          Valinta
-      }
-      subgraph cluster_yhteishaku {
-          label="Haku sijoittelulla"
-          color=blue
-          Laskenta -> Sijoittelu
-          Sijoittelu -> Sijoittelu
-      }
-      Valinta -> Hylätty
-      Laskenta -> Hylätty
-      Sijoittelu -> Julkaisu
-      Valinta -> Julkaisu
+    color=gray;
+    subgraph cluster_lisahaku {
+      label="Haku ilman sijoittelua";
+      color=blue;
+      Valinta;
+    }
+    subgraph cluster_yhteishaku {
+      label="Haku sijoittelulla";
+      color=blue;
+      Laskenta -> Sijoittelu;
+      Sijoittelu -> Sijoittelu;
+    }
+    Valinta -> Hylätty;
+    Laskenta -> Hylätty;
+    Sijoittelu -> Julkaisu;
+    Valinta -> Julkaisu;
   }
-  Hakutoive -> Valinta
-  Hakutoive -> Laskenta
-  Hakutoive -> Koe
 
-  Koe -> Laskenta
-  Koe -> Valinta
+  Hakutoive -> Valinta;
+  Hakutoive -> Laskenta;
+  Hakutoive -> Koe;
 
-  Julkaisu -> Vastaanotto
+  Koe -> Laskenta;
+  Koe -> Valinta;
 
-  Vastaanotto -> Peruttu
-  Vastaanotto -> Ilmoittauduttu
+  Julkaisu -> Vastaanotto;
 
-  Hakutoive[shape="doublecircle"]
-  Ilmoittauduttu[shape="doublecircle"]
-  Peruttu[shape="doublecircle"]
-  Hylätty[shape="doublecircle"]
+  Vastaanotto -> Peruttu;
+  Vastaanotto -> Ilmoittauduttu;
+
+  Hakutoive, Ilmoittauduttu, Peruttu, Hylätty [shape=doublecircle];
 }
-
-

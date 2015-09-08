@@ -1,19 +1,17 @@
-digraph finite_state_machine {
+digraph g {
   rankdir=LR;
-  node [shape = circle];
+  node [shape=circle];
 
   {
-      rank=same
-      HYVAKSYTTY -> HYLATTY [dir=both label="Virkailija korjaa tilan"]
+    rank=same;
+    HYVAKSYTTY -> HYLATTY [dir=both label="Virkailija korjaa tilan"];
   }
 
-  HYVAKSYTTY, HYLATTY -> Julkaistu
-  Julkaistu -> Vastaanotto [style=dotted]
-  Vastaanotto [shape=none]
+  HYVAKSYTTY, HYLATTY -> Julkaistu;
+  Julkaistu -> Vastaanotto [style=dotted];
+  Vastaanotto [shape=none];
 
-  Hakutoive -> HYLATTY [label="Virkailija hylkää"]
-  Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"]
-  Hakutoive [shape=doublecircle];
-  Julkaistu [shape=doublecircle];
+  Hakutoive -> HYLATTY [label="Virkailija hylkää"];
+  Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"];
+  Hakutoive, Julkaistu [shape=doublecircle];
 }
-

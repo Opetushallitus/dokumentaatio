@@ -1,6 +1,7 @@
-digraph finite_state_machine {
+digraph g {
   rankdir=LR;
   node [shape=circle];
+
   Hakutoive -> HYLATTY [label="Virkailija hylkää"];
   Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"];
   Hakutoive -> PERUUTETTU [label="Virkailija peruu oppijan puolesta"];
@@ -11,14 +12,13 @@ digraph finite_state_machine {
   HYVAKSYTTY -> PERUNUT [label="Oppija ilmoittaa peruvansa paikan"];
   Hakutoive -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa hyväksymisen"];
 
-  HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY, HARKINNANVARAISESTI_HYVAKSYTTY -> Julkaistu
-  PERUUTETTU, PERUUNTUNUT, PERUNUT -> Julkaistu
+  HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY, HARKINNANVARAISESTI_HYVAKSYTTY -> Julkaistu;
+  PERUUTETTU, PERUUNTUNUT, PERUNUT -> Julkaistu;
 
-  Julkaistu -> Vastaanotto [style=dotted]
-  Vastaanotto [shape=none]
+  Julkaistu -> Vastaanotto [style=dotted];
+  Vastaanotto [shape=none];
 
   HARKINNANVARAISESTI_HYVAKSYTTY [label="HARKINNAN\nVARAISESTI\n_HYVAKSYTTY"];
   VARASIJALTA_HYVAKSYTTY [label="VARASIJALTA\n_HYVAKSYTTY"];
-  Hakutoive [shape=doublecircle];
-  Julkaistu [shape=doublecircle];
+  Hakutoive, Julkaistu [shape=doublecircle];
 }
