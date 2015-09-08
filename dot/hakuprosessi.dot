@@ -1,37 +1,28 @@
 digraph g {
-  rankdir=LR;
-  node [shape=circle];
+  rankdir=TB;
+  node [shape=oval];
 
-  subgraph cluster_virkailija {
-    color=gray;
-    subgraph cluster_lisahaku {
-      label="Haku ilman sijoittelua";
-      color=blue;
-      Valinta;
-    }
-    subgraph cluster_yhteishaku {
-      label="Haku sijoittelulla";
-      color=blue;
-      Laskenta -> Sijoittelu;
-      Sijoittelu -> Sijoittelu;
-    }
-    Valinta -> Hylätty;
-    Laskenta -> Hylätty;
-    Sijoittelu -> Julkaisu;
-    Valinta -> Julkaisu;
+  {
+    rank=same;
+    Hakemus -> Koe -> Valintalaskenta -> Sijoittelu -> Julkaisu -> Vastaanotto -> Ilmoittautuminen;
   }
 
-  Hakutoive -> Valinta;
-  Hakutoive -> Laskenta;
-  Hakutoive -> Koe;
+  Sijoittelu -> Sijoittelu;
+  Valintalaskenta -> ValintalaskennanTila;
+  Sijoittelu -> ValinnanTila;
+  Vastaanotto -> VastaanotonTila;
+  Ilmoittautuminen -> IlmoittautumisenTila;
+  subgraph cluster_valinta {
+    label="Valinta";
+    color=blue;
+    Valintalaskenta,Sijoittelu,Julkaisu,Vastaanotto;
+  }
 
-  Koe -> Laskenta;
-  Koe -> Valinta;
+  Hakemus [label="Hakemus\n- Hakutoive"];
+  IlmoittautumisenTila [label="Ilmoittautumisen\ntila"];
+  VastaanotonTila [label="Vastaanoton\ntila"];
+  ValinnanTila [label="Valinnan\ntila"];
+  ValintalaskennanTila [label="Valintalaskennan\ntila"];
 
-  Julkaisu -> Vastaanotto;
-
-  Vastaanotto -> Peruttu;
-  Vastaanotto -> Ilmoittauduttu;
-
-  Hakutoive, Ilmoittauduttu, Peruttu, Hylätty [shape=doublecircle];
+  IlmoittautumisenTila,VastaanotonTila,ValinnanTila,ValintalaskennanTila [shape=box];
 }
