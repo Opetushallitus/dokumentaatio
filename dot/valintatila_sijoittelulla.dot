@@ -4,20 +4,32 @@ digraph g {
 
   Hakutoive -> HYLATTY [label="Virkailija hylkää"];
   Hakutoive -> HYVAKSYTTY [label="Sijoittelu hyväksyy"];
-  PERUUTETTU [label="PERUUTETTU\n(virkailija peruu\nhakijan puolesta)"];
   Hakutoive -> VARALLA [label="Hyväksytty\nmutta ei mahdu\nvarsinaiseen jonoon"];
   VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut paikka\ntarjotaan hakijalle"];
-  VARALLA -> PERUUNTUNUT [xlabel="Paikkaa ei vapautunut\nmääräaikaan mennessä"];
+  VARALLA -> PERUNUT [xlabel="Paikkaa ei vapautunut\nmääräaikaan mennessä"];
   PERUUNTUNUT [label="PERUUNTUNUT\n(toisen paikan\nvastaanotto)"];
   PERUNUT [label="PERUNUT\n(hakija\nperuu paikan\nvastaanotossa)"];
 
   Hakutoive -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa\nhyväksymisen"];
 
+  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> PERUUTETTU;
+
+  {
+    rank=same;
+    HYLATTY;
+    HYVAKSYTTY;
+  }
+  {
+    rank=same;
+    PERUUTETTU [label="PERUUTETTU\n(oppilaitos\nhylkää\nhyväksymisen)"];
+    PERUNUT;
+  }
+
   subgraph cluster_vastaanotto {
     label="Vastaanoton\nmahdollinen seuraus";
     color=gray;
     rank=same;
-    PERUUTETTU, PERUUNTUNUT, PERUNUT;
+    PERUUNTUNUT, PERUNUT;
   }
 
   subgraph cluster_hyvaksytty {
@@ -31,5 +43,5 @@ digraph g {
 
   VARALLA [shape=circle];
   Vastaanotto [shape=hexagon];
-  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Vastaanotto -> PERUNUT, PERUUNTUNUT, PERUUTETTU [style=dotted];
+  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Vastaanotto -> PERUNUT, PERUUNTUNUT [style=dotted];
 }
