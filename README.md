@@ -12,9 +12,9 @@ mikä tilasiirtymä on kysessä.
 ![Hakutoiveen käsittely erilaisissa hakutyypeissä](img/hakuprosessi.png)
 
 
-## Laskennan tulos
+## Valintalaskennan tulos
 
-Jos haussa käytetään sijoittelua, suoritetaan hakijoiden kesken *laskenta*.
+Jos haussa käytetään sijoittelua, suoritetaan hakijoiden kesken *valintalaskenta*.
 Laskenta valitsee ne hakijat (hakijoiden hakutoiveet) jatkoon jotka ylittävät
 kyseisen hakukohteen asettamat vaatimukset, esimerkiksi pääsykoepisteiden
 alarajan.
@@ -22,7 +22,9 @@ alarajan.
 - `HYVAKSYTTAVISSA`: Hakutoive pääsee automatisoidusti jatkoon hakukohteelle
   määritellyn laskentakaavan pohjalta
 - `HYLATTY`: Hakijan lähtotiedot eivät riittäneet jatkoon
-- `MAARITTELEMATON`: ???
+- `MAARITTELEMATON`: Tila estää sijoitteluun etenemisen, ei voi syntyä
+  laskennassa, oletusarvo ilman laskentaa tehtävässä haussa
+- `VIRHE`: Laskentaa käytettäessä kun syötetiedoissa virhe
 - `HYVAKSYTTY_HARKINNANVARAISESTI`: Virkailija päästää poikkeustapauksessa
   hakutoiveen manuaalisesti jatkoon
 
@@ -42,16 +44,18 @@ asettavat hyväksymistiedon käsin.
 - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
   vastaanottopäätöksen
 - `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
-  hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen
+  hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen. Käytössä vain 2.
+  asteen haussa.
 - `VARASIJALTA_HYVAKSYTTY`: Nostettu varasijalta hyväksytyksi kun paikkoja on
   vapautunut
 - `VARALLA`: Odottaa muiden hakijoiden perumisista vapautuvia paikkoja
 - `HYLATTY`: Hakutoive on hylätty virkailijan toimesta eikä hakija ei voi
   tulla valituksi kohteeseen
-- `PERUNUT`: Hakija ei ole vastaanottanut paikkaa. Hakija ei voi tulla enää
-  valituksi matalamman prioriteetin kohteissa.
-- `PERUUTETTU`: Virkailija on perunut paikan opiskelijan puolesta.
-  Toiminnallisesti sama kuin `HYLATTY`.
+- `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota paikkaa vastaan. Jos
+  vastaanottoa ei suoriteta määräaikana valinta menee tähän tilaan. Estää
+  sijoittelun tekemästä tilamuutoksia.
+- `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
+  sijoittelun tekemästä tilamuutoksia.
 - `PERUUNTUNUT`: Hakijan korkeamman prioriteetin hakutoive on mennyt
   `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu
 
@@ -80,37 +84,44 @@ valmiiksi, muutoin vastaanottotieto asetetaan hakijan ilmoituksen mukaan joko
 virkailijan tai hakijan itsensä toimesta.
 
 - `KESKEN`: Odottaa hakijan vastaanottopäätöstä
-- `ILMOITETTU`: ???
-- `VASTAANOTTANUT`: ???
-- `VASTAANOTTANUT_LASNA`: ???
-- `VASTAANOTTANUT_POISSAOLEVA`: ???
+- `ILMOITETTU`: Ei käytetä enää, vanhoissa ennen 2014 2. asteen haussa vastasi
+  julkaistavuustietoa
+- `VASTAANOTTANUT`: Hakija ilmoittaa vastaanoton 2. asteen haussa
+- `VASTAANOTTANUT_LASNA`: Ei käytetä enää, vanhoissa ennen 2014 2. asteen
+  haussa vastasi julkaistavuustietoa
+- `VASTAANOTTANUT_POISSAOLEVA`: Ei käytetä enää, vanhoissa ennen 2014 2.
+  asteen haussa vastasi julkaistavuustietoa
 - `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut vastaanottopäätöstään
   määräaikaan mennessä
 - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta
 - `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan puolesta
-- `EHDOLLISESTI_VASTAANOTTANUT`: Hakija vastaanottaa paikan jos korkeamman
+- `EHDOLLISESTI_VASTAANOTTANUT`: KK-hakija vastaanottaa paikan jos korkeamman
   prioriteetin hakutoivetta vastaava paikka ei vapaudu määräaikaan mennessä
-- `VASTAANOTTANUT_SITOVASTI`: Hakija sitoutuu paikan vastaanottoon ja hylkää
+- `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon ja hylkää
   muut hakutoiveensa
 
 ![Vastaanottotilan siirtymät](img/vastaanotto.png)
 
 
-## Ilmoittautumisen tila (läsnäoloilmoitus)
+## Ilmoittautumisen tila
 
 Synonyymit: ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto
 
 Jos opiskelija on vastaanottanut paikan johon hänet on hyväksytty, ilmoittaa
-hän viimeiseksi läsnäolotietonsa.
+hän viimeiseksi läsnäolotietonsa. Kaikki ilmoittautumistilat ovat käytössä
+sekä 2. asteen että korkeakoulujen hauissa. Soveltuvat tilat riippuvat
+koulutuksen alkamiskaudesta. Käyttöliittymät eivät toistaiseksi välttämättä
+huomioi kautta.
 
-- `EI_TEHTY`: ???
-- `LASNA_KOKO_LUKUVUOSI`: ???
-- `POISSA_KOKO_LUKUVUOSI`: ???
-- `EI_ILMOITTAUTUNUT`: ???
+- `EI_TEHTY`: Alkutila
+- `LASNA_KOKO_LUKUVUOSI`: vain kevään haussa
+- `POISSA_KOKO_LUKUVUOSI`: vain kevään haussa
+- `EI_ILMOITTAUTUNUT`: Virkailija tallentaa tilan jos hakija ei tehnyt
+  ilmoittautumista määräaikaan mennessä
 - `LASNA_SYKSY`: Läsnä syksyn, poissa kevät
 - `POISSA_SYKSY`: Poissa syksyn, läsnä kevät
-- `LASNA`: Läsnä, keväällä alkava koulutus
-- `POISSA`: Poissa, keväällä alkava koulutus
+- `LASNA`: Läsnä, keväällä alkava koulutus - vain syksyn haussa
+- `POISSA`: Poissa, keväällä alkava koulutus - vain syksyn haussa
 
 
 # Dokumentaation kehitys
