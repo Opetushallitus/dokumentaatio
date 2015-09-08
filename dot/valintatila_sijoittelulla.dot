@@ -1,24 +1,35 @@
 digraph g {
   rankdir=LR;
-  node [shape=circle];
+  node [shape=doublecircle];
 
   Hakutoive -> HYLATTY [label="Virkailija hylkää"];
-  Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"];
-  Hakutoive -> PERUUTETTU [label="Virkailija peruu oppijan puolesta"];
-  Hakutoive -> VARALLA [label="Hyväksytty alemmalle hakutoiveelle"];
-  VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut paikka tarjotaan oppijalle"];
-  HYVAKSYTTY -> PERUUNTUNUT [label="Oppija vastaanottaa toisen paikan"];
-  Hakutoive -> PERUNUT [label="Oppija peruu paikan OHP:n kautta"];
-  HYVAKSYTTY -> PERUNUT [label="Oppija ilmoittaa peruvansa paikan"];
-  Hakutoive -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa hyväksymisen"];
+  Hakutoive -> HYVAKSYTTY [label="Sijoittelu hyväksyy"];
+  PERUUTETTU [label="PERUUTETTU\n(virkailija peruu\nhakijan puolesta)"];
+  Hakutoive -> VARALLA [label="Hyväksytty\nmutta ei mahdu\nvarsinaiseen jonoon"];
+  VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut paikka\ntarjotaan hakijalle"];
+  VARALLA -> PERUUNTUNUT [xlabel="Paikkaa ei vapautunut\nmääräaikaan mennessä"];
+  PERUUNTUNUT [label="PERUUNTUNUT\n(toisen paikan\nvastaanotto)"];
+  PERUNUT [label="PERUNUT\n(hakija\nperuu paikan\nvastaanotossa)"];
 
-  HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY, HARKINNANVARAISESTI_HYVAKSYTTY -> Julkaistu;
-  PERUUTETTU, PERUUNTUNUT, PERUNUT -> Julkaistu;
+  Hakutoive -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa\nhyväksymisen"];
 
-  Julkaistu -> Vastaanotto [style=dotted];
-  Vastaanotto [shape=none];
+  subgraph cluster_vastaanotto {
+    label="Vastaanoton\nmahdollinen seuraus";
+    color=gray;
+    rank=same;
+    PERUUTETTU, PERUUNTUNUT, PERUNUT;
+  }
 
-  HARKINNANVARAISESTI_HYVAKSYTTY [label="HARKINNAN\nVARAISESTI\n_HYVAKSYTTY"];
-  VARASIJALTA_HYVAKSYTTY [label="VARASIJALTA\n_HYVAKSYTTY"];
-  Hakutoive, Julkaistu [shape=doublecircle];
+  subgraph cluster_hyvaksytty {
+    label="Vastaanotettavissa\njulkaisun jälkeen";
+    color=gray;
+    rank=same;
+    HYVAKSYTTY
+    HARKINNANVARAISESTI_HYVAKSYTTY [label="HARKINNAN\nVARAISESTI\n_HYVAKSYTTY"];
+    VARASIJALTA_HYVAKSYTTY [label="VARASIJALTA\n_HYVAKSYTTY"];
+  }
+
+  VARALLA [shape=circle];
+  Vastaanotto [shape=hexagon];
+  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Vastaanotto -> PERUNUT, PERUUNTUNUT, PERUUTETTU [style=dotted];
 }
