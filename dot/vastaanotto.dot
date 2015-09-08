@@ -8,9 +8,8 @@ digraph g {
   KESKEN -> PERUNUT [label="Hakija peruu OHP:sta"];
   KESKEN -> PERUUTETTU [label="Virkailija peruu\nhakijan pyynnöstä"];
   KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [label="Hakija odottaa vielä\nkorkeamman prioriteetin\npaikkaa"];
-  KESKEN -> VASTAANOTTANUT_SITOVASTI [label="Hakija on tyytyväinen\nensimmäiseen tarjottuun\npaikkaan"];
-  EHDOLLISESTI_VASTAANOTTANUT -> EHDOLLISESTI_VASTAANOTTANUT [label="Korkeamman prioriteetin\nhakutoive vapautuu"];
-  EHDOLLISESTI_VASTAANOTTANUT -> VASTAANOTTANUT_SITOVASTI [label="Korkeimman\nprioriteetin\nhakutoive vapautuu"];
+  KESKEN -> VASTAANOTTANUT_SITOVASTI [label="Hakija tyytyväinen\ntarjottuun paikkaan"];
+  EHDOLLISESTI_VASTAANOTTANUT -> KESKEN [label="Korkeimman\nprioriteetin\nhakutoive vapautuu"];
   EHDOLLISESTI_VASTAANOTTANUT -> VASTAANOTTANUT_SITOVASTI [label="Määräaika umpeutuu\nilman korkeamman\nprioriteetin paikkoja"];
 
   {
@@ -19,10 +18,11 @@ digraph g {
   }
   VASTAANOTTANUT, VASTAANOTTANUT_SITOVASTI -> Ilmoittautuminen [style=dotted];
 
-  Valinta, VASTAANOTTANUT_SITOVASTI, PERUUTETTU, PERUNUT, EI_VASTAANOTETTU_MAARA_AIKANA, VASTAANOTTANUT [shape=doublecircle];
-  EI_VASTAANOTETTU_MAARA_AIKANA [label="EI\n_VASTAANOTETTU\n_MAARA\n_AIKANA"]
-  EHDOLLISESTI_VASTAANOTTANUT [label="EHDOLLISESTI\n_VASTAANOTTANUT"]
-  VASTAANOTTANUT_SITOVASTI [label="VASTAANOTTANUT\n_SITOVASTI"]
+  Valinta, VASTAANOTTANUT_SITOVASTI, PERUUTETTU, PERUNUT, EI_VASTAANOTETTU_MAARA_AIKANA, VASTAANOTTANUT, KESKEN [shape=doublecircle];
+  EI_VASTAANOTETTU_MAARA_AIKANA [label="EI\n_VASTAAN\nOTETTU\n_MAARA\n_AIKANA"]
+  EHDOLLISESTI_VASTAANOTTANUT [label="EHDOLLISESTI\n_VASTAAN\nOTTANUT"]
+  VASTAANOTTANUT_SITOVASTI [label="VASTAAN\nOTTANUT\n_SITOVASTI"]
+  VASTAANOTTANUT [label="VASTAAN\nOTTANUT"]
 
   Ilmoittautuminen [shape=none];
 }
