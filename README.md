@@ -150,9 +150,9 @@ huomioi kautta.
 
 | Virallinen nimi | Valintalaskennan tila | Valinnan tila | Vastaanoton tila | Ilmoittautumisen tila |
 | --- | --- | --- | --- | --- |
-| Käyttöliittymä |  |  |  |  |
+| Käyttöliittymä |  | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | vastaanotto, valintatuloksen tila, vastaanottotieto | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto |
 | Koodi |  |  |  |  |
-| Tietokanta |  |  |  |  |
+| Tietokanta |  | Hakukohde.valintatapajonot.hakemukset.tila | Valintatulos.tila | Valintatulos.ilmoittautumisTila |
 
 # Dokumentaation kehitys
 
