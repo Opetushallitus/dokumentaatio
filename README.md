@@ -12,7 +12,7 @@ mikä tilasiirtymä on kysessä.
 ![Hakutoiveen käsittely erilaisissa hakutyypeissä](img/hakuprosessi.png)
 
 
-## Valintalaskennan tulos
+## Valintalaskennan tila
 
 Jos haussa käytetään sijoittelua, suoritetaan hakijoiden kesken *valintalaskenta*.
 Laskenta valitsee ne hakijat (hakijoiden hakutoiveet) jatkoon jotka ylittävät
