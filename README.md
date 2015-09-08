@@ -3,7 +3,7 @@ virallinen vaatimusmäärittely.*
 
 # Valintaprosessi ja hakemuksen ja vastaanoton tilasiirtymät
 
-Kun *hakija* hakee *haun* *hakukohteeseen*, hän asettaa *hakemuksessa* listan
+*Haku* sisältää *hakukohteita*. Kun *hakija* hakee hakukohteisiin, hän asettaa *hakemuksessa* listan
 *hakutoiveita*. Valintaprosessi käy haun hakemukset läpi, kerää hakutoiveet ja etenee *valintalaskennan*
 ja *sijoittelun* läpi. Prosessi voi edetä haun ja hakukohteen(???) asetuksista
 riippuen automaattisesti tai virkailijan manuaalisesti edistämänä.
