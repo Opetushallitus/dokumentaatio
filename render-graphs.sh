@@ -13,7 +13,7 @@ fi
 if [ $# -eq 0 ]; then
   for FILE in dot/*.dot; do
     FILENAME=$(basename $FILE)
-    dot -Tpng ${FILE} > "img/${FILENAME%.*}".png
+    dot -Gnewrank -Tpng ${FILE} > "img/${FILENAME%.*}".png
   done
 elif [ $# = 1 ]; then
     TARGET="${1%.*}.png"
