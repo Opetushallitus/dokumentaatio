@@ -1,16 +1,26 @@
-# Hakemuksen ja vastaanoton tilasiirtymät
-
 *Tämä dokumentti on koostettu kehityksen avuksi. Tämä dokumentti ei ole
 virallinen vaatimusmäärittely.*
 
-Kun *hakija* hakee *hakukohteeseen*, asettaa hän *hakemuksessa* listan
-*hakutoiveta*. Hakutoiveen etenemistä hakuprosessissa kuvataan joukolla
-tiloja. Tilojen väliset tilasiirtymät voivat tapahtua joko automaattisesti tai
-virkailijan tai opiskelijan toimesta, riippuen siitä minkä tyyppinen haku ja
+# Valintaprosessi ja hakemuksen ja vastaanoton tilasiirtymät
+
+Kun *hakija* hakee *haun* *hakukohteeseen*, hän asettaa *hakemuksessa* listan
+*hakutoiveita*. Valintaprosessi käy haun hakemukset läpi, kerää hakutoiveet ja etenee *valintalaskennan*
+ja *sijoittelun* läpi. Prosessi voi edetä haun ja hakukohteen(???) asetuksista
+riippuen automaattisesti tai virkailijan manuaalisesti edistämänä.
+
+Hakutoiveen etenemistä valintaprosessissa kuvataan joukolla
+tiloja. Tilojen väliset tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän tekemänä
+tai virkailijan tai opiskelijan toimesta, riippuen siitä haun asetuksista ja
 mikä tilasiirtymä on kysessä.
 
-![Hakutoiveen käsittely erilaisissa hakutyypeissä](img/hakuprosessi.png)
+![Valintaprosessi](img/valintaprosessi.png)
 
+Yhteishaku:
+* Varsinainen haku: automaattinen laskenta ja sijoittelu
+* Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
+
+Erillishaku:
+* ???
 
 ## Valintakoelaskenta
 
@@ -136,6 +146,13 @@ huomioi kautta.
 - `LASNA`: Läsnä, keväällä alkava koulutus - vain syksyn haussa
 - `POISSA`: Poissa, keväällä alkava koulutus - vain syksyn haussa
 
+# Synonyymit
+
+| Virallinen nimi | Valintalaskennan tila | Valinnan tila | Vastaanoton tila | Ilmoittautumisen tila |
+| --- | --- | --- | --- | --- |
+| Käyttöliittymä |  |  |  |  |
+| Koodi |  |  |  |  |
+| Tietokanta |  |  |  |  |
 
 # Dokumentaation kehitys
 
