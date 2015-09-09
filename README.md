@@ -5,7 +5,7 @@ virallinen vaatimusmäärittely.*
 
 *Haku* sisältää *hakukohteita*. Kun *hakija* hakee hakukohteisiin, hän asettaa *hakemuksessa* listan
 *hakutoiveita*. Valintaprosessi käy haun hakemukset läpi, kerää hakijoiden hakutoiveet ja etenee *valintalaskennan*
-ja *sijoittelun* läpi. Hakukohteilla on määritetty *valintatapajonot* joiden *valintaperusteet* määrittävät säännöt
+ja [*sijoittelun*](#sijoittelu) läpi. Hakukohteilla on määritetty *valintatapajonot* joiden *valintaperusteet* määrittävät säännöt
 joilla hakijat kerätään valintatapajonoihin.
 
 Valintatapajonolle määritetään käytetäänkö valintatapajonossa
@@ -41,6 +41,13 @@ Erillishaku:
   lista hajioiden keskenäisestä järjestyksestä. Laskentaa varten on luotu
   laskentakaava joka määrittää lähtötiedoista lopullisen järjestyksen.
 - <a name="kausi">Kausi</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
+- <a name="sijoittelu">Sijoittelu</a>: Hakukohtainen toistettava vaihe jossa
+  [valintalaskennan](#valintalaskenta) tulosten mukaan hakijat on ryhmitelty
+  *hyväksytyksi* tai kiintiöön mahtumattomana *varalle* (poikkeustapauksissa
+  *hylätyksi*). *Hyväksyttyjen* hakijoiden
+  [vastaanottopäätösten](#vastaanoton-tila) perusteella sijoittelu voi nostaa
+  *varalla* olleita hakemuksia *hyväksytyiksi*. Sijoittelua suoritetaan niin
+  kauan kun hakijat voivat muuttaa *vastaanoton tilaa*.
 - <a name="hakutoive">Hakutoive</a>: Hakijan hakemukselle syöttämä
   opiskelupaikka johon hän haluaa tulla [hyväksytyksi
   valinnassa](#valinnan-tila). Hausta riippuen hakutoiveiden keskinäisellä
@@ -70,7 +77,7 @@ pisteet riittävät.
 <a name="valintalaskennan-tila"></a>
 ## Valintalaskennan tila
 
-Jos haussa käytetään sijoittelua, suoritetaan hakijoiden kesken
+Jos haussa käytetään [sijoittelua](#sijoittelu), suoritetaan hakijoiden kesken
 [valintalaskenta](#valintalaskenta). Laskenta valitsee ne hakijat (hakijoiden
 hakutoiveet) jatkoon jotka ylittävät kyseisen hakukohteen asettamat
 vaatimukset, esimerkiksi pääsykoepisteiden alarajan.
@@ -90,7 +97,7 @@ vaatimukset, esimerkiksi pääsykoepisteiden alarajan.
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
-Jos *haku* käyttää sijoittelua, *valinnan tila* päivittyy seuraavalla
+Jos *haku* käyttää [sijoittelua](#sijoittelu), *valinnan tila* päivittyy seuraavalla
 sijoittelukerralla sitä mukaa kun *hyväksytyt* hakijat päättävät
 [vastaanotosta](#vastaanoton-tila). Sijoittelu suoritetaan yleensä vähintään
 kerran päivässä niin kauan kun hakijat voivat tehdä vastaanottopäätöksiä.
@@ -135,7 +142,7 @@ hyväksymistiedon käsin.
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
 Kun hakijan [valinnan tila](#valinnan-tila) on määäritetty virkailijan tai
-sijoittelun toimesta, virkailija [julkaisee](#julkaisu) tiedon hakijalle.
+[sijoittelun](#sijoittelu) toimesta, virkailija [julkaisee](#julkaisu) tiedon hakijalle.
 Tällöin [valinnan tila](#valinnan-tila) ilmestyy hakijalle [OHP:hen](#ohp),
 edelleen mahdollistaen paikan *vastaanoton tilan* asettamisen siinä
 tapauksessa että hakutoive on hyväksytty.
