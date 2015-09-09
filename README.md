@@ -16,11 +16,14 @@ mikä tilasiirtymä on kysessä.
 ![Valintaprosessi](img/valintaprosessi.png)
 
 Yhteishaku:
-* Varsinainen haku: automaattinen laskenta ja sijoittelu
-* Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
+
+- Varsinainen haku: automaattinen laskenta ja sijoittelu
+- Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
 
 Erillishaku:
-* ???
+
+- ???
+
 
 ## Valintakoelaskenta
 
