@@ -59,12 +59,12 @@ alarajan.
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
-Jos *haku* käyttää sijoittelua, *valintatila* päivittyy automaattisesti sitä
+Jos *haku* käyttää sijoittelua, *valinnan tila* päivittyy automaattisesti sitä
 mukaa kun *hyväksytyt* hakijat päättävät vastaanotosta (katso "Valintatuloksen
 tila"). Vapautuvia paikkoja annetaan *varalla* oleville henkilöille sitä mukaa
 kun ensisijaisesti valituksi tulleet opiskelijat tekevät päätöksensä
 *vastaanotosta*. Hakija voi tehdä vastaanoton vasta kun virkailija on
-*julkaissut* tiedon valintatilasta. Jos haku ei käytä sijoittelua, virkailijat
+*julkaissut* tiedon valinnan tilasta. Jos haku ei käytä sijoittelua, virkailijat
 asettavat hyväksymistiedon käsin.
 
 - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
@@ -100,12 +100,12 @@ asettavat hyväksymistiedon käsin.
 
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
-Kun hakijan *valintatila* on määäritetty virkailijan tai sijoittelun toimesta,
-virkailija *julkaisee* tiedon hakijalle. Tällöin valintatila ilmestyy
+Kun hakijan *valinnan tila* on määäritetty virkailijan tai sijoittelun toimesta,
+virkailija *julkaisee* tiedon hakijalle. Tällöin valinnan tila ilmestyy
 hakijalle OHP:hen, edelleen mahdollistaen paikan vastaanottotiedon asettamisen
 siinä tapauksessa että hakutoive on hyväksytty.
 
-Kielteisen valintatilan seurauksena vastaanottotieto on saatettu jo asettaa
+Kielteisen valinnan tilan seurauksena vastaanottotieto on saatettu jo asettaa
 valmiiksi, muutoin vastaanottotieto asetetaan hakijan ilmoituksen mukaan joko
 virkailijan tai hakijan itsensä toimesta.
 
