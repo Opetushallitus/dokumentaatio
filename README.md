@@ -10,11 +10,10 @@ joilla hakijat kerätään valintatapajonoihin.
 
 Valintatapajonolle määritetään käytetäänkö valintatapajonossa
 laskentaa (tai manuaalinen import) ja siirretäänkö jono mukaan sijoitteluun. Valintatapajonolle määritetään *aloituspaikkojen* määrä.
-Prosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon asetuksista
-riippuen automaattisesti tai virkailijan manuaalisesti edistämänä.
 
-Hakutoiveen etenemistä valintaprosessissa kuvataan joukolla tiloja. Tilojen
-väliset tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän
+Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon asetuksista
+riippuen automaattisesti tai virkailijan manuaalisesti edistämänä. Hakutoiveen etenemistä kuvataan joukolla tiloja.
+Tilojen väliset tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän
 tekemänä tai virkailijan tai opiskelijan toimesta, riippuen siitä haun
 asetuksista ja mikä tilasiirtymä on kysessä.
 
