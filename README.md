@@ -3,7 +3,7 @@ virallinen vaatimusmäärittely.*
 
 # Valintaprosessi ja hakemuksen ja vastaanoton tilasiirtymät
 
-*Haku* sisältää *hakukohteita*. Kun *hakija* hakee hakukohteisiin, hän asettaa *hakemuksessa* listan
+*Haku* sisältää [*hakukohteita*](#hakukohde). Kun *hakija* hakee hakukohteisiin, hän asettaa [*hakemuksessa*](#hakemus) listan
 [*hakutoiveita*](#hakutoive). Valintaprosessi käy haun hakemukset läpi, kerää hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta)
 ja [*sijoittelun*](#sijoittelu) läpi. Hakukohteilla on määritetty *valintatapajonot* joiden *valintaperusteet* määrittävät säännöt
 joilla hakijat kerätään valintatapajonoihin.
@@ -40,6 +40,12 @@ asetuksista ja mikä tilasiirtymä on kysessä.
 ## Sanasto
 
 - <a name="virkailija">**Virkailija**</a>: Hakua organisoiva henkilö.
+- <a name="hakemus">**Hakemus**</a>: Hakijan hakuun lähettämät taustatiedot ja
+  [hakutoiveet](#hakutoive). Hakemuksen sisältö ja hakutoiveiden mahdollinen
+  määrä riippuu hausta ja hakutoiveista.
+- <a name="hakukohde">**Hakukohde**</a>: Oppilaitoksen haussa tarjoama
+  koulutus johon hakijat kohdistavat hakemuksessaan
+  [hakutoiveita](#hakutoive).
 - <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee [valinnan
   tilan](#valinnan-tila) lopulliseksi jolloin se tulee hakijan nähtäväksi
   [OHP:ssa](#ohp) kyseiselle [hakutoiveelle](#hakutoive). Hakija voi tämän
