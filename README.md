@@ -133,13 +133,14 @@ sijoittelua, virkailijat asettavat hyväksymistiedon käsin.
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
 Kun hakijan [valinnan tila](#valinnan-tila) on määäritetty virkailijan tai
-sijoittelun toimesta, virkailija *julkaisee* tiedon hakijalle. Tällöin
-valinnan tila ilmestyy hakijalle OHP:hen, edelleen mahdollistaen paikan
-vastaanottotiedon asettamisen siinä tapauksessa että hakutoive on hyväksytty.
+sijoittelun toimesta, virkailija [julkaisee](#julkaisu) tiedon hakijalle.
+Tällöin [valinnan tila](#valinnan-tila) ilmestyy hakijalle [OHP:hen](#ohp),
+edelleen mahdollistaen paikan *vastaanoton tilan* asettamisen siinä
+tapauksessa että hakutoive on hyväksytty.
 
-Kielteisen valinnan tilan seurauksena vastaanottotieto on saatettu jo asettaa
-valmiiksi, muutoin vastaanottotieto asetetaan hakijan ilmoituksen mukaan joko
-virkailijan tai hakijan itsensä toimesta.
+Kielteisen valinnan tilan seurauksena *vastaanoton tila* on saatettu jo
+asettaa valmiiksi, muutoin *vastaanoton tila* asetetaan hakijan ilmoituksen
+mukaan joko virkailijan tai hakijan itsensä toimesta.
 
 - Tilat joita käytetään hakutyypistä riippumatta
   - `KESKEN`: Odottaa hakijan vastaanottopäätöstä
