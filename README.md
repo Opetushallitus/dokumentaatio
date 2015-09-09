@@ -45,6 +45,13 @@ Erillishaku:
   opiskelupaikka johon hän haluaa tulla [hyväksytyksi
   valinnassa](#valinnan-tila). Hausta riippuen hakutoiveiden keskinäisellä
   järjestyksellä voi olla merkitystä.
+- <a name="ohp">OHP</a>: Oppijan Henkilökohtainen Palvelu, tai "omat sivut", on
+  hakijoiden käyttöliittymä josta voi muokata lähettämiään hakemuksia ja
+  hallita omia [hakutoiveita](#hakutoive). Kun haun [valinnan
+  tila](#valinnan-tila) on [julkaistu](#julkaisu) virkailijoiden toimesta,
+  hakija voi hyväksytyssä tapauksessa tehdä päätöksen hakutoiveensa
+  [vastaanotosta](#vastaanoton-tila) ja [ilmoittaa
+  läsnäolonsa](#ilmoittautumisen-tila) palvelun kautta.
 
 
 ## Valintakoelaskenta
