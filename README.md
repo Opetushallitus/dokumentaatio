@@ -3,19 +3,24 @@ virallinen vaatimusmäärittely.*
 
 # Valintaprosessi ja hakemuksen ja vastaanoton tilasiirtymät
 
-*Haku* sisältää [*hakukohteita*](#hakukohde). Kun *hakija* hakee hakukohteisiin, hän asettaa [*hakemuksessa*](#hakemus) listan
-[*hakutoiveita*](#hakutoive). Valintaprosessi käy haun hakemukset läpi, kerää hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta)
-ja [*sijoittelun*](#sijoittelu) läpi. Hakukohteilla on määritetty *valintatapajonot* joiden *valintaperusteet* määrittävät säännöt
-joilla hakijat kerätään valintatapajonoihin.
+*Haku* sisältää [*hakukohteita*](#hakukohde). Kun *hakija* hakee
+hakukohteisiin, hän asettaa [*hakemuksessa*](#hakemus) listan
+[*hakutoiveita*](#hakutoive). Valintaprosessi käy haun hakemukset läpi, kerää
+hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta) ja
+[*sijoittelun*](#sijoittelu) läpi. Hakukohteilla on määritetty
+*valintatapajonot* joiden *valintaperusteet* määrittävät säännöt joilla
+hakijat kerätään valintatapajonoihin.
 
-Valintatapajonolle määritetään käytetäänkö valintatapajonossa
-valintalaskentaa (tai manuaalinen import) ja siirretäänkö valintatapajono mukaan sijoitteluun. Valintatapajonolle määritetään *aloituspaikkojen* määrä.
+Valintatapajonolle määritetään käytetäänkö valintatapajonossa valintalaskentaa
+(tai manuaalinen import) ja siirretäänkö valintatapajono mukaan sijoitteluun.
+Valintatapajonolle määritetään *aloituspaikkojen* määrä.
 
-Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon asetuksista
-riippuen automaattisesti tai *virkailijan* manuaalisesti edistämänä. Hakutoiveen etenemistä kuvataan joukolla *tiloja*.
-Tilojen väliset tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän
-tekemänä tai virkailijan tai hakijan toimesta, riippuen haun
-asetuksista ja mikä tilasiirtymä on kysessä.
+Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon
+asetuksista riippuen automaattisesti tai *virkailijan* manuaalisesti
+edistämänä. Hakutoiveen etenemistä kuvataan joukolla *tiloja*. Tilojen väliset
+tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän tekemänä tai
+virkailijan tai hakijan toimesta, riippuen haun asetuksista ja mikä
+tilasiirtymä on kysessä.
 
 ![Valintaprosessi](img/valintaprosessi.png)
 
@@ -25,17 +30,22 @@ asetuksista ja mikä tilasiirtymä on kysessä.
 
 ### Yhteishaku
 
-- *Varsinainen haku*: automaattinen valintalaskenta ja sijoittelu. Automaattisen valintalaskennan sijaan virkailija voi
-  myös tuoda *hylätyt* ja *hyväksyttävissä* olevat hakijat paremmuusjärjestyksessä excelillä tai json-rajapinnalla.
+- *Varsinainen haku*: automaattinen valintalaskenta ja sijoittelu.
+  Automaattisen valintalaskennan sijaan virkailija voi myös tuoda *hylätyt* ja
+  *hyväksyttävissä* olevat hakijat paremmuusjärjestyksessä excelillä tai
+  json-rajapinnalla.
 - *Lisähaku*: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
 
 
 ### Erillishaku
 
 - voi olla kuten yhteishaun varsinainen haku
-- voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
-- voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo excelillä tai käyttöliittymässä hakijoiden *valinnan tilat*
-- virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla kuin *opintopolussa*
+- voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
+  sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
+- voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo
+  excelillä tai käyttöliittymässä hakijoiden *valinnan tilat*
+- virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla
+  kuin *opintopolussa*
 
 
 ## Sanasto
@@ -80,7 +90,8 @@ asetuksista ja mikä tilasiirtymä on kysessä.
 
 ## Valintakoelaskenta
 
-Kutsutaan hakijan samaa koetta käyttävistä hakutoiveista ylimpään hakutoiveeseen tai kaavan mukaan esim. äidinkielen
+Kutsutaan hakijan samaa koetta käyttävistä hakutoiveista ylimpään
+hakutoiveeseen tai kaavan mukaan esim. äidinkielen
 mukaan kielikokeeseen.
 
 
