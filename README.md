@@ -13,7 +13,8 @@ hakijat kerätään valintatapajonoihin.
 
 Valintatapajonolle määritetään käytetäänkö valintatapajonossa valintalaskentaa
 (tai manuaalinen import) ja siirretäänkö valintatapajono mukaan sijoitteluun.
-Valintatapajonolle määritetään *aloituspaikkojen* määrä.
+Valintatapajonolle määritetään *kiintiö*, eli *vastaanotettavien* *paikkojen*
+määrä.
 
 Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon
 asetuksista riippuen automaattisesti tai *virkailijan* manuaalisesti
