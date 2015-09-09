@@ -33,6 +33,7 @@ Erillishaku:
 
 ## Sanasto
 
+- <a name="virkailija">**Virkailija**</a>: Hakua organisoiva henkilö.
 - <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee [valinnan
   tilan](#valinnan-tila) lopulliseksi jolloin se tulee hakijan nähtäväksi
   [OHP:ssa](#ohp) kyseiselle [hakutoiveelle](#hakutoive). Hakija voi tämän
