@@ -33,26 +33,26 @@ Erillishaku:
 
 ## Sanasto
 
-- <a name="julkaisu">Julkaisu</a>: Virkailija merkitsee valinnan tuloksen
+- <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee valinnan tuloksen
   hakijan nähtäväksi. Hakija voi tämän jälkeen tehdä päätöksen vastaanotosta
   jos hänet on hyväksytty.
-- <a name="valintalaskenta">Valintalaskenta</a>: Valintaprosessin vaihe jossa
+- <a name="valintalaskenta">**Valintalaskenta**</a>: Valintaprosessin vaihe jossa
   hakijan hakemuksessa antamista tai kokeesta tulleista pisteistä tuotetaan
   lista hajioiden keskenäisestä järjestyksestä. Laskentaa varten on luotu
   laskentakaava joka määrittää lähtötiedoista lopullisen järjestyksen.
-- <a name="kausi">Kausi</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
-- <a name="sijoittelu">Sijoittelu</a>: Hakukohtainen toistettava vaihe jossa
+- <a name="kausi">**Kausi**</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
+- <a name="sijoittelu">**Sijoittelu**</a>: Hakukohtainen toistettava vaihe jossa
   [valintalaskennan](#valintalaskenta) tulosten mukaan hakijat on ryhmitelty
   *hyväksytyksi* tai kiintiöön mahtumattomana *varalle* (poikkeustapauksissa
   *hylätyksi*). *Hyväksyttyjen* hakijoiden
   [vastaanottopäätösten](#vastaanoton-tila) perusteella sijoittelu voi nostaa
   *varalla* olleita hakemuksia *hyväksytyiksi*. Sijoittelua suoritetaan niin
   kauan kun hakijat voivat muuttaa *vastaanoton tilaa*.
-- <a name="hakutoive">Hakutoive</a>: Hakijan hakemukselle syöttämä
+- <a name="hakutoive">**Hakutoive**</a>: Hakijan hakemukselle syöttämä
   opiskelupaikka johon hän haluaa tulla [hyväksytyksi
   valinnassa](#valinnan-tila). Hausta riippuen hakutoiveiden keskinäisellä
   järjestyksellä voi olla merkitystä.
-- <a name="ohp">OHP</a>: Oppijan Henkilökohtainen Palvelu, tai "omat sivut", on
+- <a name="ohp">**OHP**</a>: Oppijan Henkilökohtainen Palvelu, tai "omat sivut", on
   hakijoiden käyttöliittymä josta voi muokata lähettämiään hakemuksia ja
   hallita omia [hakutoiveita](#hakutoive). Kun haun [valinnan
   tila](#valinnan-tila) on [julkaistu](#julkaisu) virkailijoiden toimesta,
