@@ -119,6 +119,12 @@ toisin kuin yhteishaussa.
   vaiheen](#valinnan-vaihe) pisteyttämään järjestykseen. Hakijat jotka eivät
   läpäisseet valinnan vaihetta, *hylätään*. Jos jonolla on aloituspaikkamäärä,
   rajan alle jäävät mutta valinnan vaiheen läpäisseet jäävät varalle.
+  [Hakijaryhmä](#hakijaryhma) voi yliajaa jonojen järjestyksen.
+- <a name="hakijaryma">**Hakijaryhmä**</a>: Voi sisällyttää tai poissulkea
+  hakijoita jonoista. Esimerkiksi jos hakukohteeseen halutaa vähintään 10
+  lukiotaustaista henkilöä mutta vain 9 mahtuu paremmuusjärjestyksessä jonon
+  aloituspaikkamäärän sisälle, nostetaan kymmenes hyväksytty lukiotaustainen
+  henkilö viimeisen aloituspaikoille mahtuneen ei-lukiotaustaisen tilalle.
 
 
 ## Valintakoelaskenta
