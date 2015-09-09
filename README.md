@@ -35,7 +35,7 @@ Erillishaku:
 
 - <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee valinnan tuloksen
   hakijan nähtäväksi. Hakija voi tämän jälkeen tehdä päätöksen vastaanotosta
-  jos hänet on hyväksytty.
+  jos hänet on [hyväksytty](#hyvaksytty).
 - <a name="valintalaskenta">**Valintalaskenta**</a>: Valintaprosessin vaihe jossa
   hakijan hakemuksessa antamista tai kokeesta tulleista pisteistä tuotetaan
   lista hajioiden keskenäisestä järjestyksestä. Laskentaa varten on luotu
@@ -43,8 +43,8 @@ Erillishaku:
 - <a name="kausi">**Kausi**</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
 - <a name="sijoittelu">**Sijoittelu**</a>: Hakukohtainen toistettava vaihe jossa
   [valintalaskennan](#valintalaskenta) tulosten mukaan hakijat on ryhmitelty
-  *hyväksytyksi* tai kiintiöön mahtumattomana *varalle* (poikkeustapauksissa
-  *hylätyksi*). *Hyväksyttyjen* hakijoiden
+  [*hyväksytyksi*](#hyvaksytty) tai kiintiöön mahtumattomana *varalle*
+  (poikkeustapauksissa *hylätyksi*). *Hyväksyttyjen* hakijoiden
   [vastaanottopäätösten](#vastaanoton-tila) perusteella sijoittelu voi nostaa
   *varalla* olleita hakemuksia *hyväksytyiksi*. Sijoittelua suoritetaan niin
   kauan kun hakijat voivat muuttaa *vastaanoton tilaa*.
@@ -107,23 +107,27 @@ Hakija voi tehdä vastaanoton vasta kun virkailija on [julkaissut](#julkaisu)
 tiedon valinnan tilasta. Jos haku ei käytä sijoittelua, virkailijat asettavat
 hyväksymistiedon käsin.
 
-- `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
-  vastaanottopäätöksen
-- `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
-  hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen. Käytössä vain 2.
-  asteen haussa.
-- `VARASIJALTA_HYVAKSYTTY`: Nostettu varasijalta hyväksytyksi kun paikkoja on
-  vapautunut
 - `VARALLA`: Odottaa muiden hakijoiden perumisista vapautuvia paikkoja
 - `HYLATTY`: Hakutoive on hylätty virkailijan toimesta eikä hakija ei voi
   tulla valituksi kohteeseen
-- `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota paikkaa vastaan. Jos
-  vastaanottoa ei suoriteta määräaikana valinta menee tähän tilaan. Estää
-  sijoittelun tekemästä tilamuutoksia.
-- `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
-  sijoittelun tekemästä tilamuutoksia.
-- `PERUUNTUNUT`: Hakijan korkeamman prioriteetin hakutoive on mennyt
-  `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu
+- <a name-"hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
+  [vastaanottaa](#vastaanoton-tila) tarjottu *paikka*.
+  - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
+    vastaanottopäätöksen
+  - `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
+    hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen. Käytössä vain 2.
+    asteen haussa.
+  - `VARASIJALTA_HYVAKSYTTY`: Nostettu varasijalta hyväksytyksi kun paikkoja on
+    vapautunut
+- <a name="peruttu">Perutut</a> tilat syntyvät jos [hyväksyttyä](#hyvaksytty)
+  paikkaa jää [vastaanottamatta](#vastaanoton-tila).
+  - `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota paikkaa vastaan. Jos
+    vastaanottoa ei suoriteta määräaikana valinta menee tähän tilaan. Estää
+    sijoittelun tekemästä tilamuutoksia.
+  - `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
+    sijoittelun tekemästä tilamuutoksia.
+  - `PERUUNTUNUT`: Hakijan korkeamman prioriteetin hakutoive on mennyt
+    `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu
 
 
 ### Valinta ilman sijoittelua
@@ -184,7 +188,8 @@ mukaan joko virkailijan tai hakijan itsensä toimesta.
 
 Synonyymit: ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto
 
-Jos opiskelija on vastaanottanut paikan johon hänet on hyväksytty, ilmoittaa
+Jos opiskelija on [vastaanottanut](#vastaanoton-tila) paikan johon hänet on
+[hyväksytty](#hyvaksytty), ilmoittaa
 hän viimeiseksi läsnäolotietonsa. Kaikki ilmoittautumistilat ovat käytössä
 sekä 2. asteen että korkeakoulujen hauissa. Soveltuvat tilat riippuvat
 koulutuksen [alkamiskaudesta](#kausi). Käyttöliittymät eivät toistaiseksi
