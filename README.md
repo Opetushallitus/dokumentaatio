@@ -20,6 +20,7 @@ asetuksista ja mikä tilasiirtymä on kysessä.
 ![Valintaprosessi](img/valintaprosessi.png)
 
 
+<a name="hakutyypit"></a>
 ## Hakutyypit
 
 ### Yhteishaku
