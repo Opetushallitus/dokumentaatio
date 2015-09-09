@@ -33,9 +33,10 @@ Erillishaku:
 
 ## Sanasto
 
-- <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee valinnan tuloksen
-  hakijan nähtäväksi. Hakija voi tämän jälkeen tehdä päätöksen vastaanotosta
-  jos hänet on [hyväksytty](#hyvaksytty).
+- <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee [valinnan
+  tilan](#valinnan-tila) lopulliseksi jolloin se tulee hakijan nähtäväksi
+  [OHP:ssa](#ohp) kyseiselle [hakutoiveelle](#hakutoive). Hakija voi tämän
+  jälkeen tehdä päätöksen vastaanotosta jos hänelle tarjoutuu [paikka](#paikka).
 - <a name="valintalaskenta">**Valintalaskenta**</a>: Valintaprosessin vaihe jossa
   hakijan hakemuksessa antamista tai kokeesta tulleista pisteistä tuotetaan
   lista hajioiden keskenäisestä järjestyksestä. Laskentaa varten on luotu
