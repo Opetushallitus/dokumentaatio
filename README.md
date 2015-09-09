@@ -33,23 +33,40 @@ Käytetyt vaiheet riippuvat haun asetuksista.
 <a name="hakutyypit"></a>
 ## Hakutyypit
 
+Valintaprosessissa käytettävät vaiheet ja niiden käytännöt vaihtelevat hausta
+toiseen. Tässä on kuvattu erilaisia hakutyyppejä ja niiden käyttötilanteita.
+
 ### Yhteishaku
 
-- *Varsinainen haku*: automaattinen valintalaskenta ja sijoittelu.
+Yhteishaku tarkoittaa *korkeakoulujen yhteishakua* tai *2. asteen yhteishakua*
+ammatillisiin- ja lukiokoulutuksiin. Yhteishaussa on tarjolla paljon
+[hakukohteita](#hakukohde) joista hakija voi valita haussa määritellyn määrän
+[hakutoiveita](#hakutoive) samalla [hakemuksella](#hakemus).
+
+- **Varsinainen haku**: Hakijat pyrkivät saamaan paikan varsinaisessa haussa.
+  Haussa käytetäuan automaattista valintalaskentaa ja sijoittelua.
   Automaattisen valintalaskennan sijaan virkailija voi myös tuoda *hylätyt* ja
   *hyväksyttävissä* olevat hakijat paremmuusjärjestyksessä excelillä tai
   json-rajapinnalla.
-- *Lisähaku*: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
+- **Lisähaku**: Hakijat jotka eivät saaneet vastaanotettua
+  [paikkaa](#paikka) varsinaisessa haussa voivat hakea lisähaussa oleviin
+  [hakukohteisiin](#hakukohde). Lisähaussa virkailija hallinnoi valinnan
+  vaiheita manuaalisesti.
 
 
 ### Erillishaku
 
-- voi olla kuten yhteishaun varsinainen haku
-- voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
+Erillishaku tarjoaa koulutuksia joihin ei haeta yhteishaussa. Opiskelupaikat
+voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
+[hakukohteeseen](#hakukohde) haetaan erillisellä [hakemuksella](hakemus)
+toisin kuin yhteishaussa.
+
+- Voi olla kuten yhteishaun varsinainen haku
+- Voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
   sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
-- voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo
+- Voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo
   excelillä tai käyttöliittymässä hakijoiden *valinnan tilat*
-- virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla
+- Virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla
   kuin *opintopolussa*
 
 
