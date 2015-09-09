@@ -3,13 +3,15 @@ virallinen vaatimusmäärittely.*
 
 # Valintaprosessi ja hakemuksen ja vastaanoton tilasiirtymät
 
-*Haku* sisältää *hakukohteita*. Kun *hakija* hakee hakukohteisiin, hän asettaa
-*hakemuksessa* listan *[hakutoiveita](#hakutoive)*. Valintaprosessi käy haun
-hakemukset läpi, kerää hakutoiveet ja etenee
-*[valintalaskennan](#valintalaskennan-tila)* ja
-*[sijoittelun](#valinnan-tila)* läpi. Prosessi voi edetä haun ja
-hakukohteen(???) asetuksista riippuen automaattisesti tai virkailijan
-manuaalisesti edistämänä.
+*Haku* sisältää *hakukohteita*. Kun *hakija* hakee hakukohteisiin, hän asettaa *hakemuksessa* listan
+*hakutoiveita*. Valintaprosessi käy haun hakemukset läpi, kerää hakijoiden hakutoiveet ja etenee *valintalaskennan*
+ja *sijoittelun* läpi. Hakukohteilla on määritetty *valintatapajonot* joiden *valintaperusteet* määrittävät säännöt
+joilla hakijat kerätään valintatapajonoihin.
+
+Valintatapajonolle määritetään käytetäänkö valintatapajonossa
+laskentaa (tai manuaalinen import) ja siirretäänkö jono mukaan sijoitteluun. Valintatapajonolle määritetään *aloituspaikkojen* määrä.
+Prosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon asetuksista
+riippuen automaattisesti tai virkailijan manuaalisesti edistämänä.
 
 Hakutoiveen etenemistä valintaprosessissa kuvataan joukolla tiloja. Tilojen
 väliset tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän
@@ -19,15 +21,15 @@ asetuksista ja mikä tilasiirtymä on kysessä.
 ![Valintaprosessi](img/valintaprosessi.png)
 
 Yhteishaku:
-* Varsinainen haku: automaattinen valintalaskenta ja sijoittelu. Automaattisen valintalaskennan sijaan virkailija voi
+- Varsinainen haku: automaattinen valintalaskenta ja sijoittelu. Automaattisen valintalaskennan sijaan virkailija voi
   myös tuoda hylätyt ja hyväksyttävissä olevat hakijat paremmuusjärjestyksessä excelillä tai json-rajapinnalla.
-* Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
+- Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
 
 Erillishaku:
-* voi olla kuten yhteishaun varsinainen haku
-* voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
-* voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo excelillä tai käyttöliittymässä hakijoiden valinnan tilat
-* virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla kuin opintopolussa
+- voi olla kuten yhteishaun varsinainen haku
+- voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
+- voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo excelillä tai käyttöliittymässä hakijoiden valinnan tilat
+- virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla kuin opintopolussa
 
 
 ## Sanasto
