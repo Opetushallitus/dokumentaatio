@@ -238,10 +238,10 @@ välttämättä huomioi kautta oikein.
 
 | Virallinen nimi       | Käyttöliittymä                                                    | Koodi | Tietokanta |
 | --------------------- | ----------------------------------------------------------------- | ----- | ---------- |
-| Valintalaskennan tila |                                                                   | JarjestyskriteerituloksenTila       |
-| Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | Hakukohde.valintatapajonot.hakemukset.tila
-| Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               | Valintatulos.tila | Valintatulos.tila
-| Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         | Valintatulos.ilmoittautumisTila | Valintatulos.ilmoittautumisTila
+| Valintalaskennan tila |                                                                   | JarjestyskriteerituloksenTila       | valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
+| Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
+| Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               | sijoittelu-algoritmi-domain: Valintatulos.tila | sijoitteludb: Valintatulos.tila
+| Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         | sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila | sijoitteludb: Valintatulos.ilmoittautumisTila
 
 
 # Dokumentaation kehitys
