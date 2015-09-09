@@ -52,6 +52,8 @@ Erillishaku:
   opiskelupaikka johon hän haluaa tulla [hyväksytyksi
   valinnassa](#valinnan-tila). Hausta riippuen hakutoiveiden keskinäisellä
   järjestyksellä voi olla merkitystä.
+- <a name="paikka">**Paikka**</a>: Hakijan toteutunut, eli [hyväksytty](#hyvaksytty),
+  [hakutoive](#hakutoive) josta hakija tekee [vastaanottopäätöksen](#vastaanoton-tila).
 - <a name="ohp">**OHP**</a>: Oppijan Henkilökohtainen Palvelu, tai "omat sivut", on
   hakijoiden käyttöliittymä josta voi muokata lähettämiään hakemuksia ja
   hallita omia [hakutoiveita](#hakutoive). Kun haun [valinnan
@@ -111,7 +113,7 @@ hyväksymistiedon käsin.
 - `HYLATTY`: Hakutoive on hylätty virkailijan toimesta eikä hakija ei voi
   tulla valituksi kohteeseen
 - <a name-"hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
-  [vastaanottaa](#vastaanoton-tila) tarjottu *paikka*.
+  [vastaanottaa](#vastaanoton-tila) tarjottu [*paikka*](#paikka).
   - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
     vastaanottopäätöksen
   - `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
@@ -121,7 +123,7 @@ hyväksymistiedon käsin.
     vapautunut
 - <a name="peruttu">Perutut</a> tilat syntyvät jos [hyväksyttyä](#hyvaksytty)
   paikkaa jää [vastaanottamatta](#vastaanoton-tila).
-  - `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota paikkaa vastaan. Jos
+  - `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota [paikkaa](#paikka) vastaan. Jos
     vastaanottoa ei suoriteta määräaikana valinta menee tähän tilaan. Estää
     sijoittelun tekemästä tilamuutoksia.
   - `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
@@ -167,7 +169,7 @@ mukaan joko virkailijan tai hakijan itsensä toimesta.
 
 - Vain korkeakouluhauissa käytettävät tilat
   - `EHDOLLISESTI_VASTAANOTTANUT`: KK-hakija vastaanottaa paikan jos
-    korkeamman prioriteetin hakutoivetta vastaava paikka ei vapaudu
+    korkeamman prioriteetin hakutoivetta vastaava [paikka](#paikka) ei vapaudu
     määräaikaan mennessä
   - `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon ja
     hylkää muut hakutoiveensa
