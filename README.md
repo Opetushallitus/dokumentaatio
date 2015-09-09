@@ -16,18 +16,19 @@ mikä tilasiirtymä on kysessä.
 ![Valintaprosessi](img/valintaprosessi.png)
 
 Yhteishaku:
-
-- Varsinainen haku: automaattinen laskenta ja sijoittelu
-- Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
+* Varsinainen haku: automaattinen valintalaskenta ja sijoittelu. Automaattisen valintalaskennan sijaan virkailija voi
+  myös tuoda hylätyt ja hyväksyttävissä olevat hakijat paremmuusjärjestyksessä excelillä tai json-rajapinnalla.
+* Lisähaku: virkailija hallinnoi lisähaun valinnan vaiheita manuaalisesti
 
 Erillishaku:
-
-- ???
-
+* voi olla kuten yhteishaun varsinainen haku
+* voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
+* voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo excelillä tai käyttöliittymässä hakijoiden valinnan tilat
+* virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla kuin opintopolussa
 
 ## Valintakoelaskenta
 
-Kutsutaan hakijan ylimpään hakutoiveeseen tai kaavan mukaan esim. äidinkielen
+Kutsutaan hakijan samaa koetta käyttävistä hakutoiveista ylimpään hakutoiveeseen tai kaavan mukaan esim. äidinkielen
 mukaan kielikokeeseen.
 
 
