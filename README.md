@@ -149,13 +149,16 @@ huomioi kautta.
 - `LASNA`: Läsnä, keväällä alkava koulutus - vain syksyn haussa
 - `POISSA`: Poissa, keväällä alkava koulutus - vain syksyn haussa
 
+
 # Synonyymit
 
-| Virallinen nimi | Valintalaskennan tila | Valinnan tila | Vastaanoton tila | Ilmoittautumisen tila |
-| --- | --- | --- | --- | --- |
-| Käyttöliittymä |  | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | vastaanotto, valintatuloksen tila, vastaanottotieto | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto |
-| Koodi |  |  |  |  |
-| Tietokanta |  | Hakukohde.valintatapajonot.hakemukset.tila | Valintatulos.tila | Valintatulos.ilmoittautumisTila |
+| Virallinen nimi       | Käyttöliittymä                                                    | Koodi | Tietokanta |
+| --------------------- | ----------------------------------------------------------------- | ----- | ---------- |
+| Valintalaskennan tila |                                                                   |       |
+| Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila |       | Hakukohde.valintatapajonot.hakemukset.tila
+| Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               |       | Valintatulos.tila
+| Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         |       | Valintatulos.ilmoittautumisTila
+
 
 # Dokumentaation kehitys
 
