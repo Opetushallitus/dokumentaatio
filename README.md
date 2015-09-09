@@ -109,22 +109,30 @@ Kielteisen valintatilan seurauksena vastaanottotieto on saatettu jo asettaa
 valmiiksi, muutoin vastaanottotieto asetetaan hakijan ilmoituksen mukaan joko
 virkailijan tai hakijan itsensä toimesta.
 
-- `KESKEN`: Odottaa hakijan vastaanottopäätöstä
-- `ILMOITETTU`: Ei käytetä enää, vanhoissa ennen 2014 2. asteen haussa vastasi
-  julkaistavuustietoa
-- `VASTAANOTTANUT`: Hakija ilmoittaa vastaanoton 2. asteen haussa
-- `VASTAANOTTANUT_LASNA`: Ei käytetä enää, vanhoissa ennen 2014 2. asteen
-  haussa vastasi julkaistavuustietoa
-- `VASTAANOTTANUT_POISSAOLEVA`: Ei käytetä enää, vanhoissa ennen 2014 2.
-  asteen haussa vastasi julkaistavuustietoa
-- `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut vastaanottopäätöstään
-  määräaikaan mennessä
-- `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta
-- `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan puolesta
-- `EHDOLLISESTI_VASTAANOTTANUT`: KK-hakija vastaanottaa paikan jos korkeamman
-  prioriteetin hakutoivetta vastaava paikka ei vapaudu määräaikaan mennessä
-- `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon ja hylkää
-  muut hakutoiveensa
+- Tilat joita käytetään hakutyypistä riippumatta
+  - `KESKEN`: Odottaa hakijan vastaanottopäätöstä
+  - `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut
+    vastaanottopäätöstään määräaikaan mennessä
+  - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta
+  - `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan puolesta
+
+- Vain toisen asteen hauissa käytettävät tilat
+  - `VASTAANOTTANUT`: Hakija ilmoittaa vastaanoton 2. asteen haussa
+
+- Vain korkeakouluhauissa käytettävät tilat
+  - `EHDOLLISESTI_VASTAANOTTANUT`: KK-hakija vastaanottaa paikan jos
+    korkeamman prioriteetin hakutoivetta vastaava paikka ei vapaudu
+    määräaikaan mennessä
+  - `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon ja
+    hylkää muut hakutoiveensa
+
+- Tilat joita ei käytetä enää nykyisissä tai tulevissa hauissa
+  - `ILMOITETTU`: Ei käytetä enää, vanhoissa ennen 2014 2. asteen haussa
+    vastasi julkaistavuustietoa
+  - `VASTAANOTTANUT_LASNA`: Ei käytetä enää, vanhoissa ennen 2014 2. asteen
+    haussa vastasi julkaistavuustietoa
+  - `VASTAANOTTANUT_POISSAOLEVA`: Ei käytetä enää, vanhoissa ennen 2014 2.
+    asteen haussa vastasi julkaistavuustietoa
 
 ![Vastaanottotilan siirtymät](img/vastaanotto.png)
 
