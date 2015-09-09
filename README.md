@@ -108,6 +108,17 @@ toisin kuin yhteishaussa.
   hakija voi hyväksytyssä tapauksessa tehdä päätöksen hakutoiveensa
   [vastaanotosta](#vastaanoton-tila) ja [ilmoittaa
   läsnäolonsa](#ilmoittautumisen-tila) palvelun kautta.
+- <a name="valinnan-vaihe">**Valinnan vaihe**</a>: Hakijoiden tiedoista,
+  esimerkiksi koepisteistä, muodostetaan *laskentakaavalla* [valintalaskennan
+  tila](#valintalaskennan-tila). Hyväksyttävien joukko voidaan tuottaa
+  useammassa vaiheessa. Hakukohde voi esimerkiksi valita ensimmäisessä
+  valinnan vaiheessa pääsykokeeseen ne, joiden tietty YO-arvosana on tarpeeksi
+  korkea. Seuraavassa vaiheessa karsitaan kaikki pääsykokeesta alle X pistettä
+  saaneet.
+- <a name="jono">**Jono**</a>: Jonoon kerätäään hakutoiveet [valinnan
+  vaiheen](#valinnan-vaihe) pisteyttämään järjestykseen. Hakijat jotka eivät
+  läpäisseet valinnan vaihetta, *hylätään*. Jos jonolla on aloituspaikkamäärä,
+  rajan alle jäävät mutta valinnan vaiheen läpäisseet jäävät varalle.
 
 
 ## Valintakoelaskenta
