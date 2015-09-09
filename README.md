@@ -114,7 +114,7 @@ hyväksymistiedon käsin.
 - `VARALLA`: Odottaa muiden hakijoiden perumisista vapautuvia paikkoja
 - `HYLATTY`: Hakutoive on hylätty virkailijan toimesta eikä hakija ei voi
   tulla valituksi kohteeseen
-- <a name-"hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
+- <a name="hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
   [vastaanottaa](#vastaanoton-tila) tarjottu [*paikka*](#paikka).
   - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
     vastaanottopäätöksen
