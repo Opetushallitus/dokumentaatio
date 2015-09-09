@@ -23,6 +23,10 @@ tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän tekemänä ta
 virkailijan tai hakijan toimesta, riippuen haun asetuksista ja mikä
 tilasiirtymä on kysessä.
 
+Alla oleva kuva näyttää valintaprosessin kaikkien vaiheiden keskinäisen
+järjestyksen sekä mahdollisen tilan joka kuvaa kyseistä vaihetta tarkemmin.
+Käytetyt vaiheet riippuvat haun asetuksista.
+
 ![Valintaprosessi](img/valintaprosessi.png)
 
 
