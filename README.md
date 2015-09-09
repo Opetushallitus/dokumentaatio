@@ -194,14 +194,14 @@ välttämättä huomioi kautta.
 - `POISSA`: Poissa, keväällä alkava koulutus - vain syksyn haussa
 
 
-# Synonyymit
+# Koodaajan synonyymit
 
 | Virallinen nimi       | Käyttöliittymä                                                    | Koodi | Tietokanta |
 | --------------------- | ----------------------------------------------------------------- | ----- | ---------- |
-| Valintalaskennan tila |                                                                   |       |
-| Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila |       | Hakukohde.valintatapajonot.hakemukset.tila
-| Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               |       | Valintatulos.tila
-| Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         |       | Valintatulos.ilmoittautumisTila
+| Valintalaskennan tila |                                                                   | JarjestyskriteerituloksenTila       |
+| Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | Hakukohde.valintatapajonot.hakemukset.tila
+| Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               | Valintatulos.tila | Valintatulos.tila
+| Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         | Valintatulos.ilmoittautumisTila | Valintatulos.ilmoittautumisTila
 
 
 # Dokumentaation kehitys
