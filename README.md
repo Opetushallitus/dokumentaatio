@@ -90,13 +90,15 @@ vaatimukset, esimerkiksi pääsykoepisteiden alarajan.
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
-Jos *haku* käyttää sijoittelua, *valinnan tila* päivittyy automaattisesti sitä
-mukaa kun *hyväksytyt* hakijat päättävät vastaanotosta (katso "Valintatuloksen
-tila"). Vapautuvia paikkoja annetaan *varalla* oleville henkilöille sitä mukaa
-kun ensisijaisesti valituksi tulleet opiskelijat tekevät päätöksensä
-*vastaanotosta*. Hakija voi tehdä vastaanoton vasta kun virkailija on
-[julkaissut](#julkaisu) tiedon valinnan tilasta. Jos haku ei käytä
-sijoittelua, virkailijat asettavat hyväksymistiedon käsin.
+Jos *haku* käyttää sijoittelua, *valinnan tila* päivittyy seuraavalla
+sijoittelukerralla sitä mukaa kun *hyväksytyt* hakijat päättävät
+[vastaanotosta](#vastaanoton-tila). Sijoittelu suoritetaan yleensä vähintään
+kerran päivässä niin kauan kun hakijat voivat tehdä vastaanottopäätöksiä.
+Ensisijaisesti valituksi tulleiden opiskelijoiden vastaanottopäätösten
+seurauksena vapautuvia paikkoja annetaan *varalla* oleville hakijoille.
+Hakija voi tehdä vastaanoton vasta kun virkailija on [julkaissut](#julkaisu)
+tiedon valinnan tilasta. Jos haku ei käytä sijoittelua, virkailijat asettavat
+hyväksymistiedon käsin.
 
 - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan kiintiöön ja hakija voi tehdä
   vastaanottopäätöksen
