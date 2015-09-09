@@ -44,7 +44,7 @@ ammatillisiin- ja lukiokoulutuksiin. Yhteishaussa on tarjolla paljon
 [hakutoiveita](#hakutoive) samalla [hakemuksella](#hakemus).
 
 - **Varsinainen haku**: Hakijat pyrkivät saamaan paikan varsinaisessa haussa.
-  Haussa käytetäuan automaattista valintalaskentaa ja sijoittelua.
+  Haussa käytetään automaattista valintalaskentaa ja sijoittelua.
   Automaattisen valintalaskennan sijaan virkailija voi myös tuoda *hylätyt* ja
   *hyväksyttävissä* olevat hakijat paremmuusjärjestyksessä excelillä tai
   json-rajapinnalla.
