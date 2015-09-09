@@ -13,8 +13,7 @@ hakijat kerätään valintatapajonoihin.
 
 Valintatapajonolle määritetään käytetäänkö valintatapajonossa valintalaskentaa
 (tai manuaalinen import) ja siirretäänkö valintatapajono mukaan sijoitteluun.
-Valintatapajonolle määritetään *kiintiö*, eli *vastaanotettavien* *paikkojen*
-määrä.
+Valintatapajonolle määritetään *aloituspaikkojen* määrä.
 
 Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon
 asetuksista riippuen automaattisesti tai *virkailijan* manuaalisesti
@@ -90,7 +89,7 @@ toisin kuin yhteishaussa.
 - <a name="kausi">**Kausi**</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
 - <a name="sijoittelu">**Sijoittelu**</a>: Hakukohtainen toistettava vaihe jossa
   [valintalaskennan](#valintalaskenta) tulosten mukaan hakijat on ryhmitelty
-  [*hyväksytyksi*](#hyvaksytty) tai kiintiöön mahtumattomana *varalle*
+  [*hyväksytyksi*](#hyvaksytty) tai *aloituspaikkoihin* mahtumattomana *varalle*
   (poikkeustapauksissa *hylätyksi*). Hyväksyttyjen hakijoiden
   [vastaanottopäätösten](#vastaanoton-tila) perusteella sijoittelu voi nostaa
   varalla olleita hakemuksia hyväksytyiksi. Sijoittelua suoritetaan niin
@@ -179,8 +178,8 @@ valinnan tilan käsin.
   tulla valituksi kohteeseen
 - <a name="hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
   [vastaanottaa](#vastaanoton-tila) tarjottu [paikka](#paikka).
-  - `HYVAKSYTTY`: Mahtunut hakukohteen asettamaan *kiintiöön* ja hakija voi tehdä
-    vastaanottopäätöksen
+  - `HYVAKSYTTY`: Mahtunut jonolle asetettuihin *aloituspaikkoihin* ja hakija
+    voi tehdä vastaanottopäätöksen
   - `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
     hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen. Käytössä vain *2.
     asteen haussa*.
