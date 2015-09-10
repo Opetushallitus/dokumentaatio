@@ -6,7 +6,7 @@ virallinen vaatimusmäärittely.*
 *Haku* sisältää [*hakukohteita*](#hakukohde). Kun *hakija* hakee
 hakukohteisiin, hän antaa [*hakemuksessa*](#hakemus) listan
 [*hakutoiveita*](#hakutoive). Valintaprosessi käy haun hakemukset läpi, kerää
-hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta) ja
+hakijoiden hakutoiveet ja etenee [*laskennan*](#laskenta) ja
 [*sijoittelun*](#sijoittelu) läpi.
 
 Hakukohteille määritetään [*valinnan vaiheita*](#valinnan-vaihe) ja [*hakijaryhmiä*](#hakijaryhma).
@@ -44,8 +44,8 @@ ammatillisiin- ja lukiokoulutuksiin. Yhteishaussa on tarjolla suuri määrä
 [hakukohteita](#hakukohde) joista hakija voi valita haussa määritellyn määrän
 [hakutoiveita](#hakutoive) samalla [hakemuksella](#hakemus).
 
-- **Varsinainen haku**: Haussa käytetään automaattista valintalaskentaa ja sijoittelua.
-  Automaattisen valintalaskennan sijaan virkailija voi myös tuoda *hylätyt* ja
+- **Varsinainen haku**: Haussa käytetään automaattista laskentaa ja sijoittelua.
+  Automaattisen laskennan sijaan virkailija voi myös tuoda *hylätyt* ja
   *hyväksyttävissä* olevat hakijat paremmuusjärjestyksessä excelillä tai
   JSON-rajapinnalla.
 - **Lisähaku**: Koulut voivat tarjota varsinaisen haun jälkeen vajaiksi jääneitä hakukohteita lisähaussa.
@@ -59,9 +59,9 @@ voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
 [hakukohteeseen](#hakukohde) haetaan erillisellä [hakemuksella](hakemus).
 
 - Voi olla kuten yhteishaun varsinainen haku
-- Voi olla ilman sijoittelua, jolloin valintalaskennan yhteydessä hakijat
+- Voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
   sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
-- Voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo
+- Voi olla ilman laskentaa ja ilman sijoittelua, virkailija tuo
   excelillä tai käyttöliittymässä hakijoiden *valinnan tilat*
 - Virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla
   kuin *opintopolussa*
@@ -80,13 +80,13 @@ voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
   tilan](#valinnan-tila) lopulliseksi jolloin se tulee hakijan nähtäväksi
   [OHP:ssa](#ohp) kyseiselle [hakutoiveelle](#hakutoive). Hakija voi tämän
   jälkeen tehdä päätöksen vastaanotosta jos hänelle tarjoutuu [paikka](#paikka).
-- <a name="valintalaskenta">**Valintalaskenta**</a>: Valintaprosessin vaihe jossa
+- <a name="laskenta">**Laskenta**</a>: Valintaprosessin vaihe jossa
   hakijan hakemuksessa antamista tai kokeesta tulleista pisteistä tuotetaan
   lista hajioiden keskenäisestä järjestyksestä. Laskentaa varten on luotu
   laskentakaava joka määrittää lähtötiedoista lopullisen järjestyksen.
 - <a name="kausi">**Kausi**</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
 - <a name="sijoittelu">**Sijoittelu**</a>: Hakukohtainen toistettava vaihe jossa
-  [valintalaskennan](#valintalaskenta) tulosten mukaan hakijat on ryhmitelty
+  [laskennan](#laskenta) tulosten mukaan hakijat on ryhmitelty
   [*hyväksytyksi*](#hyvaksytty) tai *aloituspaikkoihin* mahtumattomana *varalle*
   (poikkeustapauksissa *hylätyksi*). Hyväksyttyjen hakijoiden
   [vastaanottopäätösten](#vastaanoton-tila) perusteella sijoittelu voi nostaa
@@ -106,8 +106,8 @@ voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
   [vastaanotosta](#vastaanoton-tila) ja [ilmoittaa
   läsnäolonsa](#ilmoittautumisen-tila) palvelun kautta.
 - <a name="valinnan-vaihe">**Valinnan vaihe**</a>: Hakijoiden tiedoista,
-  esimerkiksi koepisteistä, muodostetaan *laskentakaavalla* [valintalaskennan
-  tila](#valintalaskennan-tila). Hyväksyttävien joukko voidaan tuottaa
+  esimerkiksi koepisteistä, muodostetaan *laskentakaavalla* [laskennan
+  tila](#laskennan-tila). Hyväksyttävien joukko voidaan tuottaa
   useammassa vaiheessa. Hakukohde voi esimerkiksi valita ensimmäisessä
   valinnan vaiheessa pääsykokeeseen ne, joiden tietty YO-arvosana on tarpeeksi
   korkea. Seuraavassa vaiheessa karsitaan kaikki pääsykokeesta alle X pistettä
@@ -139,10 +139,10 @@ pisteet riittävät.
 
 # Valintaprosessin vaiheiden tilat
 
-<a name="valintalaskennan-tila"></a>
-## Valintalaskennan tila
+<a name="laskennan-tila"></a>
+## Laskennan tila
 
-Hakukohteen valinnan vaiheiden valintatapajonoissa pidetään yllä valintalaskennan tilaa.
+Hakukohteen valinnan vaiheiden valintatapajonoissa pidetään yllä laskennan tilaa.
 Hakukohteen kaikki hakijat laitetaan jokaiseen valintatapajonoon ja laskentakaavat
 määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoitteluun](#sijoittelu).
 
@@ -151,7 +151,7 @@ määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoi
 - `HYLATTY`: Hakijan lähtotiedot eivät riittäneet jatkoon
 - `MAARITTELEMATON`: Tila estää jonon siirtämisen sijoitteluun, ei voi syntyä
   laskennassa, oletusarvo ilman laskentaa tehtävässä haussa
-- `VIRHE`: Valintalaskenta asettaa tilan kun syötetiedoissa on virhe
+- `VIRHE`: Laskenta asettaa tilan kun syötetiedoissa on virhe
 - `HYVAKSYTTY_HARKINNANVARAISESTI`: Virkailija päästää poikkeustapauksessa
   hakutoiveen manuaalisesti jatkoon
 
@@ -161,7 +161,7 @@ määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoi
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
-Jos valintalaskentaa käytetään, [valintalaskennan tila](#valintalaskennan-tila) on pohjana valinnan tilalle.
+Jos laskentaa käytetään, [laskennan tila](#laskennan-tila) on pohjana valinnan tilalle.
 
 Jos haku käyttää [sijoittelua](#sijoittelu), *valinnan tila* päivittyy seuraavalla
 *sijoittelukerralla* sitä mukaa kun hyväksytyt hakijat päättävät
@@ -173,7 +173,7 @@ tiedon valinnan tilasta. Vastaanoton seurauksena vapautuvia paikkoja annetaan *v
 Jos haku ei käytä sijoittelua, virkailijat asettavat valinnan tilan käsin.
 
 - `VARALLA`: Odottaa muiden hakijoiden [*perumisista*](#peruttu) vapautuvia paikkoja
-- `HYLATTY`: Kopioitu valintalaskennan `HYLATTY` tilasta
+- `HYLATTY`: Kopioitu laskennan `HYLATTY` tilasta
 - <a name="hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
   [vastaanottaa](#vastaanoton-tila) tarjottu [paikka](#paikka).
   - `HYVAKSYTTY`: Mahtunut valintatapajonolle asetettuihin *aloituspaikkoihin* ja hakija
@@ -274,7 +274,7 @@ koulutuksen [alkamiskaudesta](#kausi).
 
 | Virallinen nimi       | Käyttöliittymä                                                    | Koodi | Tietokanta |
 | --------------------- | ----------------------------------------------------------------- | ----- | ---------- |
-| Valintalaskennan tila |                                                                   | JarjestyskriteerituloksenTila       | valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
+| Laskennan tila |                                                                   | JarjestyskriteerituloksenTila       | valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
 | Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
 | Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               | sijoittelu-algoritmi-domain: Valintatulos.tila | sijoitteludb: Valintatulos.tila
 | Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         | sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila | sijoitteludb: Valintatulos.ilmoittautumisTila
