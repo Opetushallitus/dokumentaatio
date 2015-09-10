@@ -20,16 +20,12 @@ voi käyttää myös ilman sijoitteluun siirtämistä esim. hakijalistojen muodo
 Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmä määrittää laskentakaavan ja kiintiön mukaan joukon hakijoita
 jotka joko priorisoidaan aloituspaikoille tai suljetaan ulkopuolelle.
 
-Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon
+Valintaprosessi etenee haun ja hakukohteen ja hakukohteen valintavaiheiden
 asetuksista riippuen automaattisesti tai *virkailijan* manuaalisesti
-edistämänä. Hakutoiveen etenemistä kuvataan joukolla *tiloja*. Tilojen väliset
-tilasiirtymät voivat tapahtua joko automaattisesti järjestelmän tekemänä tai
-virkailijan tai hakijan toimesta, riippuen haun asetuksista, ja siitä, mikä
-tilasiirtymä on kysessä.
+edistämänä.
 
-Alla oleva kuva näyttää valintaprosessin kaikkien vaiheiden keskinäisen
+Alla oleva kuva näyttää valintaprosessin vaiheiden keskinäisen
 järjestyksen sekä mahdollisen tilan joka kuvaa kyseistä vaihetta tarkemmin.
-Käytetyt vaiheet riippuvat haun asetuksista.
 
 ![Valintaprosessi](img/valintaprosessi.png)
 
