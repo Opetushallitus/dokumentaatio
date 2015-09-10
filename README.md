@@ -198,12 +198,12 @@ Jos haku ei käytä sijoittelua, virkailijat asettavat sijoittelun tilan käsin.
 
 ### Valinta ilman sijoittelua
 
-![Sijoittelun tilat ilman sijoittelua tehtävässä haussa](img/valintatila_ilman_sijoittelua.png)
+![Sijoittelun tilat ilman sijoittelua tehtävässä haussa](img/sijoittelun_tilat_kasin.png)
 
 
 ### Valinta sijoittelun kanssa
 
-![Sijoittelun tilat sijoittelua käyttävän haun kanssa](img/valintatila_sijoittelulla.png)
+![Sijoittelun tilat sijoittelua käyttävän haun kanssa](img/sijoittelun_tilat.png)
 
 
 <a name="vastaanoton-tila"></a>
