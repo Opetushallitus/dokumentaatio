@@ -17,7 +17,7 @@ Valintatapajonoilla laskentakaavat pisteyttävät ja järjestävät hakijat ja e
 Valintatapajonoilla määritetään sijoitteluun siirrettävien hakijoiden määrä (*aloituspaikkojen* määrä). Valintatapajonoja
 voi käyttää myös ilman sijoitteluun siirtämistä esim. hakijalistojen muodostamiseen.
 
-Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmä määrittää laskentakaavan ja kiintiön mukaan joukon hakijoita
+Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmän laskentakaava ja kiintiö määrittää joukon hakijoita
 jotka joko priorisoidaan aloituspaikoille tai suljetaan ulkopuolelle.
 
 Valintaprosessi etenee haun ja hakukohteen ja hakukohteen valintavaiheiden
@@ -25,7 +25,7 @@ asetuksista riippuen automaattisesti tai [*virkailijan*](#virkailija) manuaalise
 edistämänä.
 
 Alla oleva kuva näyttää valintaprosessin vaiheiden keskinäisen
-järjestyksen sekä mahdollisen tilan joka kuvaa kyseistä vaihetta tarkemmin.
+järjestyksen sekä tilat jotka kuvaavat vaihetta tarkemmin.
 
 ![Valintaprosessi](img/valintaprosessi.png)
 
@@ -44,26 +44,22 @@ ammatillisiin- ja lukiokoulutuksiin. Yhteishaussa on tarjolla suuri määrä
 [hakukohteita](#hakukohde) joista hakija voi valita haussa määritellyn määrän
 [hakutoiveita](#hakutoive) samalla [hakemuksella](#hakemus).
 
-- **Varsinainen haku**: Hakijat pyrkivät saamaan paikan varsinaisessa haussa.
-  Haussa käytetään automaattista valintalaskentaa ja sijoittelua.
+- **Varsinainen haku**: Haussa käytetään automaattista valintalaskentaa ja sijoittelua.
   Automaattisen valintalaskennan sijaan virkailija voi myös tuoda *hylätyt* ja
   *hyväksyttävissä* olevat hakijat paremmuusjärjestyksessä excelillä tai
   JSON-rajapinnalla.
-- **Lisähaku**: Hakijat jotka eivät saaneet vastaanotettua
-  [paikkaa](#paikka) varsinaisessa haussa voivat hakea lisähaussa oleviin
-  [hakukohteisiin](#hakukohde). Lisähaussa virkailija hallinnoi valinnan
-  vaiheita manuaalisesti. Lisähaussa ei käytetä sijoittelua.
+- **Lisähaku**: Koulut voivat tarjota varsinaisen haun jälkeen vajaiksi jääneitä hakukohteita lisähaussa.
+  Lisähaussa virkailija hallinnoi valinnan vaiheita manuaalisesti. Lisähaussa ei käytetä sijoittelua.
 
 
 ### Erillishaku
 
 Erillishaku tarjoaa koulutuksia joihin ei haeta yhteishaussa. Opiskelupaikat
 voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
-[hakukohteeseen](#hakukohde) haetaan erillisellä [hakemuksella](hakemus)
-toisin kuin yhteishaussa.
+[hakukohteeseen](#hakukohde) haetaan erillisellä [hakemuksella](hakemus).
 
 - Voi olla kuten yhteishaun varsinainen haku
-- Voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
+- Voi olla ilman sijoittelua, jolloin valintalaskennan yhteydessä hakijat
   sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
 - Voi olla ilman valintalaskentaa ja ilman sijoittelua, virkailija tuo
   excelillä tai käyttöliittymässä hakijoiden *valinnan tilat*
@@ -97,7 +93,7 @@ toisin kuin yhteishaussa.
   varalla olleita hakemuksia hyväksytyiksi. Sijoittelua suoritetaan niin
   kauan kun hakijat voivat muuttaa *vastaanoton tilaa*.
 - <a name="hakutoive">**Hakutoive**</a>: Hakijan hakemukselle syöttämä
-  koulutus johon hän haluaa tulla [hyväksytyksi
+  hakutoive johon hän haluaa tulla [hyväksytyksi
   valinnassa](#valinnan-tila). Hausta riippuen hakutoiveiden keskinäisellä
   järjestyksellä voi olla merkitystä.
 - <a name="paikka">**Paikka**</a>: Hakijan toteutunut, eli [hyväksytty](#hyvaksytty),
@@ -141,21 +137,21 @@ Käytetään jos kaikkia hakijoita ei kutsuta valintakokeeseen vaan osa
 hakijoista kutsutaan kokeeseen siihen hakukohteeseen johon kaavan mukaiset
 pisteet riittävät.
 
+# Valintaprosessin vaiheiden tilat
 
 <a name="valintalaskennan-tila"></a>
 ## Valintalaskennan tila
 
-Jos haussa käytetään [sijoittelua](#sijoittelu), suoritetaan hakijoiden kesken
-[valintalaskenta](#valintalaskenta). Laskenta valitsee ne [hakijoiden
-hakutoiveet](#hakutoive) jatkoon jotka ylittävät kyseisen hakukohteen asettamat
-vaatimukset, esimerkiksi pääsykoepisteiden alarajan.
+Hakukohteen valinnan vaiheiden valintatapajonoissa pidetään yllä valintalaskennan tilaa.
+Hakukohteen kaikki hakijat laitetaan jokaiseen valintatapajonoon ja laskentakaavat
+määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoitteluun](#sijoittelu).
 
 - `HYVAKSYTTAVISSA`: Hakutoive pääsee automatisoidusti jatkoon hakukohteelle
   määritellyn *laskentakaavan* pohjalta
 - `HYLATTY`: Hakijan lähtotiedot eivät riittäneet jatkoon
-- `MAARITTELEMATON`: Tila estää sijoitteluun etenemisen, ei voi syntyä
+- `MAARITTELEMATON`: Tila estää jonon siirtämisen sijoitteluun, ei voi syntyä
   laskennassa, oletusarvo ilman laskentaa tehtävässä haussa
-- `VIRHE`: Laskentaa käytettäessä kun syötetiedoissa virhe
+- `VIRHE`: Valintalaskenta asettaa tilan kun syötetiedoissa on virhe
 - `HYVAKSYTTY_HARKINNANVARAISESTI`: Virkailija päästää poikkeustapauksessa
   hakutoiveen manuaalisesti jatkoon
 
@@ -165,35 +161,35 @@ vaatimukset, esimerkiksi pääsykoepisteiden alarajan.
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
+Jos valintalaskentaa käytetään, [valintalaskennan tila](#valintalaskennan-tila) on pohjana valinnan tilalle.
+
 Jos haku käyttää [sijoittelua](#sijoittelu), *valinnan tila* päivittyy seuraavalla
 *sijoittelukerralla* sitä mukaa kun hyväksytyt hakijat päättävät
 [vastaanotosta](#vastaanoton-tila). Sijoittelu suoritetaan yleensä vähintään
 kerran päivässä niin kauan kun hakijat voivat tehdä vastaanottopäätöksiä.
-Ensisijaisesti valituksi tulleiden opiskelijoiden vastaanottopäätösten
-seurauksena vapautuvia paikkoja annetaan *varalla* oleville hakijoille.
 Hakija voi tehdä vastaanoton vasta kun virkailija on [julkaissut](#julkaisu)
-tiedon valinnan tilasta. Jos haku ei käytä sijoittelua, virkailijat asettavat
-valinnan tilan käsin.
+tiedon valinnan tilasta. Vastaanoton seurauksena vapautuvia paikkoja annetaan *varalla* oleville hakijoille.
+
+Jos haku ei käytä sijoittelua, virkailijat asettavat valinnan tilan käsin.
 
 - `VARALLA`: Odottaa muiden hakijoiden [*perumisista*](#peruttu) vapautuvia paikkoja
-- `HYLATTY`: Hakutoive on hylätty virkailijan toimesta eikä hakija ei voi
-  tulla valituksi kohteeseen
+- `HYLATTY`: Kopioitu valintalaskennan `HYLATTY` tilasta
 - <a name="hyvaksytty">Hyväksytyt</a> tilat mahdollistavat hakijan
   [vastaanottaa](#vastaanoton-tila) tarjottu [paikka](#paikka).
-  - `HYVAKSYTTY`: Mahtunut jonolle asetettuihin *aloituspaikkoihin* ja hakija
+  - `HYVAKSYTTY`: Mahtunut valintatapajonolle asetettuihin *aloituspaikkoihin* ja hakija
     voi tehdä vastaanottopäätöksen
   - `HARKINNANVARAISESTI_HYVAKSYTTY`: Siirretty virkailijan toimesta
     hyväksytyksi ja hakija voi tehdä vastaanottopäätöksen. Käytössä vain *2.
     asteen haussa*.
-  - `VARASIJALTA_HYVAKSYTTY`: Nostettu *varasijalta* hyväksytyksi kun paikkoja on
+  - `VARASIJALTA_HYVAKSYTTY`: Nostettu `VARALLA`-tilasta hyväksytyksi kun paikkoja on
     vapautunut
 - <a name="peruttu">Perutut</a> tilat syntyvät jos [hyväksytty](#hyvaksytty)
   paikkaa jää [vastaanottamatta](#vastaanoton-tila).
   - `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota [paikkaa](#paikka) vastaan. Jos
     vastaanottoa ei suoriteta *määräaikana* päädytään tähän tilaan. Estää
-    sijoittelua tekemästä tilamuutoksia.
+    sijoittelua tekemästä tilamuutoksia tähän hakutoiveeseen.
   - `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
-    sijoittelua tekemästä tilamuutoksia.
+    sijoittelua tekemästä tilamuutoksia, esim: hakija on huijannut haussa.
   - `PERUUNTUNUT`: Hakijan *korkeamman prioriteetin* hakutoive on mennyt
     `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu. Tätä ei tapahdu
     jos hakija on [`VASTAANOTTANUT_SITOVASTI`](#valinnan-tila) tämän
@@ -217,7 +213,7 @@ Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
 Kun hakijan [valinnan tila](#valinnan-tila) on määäritetty virkailijan tai
 [sijoittelun](#sijoittelu) toimesta, virkailija [julkaisee](#julkaisu) tiedon hakijalle.
-Tällöin [valinnan tila](#valinnan-tila) ilmestyy hakijalle [OHP:hen](#ohp),
+Tällöin [valinnan tila](#valinnan-tila) ilmestyy hakijalle [OHP:uun](#ohp),
 edelleen mahdollistaen *vastaanoton tilan* asettamisen siinä tapauksessa
 että hakutoive on [hyväksytty](#hyvaksytty).
 
@@ -230,7 +226,7 @@ mukaan joko virkailijan tai hakijan itsensä toimesta.
   - `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut
     vastaanottopäätöstään määräaikaan mennessä
   - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta
-  - `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan puolesta
+  - `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan pyynnöstä
 
 - Vain toisen asteen hauissa käytettävät tilat
   - `VASTAANOTTANUT`: Hakija ilmoittaa vastaanoton 2. asteen haussa
@@ -238,9 +234,8 @@ mukaan joko virkailijan tai hakijan itsensä toimesta.
 - Vain korkeakouluhauissa käytettävät tilat
   - `EHDOLLISESTI_VASTAANOTTANUT`: KK-hakija vastaanottaa paikan jos
     korkeamman prioriteetin hakutoivetta vastaava [paikka](#paikka) ei vapaudu
-    määräaikaan mennessä
-  - `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon ja
-    hylkää muut hakutoiveensa
+    määräaikaan mennessä. Yhden paikan sääntö voimassa!
+  - `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon. Yhden paikan sääntö voimassa: muiden vastaanotettavissa olevien paikkojen vastaanoton tila asetetaan `PERUNUT` tilaan.
 
 - Tilat joita ei käytetä enää nykyisissä tai tulevissa hauissa
   - `ILMOITETTU`: Ei käytetä enää, vanhoissa ennen 2014 olleissa 2. asteen haussa
