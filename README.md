@@ -7,13 +7,18 @@ virallinen vaatimusmäärittely.*
 hakukohteisiin, hän antaa [*hakemuksessa*](#hakemus) listan
 [*hakutoiveita*](#hakutoive). Valintaprosessi käy haun hakemukset läpi, kerää
 hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta) ja
-[*sijoittelun*](#sijoittelu) läpi. Hakukohteilla on määritetty
-*valintatapajonot* joiden *valintaperusteet* määrittävät säännöt joilla
-hakijat kerätään valintatapajonoihin.
+[*sijoittelun*](#sijoittelu) läpi.
 
-Valintatapajonolle määritetään käytetäänkö valintatapajonossa valintalaskentaa
-(tai manuaalinen import) ja siirretäänkö valintatapajono mukaan sijoitteluun.
-Valintatapajonolle määritetään *aloituspaikkojen* määrä.
+Hakukohteille voi määrittää *valinnan vaiheita*. Valinnanvaihe voi määrittää hakukohteelle sekä
+*valintatapajonoja* että *hakijaryhmiä*. Valintatapajonoille ja valintaryhmillä määritetään
+laskentakaavoja, *valintaperusteita*.
+
+Valintatapajonoilla laskentakaavat pisteyttävät ja järjestävät hakijat ja erottelevat hyväksytyt ja hylätyt hakijat.
+Valintatapajonoilla määritetään sijoitteluun siirrettävien hakijoiden määrä (*aloituspaikkojen* määrä). Valintatapajonoja
+voi käyttää myös ilman sijoitteluun siirtämistä esim. hakijalistojen muodostamiseen.
+
+Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmä määrittää laskentakaavan ja kiintiön mukaan joukon hakijoita
+jotka joko priorisoidaan aloituspaikoille tai suljetaan ulkopuolelle.
 
 Valintaprosessi voi edetä haun ja hakukohteen ja hakukohteen valintatapajonon
 asetuksista riippuen automaattisesti tai *virkailijan* manuaalisesti
