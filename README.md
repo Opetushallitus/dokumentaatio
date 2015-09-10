@@ -10,7 +10,7 @@ hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta) ja
 [*sijoittelun*](#sijoittelu) läpi.
 
 Hakukohteille voi määrittää [*valinnan vaiheita*](#valinnan-vaihe). Valinnanvaihe voi määrittää hakukohteelle sekä
-*valintatapajonoja* että [*hakijaryhmiä*](#hakijaryhma). Valintatapajonoille ja valintaryhmillä määritetään
+[*valintatapajonoja*](#valintatapajono) että [*hakijaryhmiä*](#hakijaryhma). Valintatapajonoille ja valintaryhmillä määritetään
 laskentakaavoja, *valintaperusteita*.
 
 Valintatapajonoilla laskentakaavat pisteyttävät ja järjestävät hakijat ja erottelevat hyväksytyt ja hylätyt hakijat.
@@ -21,7 +21,7 @@ Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhm�
 jotka joko priorisoidaan aloituspaikoille tai suljetaan ulkopuolelle.
 
 Valintaprosessi etenee haun ja hakukohteen ja hakukohteen valintavaiheiden
-asetuksista riippuen automaattisesti tai *virkailijan* manuaalisesti
+asetuksista riippuen automaattisesti tai [*virkailijan*](#virkailija) manuaalisesti
 edistämänä.
 
 Alla oleva kuva näyttää valintaprosessin vaiheiden keskinäisen
@@ -73,7 +73,7 @@ toisin kuin yhteishaussa.
 
 ## Sanasto
 
-- <a name="virkailija">**Virkailija**</a>: Hakua organisoiva henkilö.
+- <a name="virkailija">**Virkailija**</a>: Hakua tai hakukohdetta ylläpitävä henkilö.
 - <a name="hakemus">**Hakemus**</a>: Hakijan hakuun lähettämät taustatiedot ja
   [hakutoiveet](#hakutoive). Hakemuksen sisältö ja hakutoiveiden mahdollinen
   määrä riippuu hausta.
@@ -116,7 +116,7 @@ toisin kuin yhteishaussa.
   valinnan vaiheessa pääsykokeeseen ne, joiden tietty YO-arvosana on tarpeeksi
   korkea. Seuraavassa vaiheessa karsitaan kaikki pääsykokeesta alle X pistettä
   saaneet.
-- <a name="jono">**Jono**</a>: Jonoon kerätäään hakutoiveet [valinnan
+- <a name="valintatapajono">**Valintatapajono**</a>: Valintatapajonoon kerätäään hakutoiveet [valinnan
   vaiheen](#valinnan-vaihe) pisteyttämään järjestykseen. Hakijat jotka eivät
   läpäisseet valinnan vaihetta, *hylätään*. Jos jonolla on aloituspaikkamäärä,
   rajan alle jäävät mutta valinnan vaiheen läpäisseet jäävät varalle.
