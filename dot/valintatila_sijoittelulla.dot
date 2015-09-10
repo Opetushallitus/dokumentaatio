@@ -2,28 +2,17 @@ digraph g {
   rankdir=LR;
   node [shape=doublecircle];
 
-  Hakutoive -> HYLATTY [label="Virkailija hylkää"];
-  Hakutoive -> HYVAKSYTTY [label="Sijoittelu hyväksyy"];
-  Hakutoive -> VARALLA [label="Hyväksytty\nmutta ei mahdu\nvarsinaiseen jonoon"];
-  VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut paikka\ntarjotaan hakijalle"];
-  VARALLA -> PERUNUT [xlabel="Paikkaa ei vapautunut\nmääräaikaan mennessä"];
+  Laskenta -> HYLATTY [label="HYLATTY\nlaskennassa" style=dotted];
+  Laskenta -> HYVAKSYTTY [label="HYVAKSYTTAVISSA\nlaskennassa" style=dotted];
+  Laskenta -> VARALLA [label="HYVAKSYTTAVISSA\nmutta ei mahdu\naloituspaikoille" style=dotted];
+  VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut\naloituspaikka\ntarjotaan hakijalle"];
+  VARALLA -> PERUNUT [xlabel="Aloituspaikkaa ei\nvapautunut määräaikaan\nmennessä"];
   PERUUNTUNUT [label="PERUUNTUNUT\n(toisen paikan\nvastaanotto)"];
   PERUNUT [label="PERUNUT\n(hakija\nperuu paikan\nvastaanotossa)"];
 
-  Hakutoive -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa\nhyväksymisen"];
+  Laskenta -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa\nhyväksymisen" style=dotted];
 
   HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> PERUUTETTU;
-
-  {
-    rank=same;
-    HYLATTY;
-    HYVAKSYTTY;
-  }
-  {
-    rank=same;
-    PERUUTETTU [label="PERUUTETTU\n(oppilaitos\nhylkää\nhyväksymisen)"];
-    PERUNUT;
-  }
 
   subgraph cluster_vastaanotto {
     label="Vastaanoton\nmahdollinen seuraus";
@@ -42,6 +31,11 @@ digraph g {
   }
 
   VARALLA [shape=circle];
-  Vastaanotto [shape=hexagon];
-  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Vastaanotto -> PERUNUT, PERUUNTUNUT [style=dotted];
+  Laskenta, Julkaisu, Vastaanotto [shape=hexagon];
+
+  { rank=same; Julkaisu, Vastaanotto }
+  { rank=same; HYLATTY; HYVAKSYTTY; }
+  { rank=same; PERUUTETTU [label="PERUUTETTU\n(oppilaitos\nhylkää\nhyväksymisen)"]; PERUNUT; }
+
+  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Julkaisu -> Vastaanotto -> PERUNUT, PERUUNTUNUT [style=dotted];
 }

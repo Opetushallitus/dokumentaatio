@@ -2,14 +2,14 @@ digraph g {
   rankdir=LR;
   node [shape=circle];
 
-  Valinta -> KESKEN [label="HYVAKSYTTY valinta\nja tieto julkaistu"];
-  KESKEN -> VASTAANOTTANUT [label="2. asteen vastaanotto"];
+  Sijoittelu -> KESKEN [label="Hyvaksytty\nsijoittelussa" style=dotted];
+  KESKEN -> VASTAANOTTANUT [xlabel="2. asteen vastaanotto"];
   KESKEN -> EI_VASTAANOTETTU_MAARA_AIKANA [label="Hakija ei tehnyt\nvastaanottoa\nmääräaikana"];
-  KESKEN -> PERUNUT [label="Hakija peruu OHP:sta"];
+  KESKEN -> PERUNUT [label="Hakija peruu\nOHP:ssa"];
   KESKEN -> PERUUTETTU [label="Virkailija peruu\nhakijan pyynnöstä"];
   KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [label="Hakija odottaa vielä\nkorkeamman prioriteetin\npaikkaa"];
   KESKEN -> VASTAANOTTANUT_SITOVASTI [label="Hakija tyytyväinen\ntarjottuun paikkaan"];
-  EHDOLLISESTI_VASTAANOTTANUT -> KESKEN [label="Korkeimman\nprioriteetin\nhakutoive vapautuu"];
+  EHDOLLISESTI_VASTAANOTTANUT -> KESKEN [label="Korkeamman\nprioriteetin\nhakutoive vapautuu"];
   EHDOLLISESTI_VASTAANOTTANUT -> VASTAANOTTANUT_SITOVASTI [label="Määräaika umpeutuu\nilman korkeamman\nprioriteetin paikkoja"];
 
   {
@@ -18,11 +18,11 @@ digraph g {
   }
   VASTAANOTTANUT, VASTAANOTTANUT_SITOVASTI -> Ilmoittautuminen [style=dotted];
 
-  Valinta, VASTAANOTTANUT_SITOVASTI, PERUUTETTU, PERUNUT, EI_VASTAANOTETTU_MAARA_AIKANA, VASTAANOTTANUT, KESKEN [shape=doublecircle];
+  Sijoittelu, VASTAANOTTANUT_SITOVASTI, PERUUTETTU, PERUNUT, EI_VASTAANOTETTU_MAARA_AIKANA, VASTAANOTTANUT, KESKEN [shape=doublecircle];
   EI_VASTAANOTETTU_MAARA_AIKANA [label="EI\n_VASTAAN\nOTETTU\n_MAARA\n_AIKANA"]
   EHDOLLISESTI_VASTAANOTTANUT [label="EHDOLLISESTI\n_VASTAAN\nOTTANUT"]
   VASTAANOTTANUT_SITOVASTI [label="VASTAAN\nOTTANUT\n_SITOVASTI"]
   VASTAANOTTANUT [label="VASTAAN\nOTTANUT"]
 
-  Ilmoittautuminen [shape=none];
+  Sijoittelu, Ilmoittautuminen [shape=hexagon];
 }

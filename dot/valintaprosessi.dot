@@ -1,28 +1,23 @@
 digraph g {
   rankdir=TB;
-  node [shape=oval];
+  node [shape=hexagon];
 
   {
     rank=same;
-    Hakemus -> Koe -> Valintalaskenta -> Sijoittelu -> Julkaisu -> Vastaanotto -> Ilmoittautuminen;
+    Hakemus -> Koe -> Laskenta -> Sijoittelu -> Julkaisu -> Vastaanotto -> Ilmoittautuminen;
   }
 
   Sijoittelu -> Sijoittelu;
-  Valintalaskenta -> ValintalaskennanTila;
-  Sijoittelu -> ValinnanTila;
+  Laskenta -> LaskennanTila;
+  Sijoittelu -> SijoittelunTila;
   Vastaanotto -> VastaanotonTila;
   Ilmoittautuminen -> IlmoittautumisenTila;
-  subgraph cluster_valinta {
-    label="Valinta";
-    color=blue;
-    Valintalaskenta,Sijoittelu,Julkaisu,Vastaanotto;
-  }
 
-  Hakemus [label="Hakemus\n- Hakutoive"];
+  Hakemus [label="Hakemus\n(hakutoive)"];
   IlmoittautumisenTila [label="Ilmoittautumisen\ntila"];
   VastaanotonTila [label="Vastaanoton\ntila"];
-  ValinnanTila [label="Valinnan\ntila"];
-  ValintalaskennanTila [label="Valintalaskennan\ntila"];
+  SijoittelunTila [label="Sijoittelun\ntila"];
+  LaskennanTila [label="Laskennan\ntila"];
 
-  IlmoittautumisenTila,VastaanotonTila,ValinnanTila,ValintalaskennanTila [shape=box];
+  IlmoittautumisenTila, VastaanotonTila, SijoittelunTila, LaskennanTila [shape=box];
 }

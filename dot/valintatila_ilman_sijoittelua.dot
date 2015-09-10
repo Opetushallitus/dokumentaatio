@@ -1,17 +1,13 @@
 digraph g {
   rankdir=LR;
   node [shape=circle];
+  edge [style=dotted];
 
-  {
-    rank=same;
-    HYVAKSYTTY -> HYLATTY [dir=both label="Virkailija korjaa tilan"];
-  }
+  HYVAKSYTTY, HYLATTY -> Julkaisu -> Vastaanotto;
 
-  HYVAKSYTTY, HYLATTY -> Julkaistu;
-  Julkaistu -> Vastaanotto [style=dotted];
-  Vastaanotto [shape=none];
+  Laskenta -> HYLATTY [label="Virkailija hylkää"];
+  Laskenta -> HYVAKSYTTY [label="Virkailija hyväksyy"];
 
-  Hakutoive -> HYLATTY [label="Virkailija hylkää"];
-  Hakutoive -> HYVAKSYTTY [label="Virkailija hyväksyy"];
-  Hakutoive, Julkaistu [shape=doublecircle];
+  Laskenta, Vastaanotto, Julkaisu [shape=hexagon];
+  HYVAKSYTTY, HYLATTY [shape=doublecircle];
 }
