@@ -62,7 +62,7 @@ voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
 - Voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
   sijoitellaan yhden hakukukohteen sisällä paremmuusjärjestykseen
 - Voi olla ilman laskentaa ja ilman sijoittelua, virkailija tuo
-  excelillä tai käyttöliittymässä hakijoiden *valinnan tilat*
+  excelillä tai käyttöliittymässä hakijoiden *sijoittelun tilat*
 - Virkailija voi tuoda myös hakijoiden hakemukset jos haku on ollut muualla
   kuin *opintopolussa*
 
@@ -76,9 +76,9 @@ voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
 - <a name="hakukohde">**Hakukohde**</a>: Oppilaitoksen haussa tarjoama
   koulutus johon hakijat kohdistavat hakemuksessaan
   [hakutoiveita](#hakutoive).
-- <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee [valinnan
-  tilan](#valinnan-tila) lopulliseksi jolloin se tulee hakijan nähtäväksi
-  [OHP:ssa](#ohp) kyseiselle [hakutoiveelle](#hakutoive). Hakija voi tämän
+- <a name="julkaisu">**Julkaisu**</a>: Virkailija merkitsee [sijoittelun
+  tilan](#sijoittelun-tila) lopulliseksi jolloin sijoittelun tila tulee hakijan nähtäväksi
+  [OHP:ssa](#ohp) kyseiselle [hakutoiveelle](#hakutoive) ja hakija voi mahdollisesti vastaanottaa paikan. Hakija voi tämän
   jälkeen tehdä päätöksen vastaanotosta jos hänelle tarjoutuu [paikka](#paikka).
 - <a name="laskenta">**Laskenta**</a>: Valintaprosessin vaihe jossa
   hakijan hakemuksessa antamista tai kokeesta tulleista pisteistä tuotetaan
@@ -94,14 +94,14 @@ voivat järjestää erillishakuja haluaminaan ajankohtina. Kuhunkin
   kauan kun hakijat voivat muuttaa *vastaanoton tilaa*.
 - <a name="hakutoive">**Hakutoive**</a>: Hakijan hakemukselle syöttämä
   hakutoive johon hän haluaa tulla [hyväksytyksi
-  valinnassa](#valinnan-tila). Hausta riippuen hakutoiveiden keskinäisellä
+  valinnassa](#sijoittelun-tila). Hausta riippuen hakutoiveiden keskinäisellä
   järjestyksellä voi olla merkitystä.
 - <a name="paikka">**Paikka**</a>: Hakijan toteutunut, eli [hyväksytty](#hyvaksytty),
   [hakutoive](#hakutoive) josta hakija tekee [vastaanottopäätöksen](#vastaanoton-tila).
 - <a name="ohp">**OHP**</a>: Oppijan Henkilökohtainen Palvelu, tai "omat sivut", on
   hakijoiden käyttöliittymä josta voi muokata lähettämiään hakemuksia ja
-  hallita omia [hakutoiveita](#hakutoive). Kun haun [valinnan
-  tila](#valinnan-tila) on [julkaistu](#julkaisu) virkailijoiden toimesta,
+  hallita omia [hakutoiveita](#hakutoive). Kun haun [sijoittelun
+  tila](#sijoittelun-tila) on [julkaistu](#julkaisu) virkailijoiden toimesta,
   hakija voi [hyväksytyssä tapauksessa](#hyvaksytty) tehdä päätöksen hakutoiveensa
   [vastaanotosta](#vastaanoton-tila) ja [ilmoittaa
   läsnäolonsa](#ilmoittautumisen-tila) palvelun kautta.
@@ -156,21 +156,21 @@ määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoi
   hakutoiveen manuaalisesti jatkoon
 
 
-<a name="valinnan-tila"></a>
-## Valinnan tila
+<a name="sijoittelun-tila"></a>
+## Sijoittelun tila
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
-Jos laskentaa käytetään, [laskennan tila](#laskennan-tila) on pohjana valinnan tilalle.
+Jos laskentaa käytetään, [laskennan tila](#laskennan-tila) on pohjana sijoittelun tilalle.
 
-Jos haku käyttää [sijoittelua](#sijoittelu), *valinnan tila* päivittyy seuraavalla
+Jos haku käyttää [sijoittelua](#sijoittelu), *sijoittelun tila* päivittyy seuraavalla
 *sijoittelukerralla* sitä mukaa kun hyväksytyt hakijat päättävät
 [vastaanotosta](#vastaanoton-tila). Sijoittelu suoritetaan yleensä vähintään
 kerran päivässä niin kauan kun hakijat voivat tehdä vastaanottopäätöksiä.
 Hakija voi tehdä vastaanoton vasta kun virkailija on [julkaissut](#julkaisu)
-tiedon valinnan tilasta. Vastaanoton seurauksena vapautuvia paikkoja annetaan *varalla* oleville hakijoille.
+tiedon sijoittelun tilasta. Vastaanoton seurauksena vapautuvia paikkoja annetaan *varalla* oleville hakijoille.
 
-Jos haku ei käytä sijoittelua, virkailijat asettavat valinnan tilan käsin.
+Jos haku ei käytä sijoittelua, virkailijat asettavat sijoittelun tilan käsin.
 
 - `VARALLA`: Odottaa muiden hakijoiden [*perumisista*](#peruttu) vapautuvia paikkoja
 - `HYLATTY`: Kopioitu laskennan `HYLATTY` tilasta
@@ -192,18 +192,18 @@ Jos haku ei käytä sijoittelua, virkailijat asettavat valinnan tilan käsin.
     sijoittelua tekemästä tilamuutoksia, esim: hakija on huijannut haussa.
   - `PERUUNTUNUT`: Hakijan *korkeamman prioriteetin* hakutoive on mennyt
     `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu. Tätä ei tapahdu
-    jos hakija on [`VASTAANOTTANUT_SITOVASTI`](#valinnan-tila) tämän
+    jos hakija on [`VASTAANOTTANUT_SITOVASTI`](#sijoittelun-tila) tämän
     hakutoiveen.
 
 
 ### Valinta ilman sijoittelua
 
-![Valinnan tilat ilman sijoittelua tehtävässä haussa](img/valintatila_ilman_sijoittelua.png)
+![Sijoittelun tilat ilman sijoittelua tehtävässä haussa](img/valintatila_ilman_sijoittelua.png)
 
 
 ### Valinta sijoittelun kanssa
 
-![Valinnan tilat sijoittelua käyttävän haun kanssa](img/valintatila_sijoittelulla.png)
+![Sijoittelun tilat sijoittelua käyttävän haun kanssa](img/valintatila_sijoittelulla.png)
 
 
 <a name="vastaanoton-tila"></a>
@@ -211,13 +211,13 @@ Jos haku ei käytä sijoittelua, virkailijat asettavat valinnan tilan käsin.
 
 Synonyymit: vastaanotto, valintatuloksen tila, vastaanottotieto
 
-Kun hakijan [valinnan tila](#valinnan-tila) on määäritetty virkailijan tai
+Kun hakijan [sijoittelun tila](#sijoittelun-tila) on määritetty virkailijan tai
 [sijoittelun](#sijoittelu) toimesta, virkailija [julkaisee](#julkaisu) tiedon hakijalle.
-Tällöin [valinnan tila](#valinnan-tila) ilmestyy hakijalle [OHP:uun](#ohp),
+Tällöin [sijoittelun tila](#sijoittelun-tila) ilmestyy hakijalle [OHP:uun](#ohp),
 edelleen mahdollistaen *vastaanoton tilan* asettamisen siinä tapauksessa
 että hakutoive on [hyväksytty](#hyvaksytty).
 
-Kielteisen valinnan tilan seurauksena *vastaanoton tila* on saatettu jo
+Kielteisen sijoittelun tilan seurauksena *vastaanoton tila* on saatettu jo
 asettaa valmiiksi, muutoin *vastaanoton tila* asetetaan hakijan ilmoituksen
 mukaan joko virkailijan tai hakijan itsensä toimesta.
 
@@ -275,7 +275,7 @@ koulutuksen [alkamiskaudesta](#kausi).
 | Virallinen nimi       | Käyttöliittymä                                                    | Koodi | Tietokanta |
 | --------------------- | ----------------------------------------------------------------- | ----- | ---------- |
 | Laskennan tila |                                                                   | JarjestyskriteerituloksenTila       | valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
-| Valinnan tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
+| Sijoittelun tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
 | Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               | sijoittelu-algoritmi-domain: Valintatulos.tila | sijoitteludb: Valintatulos.tila
 | Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         | sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila | sijoitteludb: Valintatulos.ilmoittautumisTila
 
