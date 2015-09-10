@@ -9,8 +9,8 @@ hakukohteisiin, hän antaa [*hakemuksessa*](#hakemus) listan
 hakijoiden hakutoiveet ja etenee [*valintalaskennan*](#valintalaskenta) ja
 [*sijoittelun*](#sijoittelu) läpi.
 
-Hakukohteille voi määrittää [*valinnan vaiheita*](#valinnan-vaihe). Valinnanvaihe voi määrittää hakukohteelle sekä
-[*valintatapajonoja*](#valintatapajono) että [*hakijaryhmiä*](#hakijaryhma). Valintatapajonoille ja valintaryhmillä määritetään
+Hakukohteille määritetään [*valinnan vaiheita*](#valinnan-vaihe) ja [*hakijaryhmiä*](#hakijaryhma).
+Valinnanvaihe määrittää hakukohteelle [*valintatapajonoja*](#valintatapajono). Valintatapajonoille ja valintaryhmillä määritetään
 laskentakaavoja, *valintaperusteita*.
 
 Valintatapajonoilla laskentakaavat pisteyttävät ja järjestävät hakijat ja erottelevat hyväksytyt ja hylätyt hakijat.
