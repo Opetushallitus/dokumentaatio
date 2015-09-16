@@ -2,23 +2,23 @@ digraph g {
   rankdir=LR;
   node [shape=doublecircle];
 
-  Laskenta -> HYLATTY [label="HYLATTY\nlaskennassa" style=dotted];
-  Laskenta -> HYVAKSYTTY [label="HYVAKSYTTAVISSA\nlaskennassa" style=dotted];
-  Laskenta -> VARALLA [label="HYVAKSYTTAVISSA\nmutta ei mahdu\naloituspaikoille" style=dotted];
+  LaskennanTila -> HYLATTY [label="HYLATTY\nlaskennassa" style=dotted];
+  LaskennanTila -> HYVAKSYTTY [label="HYVAKSYTTAVISSA\nlaskennassa" style=dotted];
+  LaskennanTila -> VARALLA [xlabel="HYVAKSYTTAVISSA\nmutta ei mahdu\naloituspaikoille" style=dotted];
   VARALLA -> VARASIJALTA_HYVAKSYTTY [label="Vapautunut\naloituspaikka\ntarjotaan hakijalle"];
-  VARALLA -> PERUNUT [xlabel="Aloituspaikkaa ei\nvapautunut määräaikaan\nmennessä"];
-  PERUUNTUNUT [label="PERUUNTUNUT\n(toisen paikan\nvastaanotto)"];
-  PERUNUT [label="PERUNUT\n(hakija\nperuu paikan\nvastaanotossa)"];
+  VARALLA -> PERUUNTUNUT [label="Aloituspaikkaa ei\nvapautunut määräaikaan\nmennessä"];
+  LaskennanTila, HYVAKSYTTY, HARKINNANVARAISESTI_HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> PERUUNTUNUT;
+  VARALLA -> PERUNUT [label="Hakija vastaanottanut toisen paikan"];
+  PERUUNTUNUT [label="PERUUNTUNUT\n(hyväksytty\nkorkeamman\nprioriteetin paikkaan)"];
+  PERUNUT [label="PERUNUT\n(periytyy\nvastaanoton tilasta)"];
 
-  Laskenta -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa\nhyväksymisen" style=dotted];
-
-  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> PERUUTETTU;
+  LaskennanTila -> HARKINNANVARAISESTI_HYVAKSYTTY [label="Virkailija pakottaa\nhyväksymisen" style=dotted];
 
   subgraph cluster_vastaanotto {
     label="Vastaanoton\nmahdollinen seuraus";
     color=gray;
     rank=same;
-    PERUUNTUNUT, PERUNUT;
+    PERUNUT, PERUUTETTU;
   }
 
   subgraph cluster_hyvaksytty {
@@ -31,11 +31,13 @@ digraph g {
   }
 
   VARALLA [shape=circle];
+  LaskennanTila [shape=box label="Laskennan\ntila"]
   Laskenta, Julkaisu, Vastaanotto [shape=hexagon];
 
+  Laskenta -> LaskennanTila;
   { rank=same; Julkaisu, Vastaanotto }
-  { rank=same; HYLATTY; HYVAKSYTTY; }
-  { rank=same; PERUUTETTU [label="PERUUTETTU\n(oppilaitos\nhylkää\nhyväksymisen)"]; PERUNUT; }
+  { rank=same; HYLATTY; HYVAKSYTTY; VARALLA; }
+  { rank=same; PERUUTETTU [label="PERUUTETTU\n(periytyy\nvastaanoton tilasta)"]; PERUUNTUNUT; }
 
-  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Julkaisu -> Vastaanotto -> PERUNUT, PERUUNTUNUT [style=dotted];
+  HARKINNANVARAISESTI_HYVAKSYTTY, HYVAKSYTTY, VARASIJALTA_HYVAKSYTTY -> Julkaisu -> Vastaanotto -> PERUNUT, PERUUTETTU [style=dotted];
 }

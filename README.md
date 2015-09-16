@@ -56,7 +56,7 @@ ammatillisiin- ja lukiokoulutuksiin. Yhteishaussa on tarjolla suuri määrä
 
 Erillishaussa tarjotaan hakukohteita joihin ei haeta yhteishaussa. Oppilaitokset
 voivat järjestää erillishakuja haluaminaan ajankohtina. Erillishausta riippuen hakemuksissa voi olla yksi tai useampi
-hakukohde. Priorisointi voi olla käytössä tai ei.
+hakukohde. Hakutoiveiden priorisointi voi olla käytössä tai ei.
 
 - Voi olla automaattisella sijoittelulla ja laskennalla kuten yhteishaun varsinainen haku
 - Voi olla ilman sijoittelua, jolloin laskennan yhteydessä hakijat
@@ -84,11 +84,11 @@ hakukohde. Priorisointi voi olla käytössä tai ei.
   hakijan hakemuksessa antamista tai kokeesta tulleista pisteistä tuotetaan
   lista hakijioiden keskenäisestä järjestyksestä. Laskentaa varten on luotu
   laskentakaava joka määrittää lähtötiedoista lopullisen järjestyksen.
-- <a name="kausi">**Kausi**</a>: Koulutuksen alkamisajankohta, kevät tai syksy.
+- <a name="hakukausi">**Hakukausi**</a>: Hakukausi voi olla kevät tai syksy. Hakukausi voi olla sama tai edeltää koulutuksen alkamiskautta
 - <a name="sijoittelu">**Sijoittelu**</a>: Hakukohtainen toistettava vaihe jossa
   [laskennan](#laskenta) tulosten mukaan hakijat on ryhmitelty
-  [*hyväksytyksi*](#hyvaksytty) tai *aloituspaikkoihin* mahtumattomana *varalle*.
-  Sijoittelu voi myös muuttaa hakijoita peruuntuneiksi.
+  [*hyväksytyksi*](#hyvaksytty) tai *aloituspaikkoihin* mahtumattomana *varalle* tai laskennasta periytyneenä hylätyksi.
+  Sijoittelu voi myös muuttaa hakijoita peruuntuneiksi tai peruneiksi.
   Hyväksyttyjen hakijoiden
   [vastaanottopäätösten](#vastaanoton-tila) perusteella sijoittelu voi nostaa
   varalla olleita hakijoita hyväksytyiksi. Sijoittelua suoritetaan niin
@@ -146,12 +146,13 @@ pisteet riittävät.
 Hakukohteen valinnan vaiheiden valintatapajonoissa pidetään yllä laskennan tilaa.
 Hakukohteen kaikki hakijat laitetaan jokaiseen valintatapajonoon ja laskentakaavat
 määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoitteluun](#sijoittelu).
+Virkailija voi myös tuoda hakijakohtaiset laskennan tilat käsin.
 
 - `HYVAKSYTTAVISSA`: Hakutoive pääsee automatisoidusti jatkoon hakukohteelle
   määritellyn *laskentakaavan* pohjalta ja sijoittelu voi päivittää hakijan tilan hyväksytyksi
 - `HYLATTY`: Hakijan lähtotiedot eivät riittäneet jatkoon
-- `MAARITTELEMATON`: Määrittelemätön-tilaiset hakijat eivät siirry sijoitteluun. Valintatapajonon voi kyllä siirtää sijoitteluun ilman em. hakijoita. Ei voi syntyä
-  laskennassa, oletusarvo ilman laskentaa tehtävässä haussa
+- `MAARITTELEMATON`: Määrittelemätön-tilaiset hakijat eivät siirry sijoitteluun. Valintatapajonon voi siirtää sijoitteluun mutta sijoittelu ei huomioi em. hakijoita. Ei voi syntyä
+  laskennassa, oletusarvo ilman laskentaa tehtävässä jonossa
 - `VIRHE`: Laskenta asettaa tilan kun syötetiedoissa on virhe
 - `HYVAKSYTTY_HARKINNANVARAISESTI`: Virkailija päästää poikkeustapauksessa
   hakutoiveen manuaalisesti jatkoon
@@ -162,7 +163,9 @@ määrittävät ketkä hakijoista ovat jonokohtaisesti hyväksyttävissä [sijoi
 
 Synonyymit: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
 
+Automaattinen sijoitteluprosessi tarkkailee eri vaiheiden tilamuutoksia.
 Jos laskentaa käytetään, [laskennan tila](#laskennan-tila) on pohjana sijoittelun tilalle.
+Sijoittelun tilaan vaikuttaa myös [vastaanoton tilan](#vastaanoton-tila) muutos.
 
 Jos haku käyttää [sijoittelua](#sijoittelu), *sijoittelun tila* päivittyy seuraavalla
 *sijoittelukerralla* sitä mukaa kun hyväksytyt hakijat päättävät
@@ -186,23 +189,18 @@ Jos haku ei käytä sijoittelua, virkailijat asettavat sijoittelun tilan käsin.
     vapautunut
 - <a name="peruttu">Perutut</a> tilat syntyvät jos [hyväksytty](#hyvaksytty)
   paikkaa jää [vastaanottamatta](#vastaanoton-tila).
-  - `PERUNUT`: Hakija peruu itse tai ilmoittaa että ei ota [paikkaa](#opiskelupaikka) vastaan. Jos
-    vastaanottoa ei suoriteta *määräaikana* päädytään tähän tilaan. Estää
+  - `PERUNUT`: Sijoittelu kopioi PERUNUT arvon [vastaanoton tilasta](#vastaanoton-tila). Estää
     sijoittelua tekemästä tilamuutoksia tähän hakutoiveeseen.
-  - `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
-    sijoittelua tekemästä tilamuutoksia, esim: hakija on huijannut haussa.
+  - `PERUUTETTU`: Sijoittelu kopioi PERUUTETTU-arvon [vastaanoton tilasta](#vastaanoton-tila) jos se on sinne asetettu.
   - `PERUUNTUNUT`: Hakijan *korkeamman prioriteetin* hakutoive on mennyt
     `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu. Tätä ei tapahdu
     jos hakija on [`VASTAANOTTANUT_SITOVASTI`](#sijoittelun-tila) tämän
     hakutoiveen. Muita tilanteita: hakukohteen varasijatäyttö on päättynyt tai siellä ole lainkaan varasijatäyttöä.
 
-### Automaattinen sijoittelu
+### Sijoittelu
 
 ![Sijoittelun tilat sijoittelua käyttävän haun kanssa](img/sijoittelun_tilat.png)
 
-### Valinta ilman sijoittelua, virkailija ylläpitää tietoja manuaalisesti
-
-![Sijoittelun tilat ilman sijoittelua tehtävässä haussa](img/sijoittelun_tilat_kasin.png)
 
 <a name="vastaanoton-tila"></a>
 ## Vastaanoton tila
@@ -223,8 +221,9 @@ mukaan joko virkailijan tai hakijan itsensä toimesta.
   - `KESKEN`: Odottaa hakijan vastaanottopäätöstä
   - `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut
     vastaanottopäätöstään määräaikaan mennessä
-  - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta
-  - `PERUUTETTU`: Virkailija on perunut vastaanoton hakijan pyynnöstä
+  - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta. Jos vastaanottoa ei suoriteta *määräaikana* päädytään tähän tilaan.
+  - `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
+   sijoittelua tekemästä tilamuutoksia, esim: hakija on huijannut haussa.
 
 - Vain toisen asteen hauissa käytettävät tilat
   - `VASTAANOTTANUT`: Hakija ilmoittaa vastaanoton 2. asteen haussa
@@ -255,7 +254,7 @@ Jos hakija on [vastaanottanut](#vastaanoton-tila) paikan johon hänet on
 [hyväksytty](#hyvaksytty), ilmoittaa
 hän viimeiseksi *läsnäolotietonsa*. Kaikki ilmoittautumistilat ovat käytössä
 sekä 2. asteen että korkeakoulujen hauissa. Soveltuvat tilat riippuvat
-koulutuksen [alkamiskaudesta](#kausi).
+koulutuksen alkamiskaudesta.
 
 - `EI_TEHTY`: Alkutila
 - `LASNA_KOKO_LUKUVUOSI`: vain kevään haussa

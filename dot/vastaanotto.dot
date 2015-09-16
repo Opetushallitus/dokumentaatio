@@ -6,8 +6,8 @@ digraph g {
   KESKEN -> VASTAANOTTANUT [xlabel="2. asteen vastaanotto"];
   KESKEN -> EI_VASTAANOTETTU_MAARA_AIKANA [label="Hakija ei tehnyt\nvastaanottoa\nmääräaikana"];
   KESKEN -> PERUNUT [label="Hakija peruu\nOHP:ssa"];
-  KESKEN -> PERUUTETTU [label="Virkailija peruu\nhakijan pyynnöstä"];
-  KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [label="Hakija odottaa vielä\nkorkeamman prioriteetin\npaikkaa"];
+  KESKEN -> PERUUTETTU [label="Virkailija peruu koska\n esim: hakija on huijannut haussa"];
+  KESKEN -> EHDOLLISESTI_VASTAANOTTANUT [xlabel="Hakija odottaa vielä\nkorkeamman prioriteetin\npaikkaa"];
   KESKEN -> VASTAANOTTANUT_SITOVASTI [label="Hakija tyytyväinen\ntarjottuun paikkaan"];
   EHDOLLISESTI_VASTAANOTTANUT -> KESKEN [label="Korkeamman\nprioriteetin\nhakutoive vapautuu"];
   EHDOLLISESTI_VASTAANOTTANUT -> VASTAANOTTANUT_SITOVASTI [label="Määräaika umpeutuu\nilman korkeamman\nprioriteetin paikkoja"];
