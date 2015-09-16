@@ -10,14 +10,14 @@ hakijoiden hakutoiveet ja etenee [*laskennan*](#laskenta) ja
 [*sijoittelun*](#sijoittelu) läpi.
 
 Hakukohteille määritetään [*valinnan vaiheita*](#valinnan-vaihe) ja [*hakijaryhmiä*](#hakijaryhma).
-Valinnanvaihe määrittää hakukohteelle [*valintatapajonoja*](#valintatapajono). Valintatapajonoille ja valintaryhmillä määritetään
-laskentakaavoja, *valintaperusteita*.
+Valinnanvaihe määrittää hakukohteelle [*valintatapajonoja*](#valintatapajono). Valintatapajonoille ja hakijaryhmille määritetään
+laskentakaavoja. *Valintatapajonon* asetukset kuten mm. varasijakäsittelysäännöt ja laskentakaavat muodostavat *valintaperusteet*.
 
 Valintatapajonoilla laskentakaavat pisteyttävät ja järjestävät hakijat ja erottelevat hyväksyttävissä olevat ja hylätyt hakijat.
-Kaikki valintatapajonot siirretään sijoitteluun ja *aloituspaikkojen* määrä määrittää kuinka moni hyväksytään. Valintatapajonoja
-voi käyttää myös ilman sijoitteluun siirtämistä esim. hakijalistojen muodostamiseen.
+Osa valintatapajonoista siirretään sijoitteluun ja *aloituspaikkojen* määrä määrittää kuinka moni hyväksytään. Valintatapajonoja
+voi käyttää myös ilman sijoitteluun siirtämistä esim. hakijalistojen muodostamiseen tai niissä hauissa missä ei ole sijoittelua käytössä.
 
-Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmän laskentakaava ja kiintiö määrittää joukon hakijoita
+Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmän laskentakaava ja kiintiö määrittävät joukon hakijoita
 jotka joko priorisoidaan aloituspaikoille tai suljetaan ulkopuolelle.
 
 Valintaprosessi etenee haun ja hakukohteen ja hakukohteen valintavaiheiden valintatapajonojen
