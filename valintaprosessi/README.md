@@ -5,16 +5,17 @@ virallinen vaatimusmäärittely.*
 
 *Haku* sisältää [*hakukohteita*](#hakukohde). Kun *hakija* hakee
 hakukohteisiin, hän antaa [*hakemuksessa*](#hakemus) listan
-[*hakutoiveita*](#hakutoive). Valintaprosessi käy haun hakemukset läpi, kerää
-hakijoiden hakutoiveet ja etenee [*laskennan*](#laskenta) ja
-[*sijoittelun*](#sijoittelu) läpi.
+[*hakutoiveita*](#hakutoive). [*Laskenta*](#laskenta) käy haun hakemukset läpi ja kerää
+hakijoiden hakutoiveet. [*sijoittelu*](#sijoittelu) järjestää hakijat paremmuusjärjestykseen josta valitaan *hyväksytyt*
+hakijat joille tarjotaan opiskelupaikkaa. Kun hakijat vastaanottavat tai peruvat *opiskelupaikkoja*, sijoittelussa voi vapautua
+*opiskelupaikkoja* muille hakijoille.
 
-Hakukohteille määritetään [*valinnan vaiheita*](#valinnan-vaihe) ja [*hakijaryhmiä*](#hakijaryhma).
-Valinnanvaihe määrittää hakukohteelle [*valintatapajonoja*](#valintatapajono). Valintatapajonoille ja hakijaryhmille määritetään
-laskentakaavoja. *Valintatapajonon* asetukset kuten mm. varasijakäsittelysäännöt ja laskentakaavat muodostavat *valintaperusteet*.
+Hakukohteille määritetään [*valinnan vaiheita*](#valinnan-vaihe).
+Valinnanvaihe määrittää hakukohteelle [*valintatapajonoja*](#valintatapajono). Valintatapajonoille määritetään
+laskentakaavoja. *Valintatapajonon* asetuksista kuten mm. varasijakäsittelysäännöt ja laskentakaavat käytetään nimitystä *valintaperusteet*.
 
 Valintatapajonoilla laskentakaavat pisteyttävät ja järjestävät hakijat ja erottelevat hyväksyttävissä olevat ja hylätyt hakijat.
-Osa valintatapajonoista siirretään sijoitteluun ja *aloituspaikkojen* määrä määrittää kuinka moni hyväksytään. Valintatapajonoja
+Osa valintatapajonoista siirretään sijoitteluun ja valintatapajonon *aloituspaikkojen* määrä määrittää kuinka moni hyväksytään. Valintatapajonoja
 voi käyttää myös ilman sijoitteluun siirtämistä esim. hakijalistojen muodostamiseen tai niissä hauissa missä ei ole sijoittelua käytössä.
 
 Valintatapajonolle ja hakukohteelle voi määrittää hakijaryhmiä. Hakijaryhmän laskentakaava ja kiintiö määrittävät joukon hakijoita
@@ -25,10 +26,15 @@ asetuksista riippuen automaattisesti tai [*virkailijan*](#virkailija) manuaalise
 edistämänä.
 
 Alla oleva kuva näyttää valintaprosessin vaiheiden keskinäisen
-järjestyksen sekä tilat jotka kuvaavat vaihetta tarkemmin.
+järjestyksen sekä hakutoiveiden käsittelyyn liittyvät tilat.
 
 ![Valintaprosessi](img/valintaprosessi.png)
 
+## Korkeakoulujen yhteishaun varsinainen haku 2015 (TODO: apo)
+
+- Hakukohde
+  - Valintatapajonot
+    -
 
 <a name="hakutyypit"></a>
 ## Hakutyypit
