@@ -34,7 +34,7 @@ järjestyksen sekä tilat jotka kuvaavat vaihetta tarkemmin.
 ## Hakutyypit
 
 Valintaprosessissa käytettävät vaiheet ja niiden käytännöt vaihtelevat hausta
-toiseen. Tässä on kuvattu erilaisia käytãnnön hakutyyppejä ja niiden
+toiseen. Tässä on kuvattu erilaisia käytännön hakutyyppejä ja niiden
 käyttötilanteita.
 
 ### Yhteishaku
@@ -113,12 +113,12 @@ hakukohde. Hakutoiveiden priorisointi voi olla käytössä tai ei.
   valinnan vaiheessa pääsykokeeseen ne, joiden tietty YO-arvosana on tarpeeksi
   korkea. Seuraavassa vaiheessa karsitaan kaikki pääsykokeesta alle X pistettä
   saaneet.
-- <a name="valintatapajono">**Valintatapajono**</a>: Valintatapajonoon kerätäään hakutoiveet [valinnan
+- <a name="valintatapajono">**Valintatapajono**</a>: Valintatapajonoon kerätään hakutoiveet [valinnan
   vaiheen](#valinnan-vaihe) pisteyttämään järjestykseen. Hakijat jotka eivät
   läpäisseet valinnan vaihetta, *hylätään*. Jos jonolla on aloituspaikkamäärä,
   rajan alle jäävät mutta valinnan vaiheen läpäisseet jäävät varalle.
   [Hakijaryhmä](#hakijaryhma) voi yliajaa jonojen järjestyksen.
-- <a name="hakijaryma">**Hakijaryhmä**</a>: Voi sisällyttää tai poissulkea
+- <a name="hakijaryhma">**Hakijaryhmä**</a>: Voi sisällyttää tai poissulkea
   hakijoita jonoista. Esimerkiksi jos hakukohteeseen halutaa vähintään 10
   lukiotaustaista henkilöä mutta vain 9 mahtuu paremmuusjärjestyksessä jonon
   aloituspaikkamäärän sisälle, nostetaan kymmenes hyväksytty lukiotaustainen
