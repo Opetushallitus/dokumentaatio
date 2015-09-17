@@ -197,8 +197,6 @@ Jos haku ei käytä sijoittelua, virkailijat asettavat sijoittelun tilan käsin.
     jos hakija on [`VASTAANOTTANUT_SITOVASTI`](#sijoittelun-tila) tämän
     hakutoiveen. Muita tilanteita: hakukohteen varasijatäyttö on päättynyt tai siellä ole lainkaan varasijatäyttöä.
 
-### Sijoittelu
-
 ![Sijoittelun tilat sijoittelua käyttävän haun kanssa](img/sijoittelun_tilat.png)
 
 
@@ -269,17 +267,24 @@ koulutuksen alkamiskaudesta.
 
 # Koodaajan synonyymit
 
-| Virallinen nimi       | Käyttöliittymä                                                    | Koodi | Tietokanta |
-| --------------------- | ----------------------------------------------------------------- | ----- | ---------- |
-| Laskennan tila |                                                                   | JarjestyskriteerituloksenTila       | valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
-| Sijoittelun tila         | valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila | HakutoiveenValintatapajonoDTO.tila | sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
-| Vastaanoton tila      | vastaanotto, valintatuloksen tila, vastaanottotieto               | sijoittelu-algoritmi-domain: Valintatulos.tila | sijoitteludb: Valintatulos.tila
-| Ilmoittautumisen tila | ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto         | sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila | sijoitteludb: Valintatulos.ilmoittautumisTila
-
+- Laskennan tila
+  - Käyttöliittymä:
+  - Koodi: JarjestyskriteerituloksenTila
+  - Tietokanta: valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
+- Sijoittelun tila
+  - Käyttöliittymä: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
+  - Koodi: HakutoiveenValintatapajonoDTO.tila
+  - Tietokanta: sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
+- Vastaanoton tila
+  - Käyttöliittymä: vastaanotto, valintatuloksen tila, vastaanottotieto
+  - Koodi: sijoittelu-algoritmi-domain: Valintatulos.tila
+  - Tietokanta: sijoitteludb: Valintatulos.tila
+- Ilmoittautumisen tila
+  - Käyttöliittymä: ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto
+  - Koodi: sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila
+  - Tietokanta: sijoitteludb: Valintatulos.ilmoittautumisTila
 
 # Dokumentaation kehitys
-
-## Kaavioiden luonti
 
 Kaaviot kuvataan tekstimuotoisissa `.dot` tiedostoissa. Ne muunnetaan kuviksi
 [Graphviz työkalulla](http://www.graphviz.org/). Kaikki `.dot` tiedostot voi
