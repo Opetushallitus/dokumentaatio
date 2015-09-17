@@ -14,6 +14,6 @@ sijoitettu omaan hakemistoonsa.
 
 Ota mallia aikaisemmasta sisällöstä. Kun dokumentaatioon alkaa muodostua
 yhteneväisyyksiä esimerkiksi kaavioiden muodossa, kannattaa harkita niiden
-siirtämistua jaettuun hakemistoon.
+siirtämistä jaettuun hakemistoon.
 
 Pyri käyttämään yhtenevää sanastoa dokumenttien kesken.
