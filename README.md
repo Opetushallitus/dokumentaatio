@@ -1,7 +1,7 @@
 *Tämä dokumentti on koostettu kehityksen avuksi. Tämä dokumentti ei ole
 virallinen vaatimusmäärittely.*
 
-# Valintaprosessi ja hakemuksen ja vastaanoton tilasiirtymät
+# Valintaprosessi
 
 *Haku* sisältää [*hakukohteita*](#hakukohde). Kun *hakija* hakee
 hakukohteisiin, hän antaa [*hakemuksessa*](#hakemus) listan
