@@ -30,11 +30,16 @@ järjestyksen sekä hakutoiveiden käsittelyyn liittyvät tilat.
 
 ![Valintaprosessi](img/valintaprosessi.png)
 
-## Korkeakoulujen yhteishaun varsinainen haku 2015 (TODO: apo)
+## Esimerkkejä
 
-- Hakukohde
-  - Valintatapajonot
-    -
+- Hakukohde: Aalto-yliopisto, Kauppakorkeakoulu Mikkelin kampus, Kauppatieteiden kandidaatti (BScBA), Mikkeli ja kauppatieteiden maisteri
+- Vaiheet:
+  - Hakukelpoisuuden käsittelyvaihe
+  - Varsinainen valinta
+    - Valintatapajonot:
+      - Valintaryhmä I, aloituspaikat 45
+      - Valintaryhmä II, aloituspaikat 13
+      - Valintaryhmä III, aloituspaikat 25
 
 <a name="hakutyypit"></a>
 ## Hakutyypit
