@@ -33,13 +33,14 @@ järjestyksen sekä hakutoiveiden käsittelyyn liittyvät tilat.
 ## Esimerkkejä
 
 - Hakukohde: Aalto-yliopisto, Kauppakorkeakoulu Mikkelin kampus, Kauppatieteiden kandidaatti (BScBA), Mikkeli ja kauppatieteiden maisteri
-- Vaiheet:
-  - Hakukelpoisuuden käsittelyvaihe
-  - Varsinainen valinta
-    - Valintatapajonot:
-      - Valintaryhmä I, aloituspaikat 45
-      - Valintaryhmä II, aloituspaikat 13
-      - Valintaryhmä III, aloituspaikat 25
+  - Vaiheet:
+    - Hakukelpoisuuden käsittelyvaihe
+    - Varsinainen valinta
+      - Valintatapajonot:
+        - Valintaryhmä I, aloituspaikat 45
+        - Valintaryhmä II, aloituspaikat 13
+        - Valintaryhmä III, aloituspaikat 25
+- Aloituspaikkoja yhteensä: 83 jotka valitaan kolmen jonon kautta
 
 <a name="hakutyypit"></a>
 ## Hakutyypit
@@ -279,12 +280,12 @@ koulutuksen alkamiskaudesta.
 # Koodaajan synonyymit
 
 - Laskennan tila
-  - Käyttöliittymä:
-  - Koodi: JarjestyskriteerituloksenTila
+  - Käyttöliittymä: Valintatieto
+  - Koodi: valintalaskenta: JarjestyskriteerituloksenTila (HakemusLaskinImpl), valintaperusteet-laskenta: fi.vm.sade.service.valintaperusteet.laskenta.api.tila.Tila
   - Tietokanta: valintalaskentadb: ValinnanVaihe.valintatapajonot -> Valintatapajono.jonosijat.jarjestyskriteeritulokset.tila
 - Sijoittelun tila
   - Käyttöliittymä: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
-  - Koodi: HakutoiveenValintatapajonoDTO.tila
+  - Koodi: valintaperusteet: HakemuksenTila, HakutoiveenValintatapajonoDTO.tila, valinta-tulos-service: Valintatila
   - Tietokanta: sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
 - Vastaanoton tila
   - Käyttöliittymä: vastaanotto, valintatuloksen tila, vastaanottotieto
