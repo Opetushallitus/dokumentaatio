@@ -32,14 +32,16 @@ järjestyksen sekä hakutoiveiden käsittelyyn liittyvät tilat.
 
 ## Esimerkkejä
 
-- Hakukohde: Aalto-yliopisto, Kauppakorkeakoulu Mikkelin kampus, Kauppatieteiden kandidaatti (BScBA), Mikkeli ja kauppatieteiden maisteri
-  - Vaiheet:
-    - Hakukelpoisuuden käsittelyvaihe
-    - Varsinainen valinta
-      - Valintatapajonot:
-        - Valintaryhmä I, aloituspaikat 45
-        - Valintaryhmä II, aloituspaikat 13
-        - Valintaryhmä III, aloituspaikat 25
+### Hakukohde: Aalto-yliopisto, Kauppakorkeakoulu Mikkelin kampus, Kauppatieteiden kandidaatti (BScBA), Mikkeli ja kauppatieteiden maisteri
+- Vaiheet:
+  - Hakukelpoisuuden käsittelyvaihe
+  - Varsinainen valinta
+    - Valintatapajonot:
+      - Valintaryhmä I, aloituspaikat 45
+      - Valintaryhmä II, aloituspaikat 13
+      - Valintaryhmä III, aloituspaikat 25
+- Hakijaryhmät:
+  - Ensikertalaiset 20
 - Aloituspaikkoja yhteensä: 83 jotka valitaan kolmen jonon kautta
 
 <a name="hakutyypit"></a>
