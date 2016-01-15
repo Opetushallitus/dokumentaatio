@@ -3,12 +3,11 @@
 Tämä projekti sisältää kehitystä tukevaa dokumentaatiota. Kukin aihealue on
 sijoitettu omaan hakemistoonsa.
 
-
 ## Sisällysluettelo
 
-- [Valintaprosessi](valintaprosessi/README.md) - Hakijoiden hakutoiveiden
+* [Valintaprosessi](valintaprosessi/README.md) - Hakijoiden hakutoiveiden
   saattaminen vastaanotetuiksi opiskelupaikoiksi.
-
+* [Oneliners](admin/unix-oneliners.md) - Hyödyllisiä oneliner-komentoja
 
 ## Dokumentaation kehitys
 
