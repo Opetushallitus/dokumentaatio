@@ -2,8 +2,9 @@ Automatically generated from project_info.json files:
 
 | Uses / used by | List |
 ---|---
-|haku uses|hakuperusteet cas koodisto koulutusinformaatio oppijantunnistus suoritusrekisteri organisaatio tarjonta ohjausparametrit authentication-service|
+|haku uses|activemq hakuperusteet cas koodisto koulutusinformaatio oppijantunnistus suoritusrekisteri organisaatio tarjonta ohjausparametrit authentication-service|
 |haku is used by|hakuperusteet-rest hakuperusteet-admin-rest suoritusrekisteri-rest omatsivut-rest|
+|activemq is used by|haku suoritusrekisteri-rest omatsivut-rest|
 |hakuperusteet is used by|haku|
 |cas is used by|haku hakuperusteet-admin-rest suoritusrekisteri-rest omatsivut-rest|
 |koodisto is used by|haku hakuperusteet-rest hakuperusteet-admin-rest suoritusrekisteri-rest|
@@ -27,7 +28,6 @@ Automatically generated from project_info.json files:
 |suoritusrekisteri-web uses|suoritusrekisteri-rest|
 |suoritusrekisteri-rest uses|cas activemq ldap ytl virta haku tarjonta organisaatio koodisto henkilo ohjausparametrit sijoittelu valinta-tulos-service valintarekisteri|
 |suoritusrekisteri-rest is used by|suoritusrekisteri-web|
-|activemq is used by|suoritusrekisteri-rest|
 |ldap is used by|suoritusrekisteri-rest|
 |ytl is used by|suoritusrekisteri-rest|
 |virta is used by|suoritusrekisteri-rest|
@@ -35,7 +35,7 @@ Automatically generated from project_info.json files:
 |valinta-tulos-service is used by|suoritusrekisteri-rest omatsivut-rest|
 |valintarekisteri is used by|suoritusrekisteri-rest omatsivut-rest|
 |omatsivut-web uses|omatsivut-rest piwik shibboleth|
-|omatsivut-rest uses|cas haku koulutusinformaatio oppijantunnistus shibboleth tarjonta valintarekisteri valinta-tulos-service|
+|omatsivut-rest uses|activemq cas haku koulutusinformaatio oppijantunnistus shibboleth tarjonta valintarekisteri valinta-tulos-service|
 |omatsivut-rest is used by|omatsivut-web|
 |piwik is used by|omatsivut-web|
 |shibboleth is used by|omatsivut-web omatsivut-rest|
