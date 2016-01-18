@@ -1,5 +1,7 @@
 Automatically generated from project_info.json files:
 
+| Uses / used by | List |
+---|---
 |haku uses|hakuperusteet cas koodisto koulutusinformaatio oppijantunnistus suoritusrekisteri organisaatio tarjonta ohjausparametrit authentication-service|
 |haku is used by|hakuperusteet-rest hakuperusteet-admin-rest suoritusrekisteri-rest omatsivut-rest|
 |hakuperusteet is used by|haku|
