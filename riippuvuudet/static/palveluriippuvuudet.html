@@ -20,7 +20,8 @@
 <body>
 
 <p>
-Rajaa näytettäviä palveluita <input onkeyup="filter(this);" type="text">
+Rajaa näytettäviä palveluita <input onkeyup="filter(this);" type="text"> <a href="javscript:void(0)" onclick="exportCanvas()">Tee PNG</a>
+<a href="" id="download" download="palveluriippuvuudet.png"></a>
 </p>
 
 <div id="mynetwork"></div>
@@ -49,7 +50,7 @@ function initGraph(json) {
   var options = {
     autoResize: true,
     configure: {
-      enabled: false,
+      enabled: true,
       filter: true,
       showButton: true
     },
@@ -136,6 +137,16 @@ function ajaxJson(method, url, onload) {
 }
 
 ajaxJson('GET', "/rest/visjs", initGraph)
+
+function exportCanvas() {
+  var mycanvas = document.getElementsByTagName("canvas")[0];
+  if(mycanvas && mycanvas.getContext) {
+      var img = mycanvas.toDataURL("image/png;base64;");
+      anchor = document.getElementById("download");
+      anchor.href = img;
+      anchor.innerHTML = "Download";
+  }
+}
 
 </script>
 
