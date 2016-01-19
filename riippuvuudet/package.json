@@ -1,0 +1,14 @@
+{
+  "name": "project_info-server",
+  "version": "1.0.0",
+  "description": "project_info.json parse code",
+  "license": "EUPL-1.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com:Opetushallitus/dokumentaatio.git"
+  },
+  "dependencies" : {
+    "express" : "4.13.3",
+    "glob": "6.0.4"
+  }
+}

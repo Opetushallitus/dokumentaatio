@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OPH Palveluriippuvuudet</title>
+
+  <script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
+  <link href="http://visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+
+  <style type="text/css">
+    #mynetwork {
+      position: absolute;
+      width: 100%;
+       top: 40px;
+       bottom: 0px;
+      border: 1px solid lightgray;
+    }
+  </style>
+</head>
+<body>
+
+<p>
+Rajaa näytettäviä palveluita <input onkeyup="filter(this);" type="text">
+</p>
+
+<div id="mynetwork"></div>
+
+<script type="text/javascript">
+
+var nodes, edges, data;
+
+function initGraph(json) {
+  data = json
+
+  nodes = new vis.DataSet(data.items.map(function(label){
+    return {id: data.name_id_map[label], label: label}
+  }))
+  var deepEdges = data.items.map(function(label){
+    if(data.uses[label]) {
+      return data.uses[label].map(function(u){
+        return {from: data.name_id_map[label], to: data.name_id_map[u]}
+      })
+    }
+    return []
+  })
+  edges = new vis.DataSet([].concat.apply([], deepEdges))
+
+  var container = document.getElementById('mynetwork');
+  var options = {
+    autoResize: true,
+    configure: {
+      enabled: false,
+      filter: true,
+      showButton: true
+    },
+    interaction: {
+      "multiselect": true
+    },
+    edges: {
+      "arrows": {
+        "to": {
+          "enabled": true,
+          "scaleFactor": 1.0
+        }
+      },
+      "smooth": {
+        "forceDirection": "none"
+      }
+    },
+    physics: {
+      "forceAtlas2Based": {
+        "springLength": 100
+      },
+      "minVelocity": 0.75,
+      "solver": "forceAtlas2Based"
+    }
+  };
+  
+  var network = new vis.Network(container, {
+    nodes: nodes,
+    edges: edges
+  }, options);
+}
+
+function someMatches(arr, substrings) {
+  return arr.some(function(str){
+    return substrings.some(function(substring) {
+      return str.indexOf(substring) > -1
+    }) 
+  })
+}
+
+function filter(input) {
+  var uses = data.uses
+  var usedBy = data.used_by
+  var substrings = [], excluded = [];
+  var visibleNodeIds = []
+  input.value.split(" ").forEach(function(s){
+    if(s.length>0) {
+      if(s.startsWith("-")) {
+        excluded.push(s.substring(1,s.length + 1))
+      } else {
+        substrings.push(s);
+      }
+    }
+  })
+  
+  nodes.forEach(function(i){
+    var show = ( substrings.length == 0 || someMatches([i.label], substrings) || (uses[i.label] && someMatches(uses[i.label], substrings)) || (usedBy[i.label] && someMatches(usedBy[i.label], substrings))) && excluded.indexOf(i.label) == -1
+    nodes.update({
+      id:i.id,
+      hidden: !show
+    })
+    if(show) {
+      visibleNodeIds.push(data.name_id_map[i.label])  
+    }
+  })
+
+  edges.forEach(function(i){
+    var show = visibleNodeIds.indexOf(i.from) != -1 && visibleNodeIds.indexOf(i.to) != -1
+    edges.update({
+      id:i.id,
+      hidden: !show
+    })
+  })
+}
+
+function ajaxJson(method, url, onload) {
+  var oReq = new XMLHttpRequest();
+  oReq.onload = function (e) {
+    onload(e.target.response)
+  };
+  oReq.open(method, url, true);
+  oReq.responseType = 'json';
+  oReq.send();
+}
+
+ajaxJson('GET', "/rest/visjs", initGraph)
+
+</script>
+
+</body>
+</html>
