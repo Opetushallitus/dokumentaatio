@@ -12,8 +12,12 @@ var express = require('express')
 var glob = require("glob")
 var path = require('path')
 var fs = require('fs')
+var exphbs  = require('express-handlebars');
 
 var app = express();
+app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.set('view engine', 'handlebars');
+
 var project_infos = {};
 
 function reload(fn) {
