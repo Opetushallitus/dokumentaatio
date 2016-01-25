@@ -102,8 +102,8 @@ function someMatches(arr, substrings) {
 function filter(input) {
   var uses = data.uses
   var usedBy = data.used_by
-  var substrings = [], excluded = [];
   var visibleNodeIds = []
+  var substrings = [], excluded = [];
   input.value.split(" ").forEach(function(s){
     if(s.length>0) {
       if(s.startsWith("-")) {
@@ -144,7 +144,7 @@ function ajaxJson(method, url, onload) {
   oReq.send();
 }
 
-ajaxJson('GET', "/rest/visjs", initGraph)
+ajaxJson('GET', "/rest/uses", initGraph)
 
 function exportCanvas() {
   var mycanvas = document.getElementsByTagName("canvas")[0];
