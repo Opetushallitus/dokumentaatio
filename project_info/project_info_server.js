@@ -90,10 +90,12 @@ function uniq(arr) {
 reload(startServer);
 
 function startServer() {
-  function jsonResponse(res) { res.setHeader("Content-Type", "application/json"); }
+  function json(res) { res.setHeader("Content-Type", "application/json"); }
+  function text(res) { res.setHeader("Content-Type", "text/plain"); }
 
-  app.get('/filter_table.html', function(req, res){
-    res.render("filter_table", {title: "project_info.json", data: resolve_project_infos_and_fields()})
+  app.get('/project_infos.md', function(req, res){
+    text(res)
+    res.render("project_infos_md", {layout: false, data: resolve_project_infos_and_fields()})
   });
 
   app.get('/rest/project_infos', function(req, res){

@@ -1,0 +1,4 @@
+|{{#each data.fields}}{{this}}|{{/each}}
+|{{#each data.fields}}---|{{/each}}
+{{#each data.project_infos as |project_info|}}|{{#each @../fields}}{{lookup project_info this}}|{{/each}}
+{{/each}}

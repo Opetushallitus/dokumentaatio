@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>OPH project_info.json yhteenveto</title>
+
+  <style type="text/css">
+    #infos {
+      border: 1px solid lightgray;
+    }
+    #infos tr:nth-child(2n) {
+        background-color: #f8f8f8;
+    }
+  </style>
+</head>
+<body>
+
+Rajaa näytettävää sarakkeita <input onkeyup="filter(this);" type="text">
+
+<table id="infos">
+
+</table>
+
+<script type="text/javascript">
+
+ajaxJson('GET', "/rest/project_infos", initTable)
+
+var substrings=[], excluded=[];
+
+function filter(input) {
+  substrings = [], excluded = []
+  input.value.split(" ").forEach(function(s){
+    if(s.length>0) {
+      if(s.startsWith("-")) {
+        excluded.push(s.substring(1,s.length + 1))
+      } else {
+        substrings.push(s);
+      }
+    }
+  })
+  redraw()
+}
+
+function someMatches(arr, subs) {
+  return arr.some(function(str){
+    return subs.some(function(substring) {
+      return str.indexOf(substring) > -1
+    }) 
+  })
+}
+
+function ajaxJson(method, url, onload) {
+  var oReq = new XMLHttpRequest();
+  oReq.onload = function (e) {
+    onload(e.target.response)
+  };
+  oReq.open(method, url, true);
+  oReq.responseType = 'json';
+  oReq.send();
+}
+
+var json;
+
+function redraw() {
+  var table = document.getElementById('infos');
+  while (table.firstChild) {
+    table.removeChild(table.firstChild);
+  }
+  function add(dest, n, text) {
+    var node = document.createElement(n);
+    if(text) {
+      node.appendChild(document.createTextNode(text))
+    }
+    dest.appendChild(node)
+    return node;
+  }
+  var fields = json.fields.filter(function(f){
+    var hide = someMatches([f], excluded) || !(substrings.length == 0 || someMatches([f], substrings))
+    console.log("show", f, !hide)
+    return !hide 
+  })
+  var headerRow = add(table, "tr")
+  fields.forEach(function(f){add(headerRow, "th", f)})
+  json.project_infos.forEach(function(info){
+    var infoRow = add(table, "tr")
+    fields.forEach(function(f){add(infoRow, "td", info[f])})
+  })
+}
+
+function initTable(data) {
+  json = data;
+  redraw();
+}
+</script>
+
+</body>
+</html>
