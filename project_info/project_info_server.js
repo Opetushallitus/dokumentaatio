@@ -26,7 +26,9 @@ function reload(fn) {
   glob(p, function (er, files) {
     project_infos = files.map(function(f){ return JSON.parse(fs.readFileSync(f, 'utf8'))})
     console.log("read project_infos from " + files)
-    fn()
+    if(fn) {
+      fn()
+    }
   })
 }
 
@@ -88,6 +90,7 @@ function uniq(arr) {
 }
 
 reload(startServer);
+setInterval(reload, 15 * 60000)
 
 function startServer() {
   function json(res) { res.setHeader("Content-Type", "application/json"); }
@@ -99,18 +102,26 @@ function startServer() {
   });
 
   app.get('/rest/project_infos', function(req, res){
+    json(res)
     res.json(resolve_project_infos_and_fields())
   });
 
   app.get('/rest/uses', function(req, res){
+    json(res)
     res.json(resolve_uses())
   });
 
   app.get('/rest/reload', function(req, res){
+    json(res)
     reload(function(){
       res.json({"message": "Project_infos: " + project_infos.length})
     })
   });
+
+  app.post('/quit', function(req, res){
+    setTimeout(function(){process.exit(0)}, 20)
+    res.send("Quitting in 20ms...\n")
+  })
 
   var publicdir = __dirname + '/static';
   app.use(express.static(publicdir));
