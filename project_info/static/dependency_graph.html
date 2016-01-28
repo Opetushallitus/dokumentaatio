@@ -78,7 +78,8 @@ function initGraph(json) {
     },
     physics: {
       "forceAtlas2Based": {
-        "springLength": 100
+        "springLength": 5,
+        "avoidOverlap": 0.23
       },
       "minVelocity": 0.75,
       "solver": "forceAtlas2Based"
