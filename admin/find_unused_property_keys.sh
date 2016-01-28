@@ -44,6 +44,6 @@ echo "Unused property keys: $COUNT_NOTFOUND"
 echo "Not cound:"
 echo $LIST | tr " " "\n"
 echo "*************************************************************"
-echo "$1 without the unused property files:"
+echo "$1 without the unused property keys:"
 echo "*************************************************************"
 grep -Ev "^$(echo $LIST | sed -E "s/ /=|^/g")" $1 
