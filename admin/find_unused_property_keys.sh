@@ -46,4 +46,4 @@ echo $LIST | tr " " "\n"
 echo "*************************************************************"
 echo "$1 without the unused property keys:"
 echo "*************************************************************"
-grep -Ev "^$(echo $LIST | sed -E "s/ /=|^/g")" $1 
+grep -Ev "^$(echo $LIST | sed -E 's/\./\\./g'  | sed -E "s/ /=|^/g")" $1 
