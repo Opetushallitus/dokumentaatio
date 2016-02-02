@@ -32,8 +32,8 @@ ajaxJson('GET', "/rest/project_infos", initTable)
 function handleHash() {
   var h = window.location.href.split('#')[1]
   if (h && h.length > 0) {
-    filter(h)
     document.getElementById("q").value=h
+    filter(h)
   }
 }
 
