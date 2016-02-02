@@ -15,7 +15,7 @@
 </head>
 <body>
 
-Rajaa näytettävää sarakkeita <input onkeyup="filter(this);" type="text">
+Rajaa näytettävää sarakkeita <input onkeyup="filter(this.value);" type="text" id="q">
 
 <table id="infos">
 
@@ -23,13 +23,24 @@ Rajaa näytettävää sarakkeita <input onkeyup="filter(this);" type="text">
 
 <script type="text/javascript">
 
+var substrings=[], excluded=[];
+var json;
+
+handleHash()
 ajaxJson('GET', "/rest/project_infos", initTable)
 
-var substrings=[], excluded=[];
+function handleHash() {
+  var h = window.location.href.split('#')[1]
+  if (h && h.length > 0) {
+    filter(h)
+    document.getElementById("q").value=h
+  }
+}
 
-function filter(input) {
+function filter(value) {
+  window.location.hash=value
   substrings = [], excluded = []
-  input.value.split(" ").forEach(function(s){
+  value.split(" ").forEach(function(s){
     if(s.length>0) {
       if(s.startsWith("-")) {
         excluded.push(s.substring(1,s.length + 1))
@@ -38,7 +49,9 @@ function filter(input) {
       }
     }
   })
-  redraw()
+  if(json) {
+    redraw()
+  }
 }
 
 function someMatches(arr, subs) {
@@ -59,8 +72,6 @@ function ajaxJson(method, url, onload) {
   oReq.send();
 }
 
-var json;
-
 function redraw() {
   var table = document.getElementById('infos');
   while (table.firstChild) {
@@ -76,7 +87,7 @@ function redraw() {
   }
   var fields = json.fields.filter(function(f){
     var hide = someMatches([f], excluded) || !(substrings.length == 0 || someMatches([f], substrings))
-    console.log("show", f, !hide)
+//    console.log("show", f, !hide)
     return !hide 
   })
   var headerRow = add(table, "tr")
