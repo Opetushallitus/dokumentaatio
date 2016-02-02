@@ -4,7 +4,7 @@ Kaikkien projektien checkout
 
 Kaikkien projektien pull
 
-    for file in *; do (echo $file && cd $file && git pull && sleep 5); done
+    for file in *; do (echo $file && cd $file && git pull && sleep 2); done
 
 Hae CachingRestClient käyttävät tiedostot
 
