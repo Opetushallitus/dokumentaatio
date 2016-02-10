@@ -20,7 +20,12 @@
 <body>
 
 <p>
-Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text" id="q"> <a href="javscript:void(0)" onclick="exportCanvas()">Tee PNG</a>
+Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text" id="q">
+<select id="type" onchange="reload(this)">
+  <option selected="selected">project_infos</option>
+  <option>url_properties</option>
+</select>
+<a href="javascript:void(0)" onclick="exportCanvas()">Tee PNG</a>
 <a href="" id="download" download="palveluriippuvuudet.png"></a>
 </p>
 
@@ -156,7 +161,13 @@ function ajaxJson(method, url, onload) {
   oReq.send();
 }
 
-ajaxJson('GET', "/rest/project_infos/uses", initGraph)
+function reload() {
+  var e = document.getElementById("type");
+  var strType = e.options[e.selectedIndex].value;
+  ajaxJson('GET', "/rest/"+strType+"/uses", initGraph)
+}
+
+reload()
 
 function exportCanvas() {
   var mycanvas = document.getElementsByTagName("canvas")[0];
