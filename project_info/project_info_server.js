@@ -13,26 +13,66 @@ var glob = require("glob")
 var path = require('path')
 var fs = require('fs')
 var exphbs  = require('express-handlebars');
+var prop = require('properties-parser')
 
 var app = express();
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-var project_infos = [];
+var project_infos = [], url_properties = {}
 
 function reload(fn) {
-  var p = path.join(dir, "**/project_info*.json")
+  scanProjectInfos(fn)
+}
+
+function scanProjectInfos(fn) {
+  var p = path.join(dir, "**/*project_info.json")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     project_infos = files.map(function(f){ return JSON.parse(fs.readFileSync(f, 'utf8'))})
     console.log("read project_infos from " + files)
+    scanUrlProperties(fn)
+  })
+}
+
+function scanUrlProperties(fn) {
+  url_properties = {}
+  var p = path.join(dir, "**/+(*url.properties|*url_properties.json)")
+  console.log("Scanning for files matching " + p)
+  glob(p, function (er, files) {
+    files.forEach(function(f){
+      var filename = f.substr(f.lastIndexOf('/') + 1)
+      var project = filename.substring(0,filename.lastIndexOf("url")-1)
+      var suffix = f.substr(f.lastIndexOf('.'))
+      if(suffix === ".properties") {
+        url_properties[project] = prop.read(f)
+      } else {
+        // f contains code that sets window.url
+        var fStr = fs.readFileSync(f, 'utf8')
+        var evalWindowStr = "(function() {var window={};" + fStr + ";return window;})();"
+        url_properties[project] = eval(evalWindowStr).urls
+      }
+    })
+    console.log("read url_properties from " + files)
     if(fn) {
       fn()
     }
   })
 }
 
-function resolve_uses() {
+function generate_project_info_from_url_properties() {
+  return Object.keys(url_properties).map(function(project){
+    var used_services = Object.keys(url_properties[project]).map(function(key) {
+      return key.substring(0,key.indexOf("."))
+    })
+    return {
+      "name": project,
+      "uses": uniq(used_services)
+    }
+  })
+}
+
+function resolve_uses(project_info_list) {
   var uses = {}, used_by = {}, items = [];
   function add(j) {
     if(j.uses && j.name) {
@@ -49,7 +89,7 @@ function resolve_uses() {
       })
     }
   }
-  project_infos.forEach(function(i){
+  project_info_list.forEach(function(i){
     add(i);
     (i["projects"] || []).forEach(add)
   })
@@ -71,15 +111,11 @@ function resolve_uses() {
 function resolve_project_infos_and_fields() {
   var fields = [];
   project_infos.forEach(function(i){
-    for (var property in i) {
-      if (i.hasOwnProperty(property) && fields.indexOf(property) === -1) {
-        fields.push(property)
-      }
-    }    
+    fields = fields.concat(Object.keys(i))
   })
   return {
     project_infos: project_infos,
-    fields: fields
+    fields: uniq(fields)
   }
 }
 
@@ -106,15 +142,25 @@ function startServer() {
     res.json(resolve_project_infos_and_fields())
   });
 
-  app.get('/rest/uses', function(req, res){
+  app.get('/rest/project_infos/uses', function(req, res){
     json(res)
-    res.json(resolve_uses())
+    res.json(resolve_uses(project_infos))
+  });
+
+  app.get('/rest/url_properties', function(req, res){
+    json(res)
+    res.json(url_properties)
+  });
+
+  app.get('/rest/url_properties/uses', function(req, res){
+    json(res)
+    res.json(resolve_uses(generate_project_info_from_url_properties()))
   });
 
   app.get('/rest/reload', function(req, res){
     json(res)
     reload(function(){
-      res.json({"message": "Project_infos: " + project_infos.length})
+      res.json({"message": "Project_infos: " + project_infos.length + " Url_properties: " + Object.keys(url_properties)})
     })
   });
 

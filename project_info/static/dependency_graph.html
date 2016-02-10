@@ -62,7 +62,7 @@ function initGraph(json) {
           "background": "rgba(245,245,255,1)"
         },
         "font": {
-          "size": 18
+          "size": 20
         }
       },
     edges: {
@@ -78,7 +78,7 @@ function initGraph(json) {
     },
     physics: {
       "forceAtlas2Based": {
-        "springLength": 5,
+        "springLength": 25,
         "avoidOverlap": 0.23
       },
       "minVelocity": 0.75,
@@ -156,7 +156,7 @@ function ajaxJson(method, url, onload) {
   oReq.send();
 }
 
-ajaxJson('GET', "/rest/uses", initGraph)
+ajaxJson('GET', "/rest/project_infos/uses", initGraph)
 
 function exportCanvas() {
   var mycanvas = document.getElementsByTagName("canvas")[0];
