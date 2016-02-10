@@ -37,7 +37,7 @@ function scanProjectInfos(fn) {
 
 function scanUrlProperties(fn) {
   url_properties = {}
-  var p = path.join(dir, "**/+(*url.properties|*url_properties.json)")
+  var p = path.join(dir, "**/+(*url.properties|*url_properties.js)")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(f){
