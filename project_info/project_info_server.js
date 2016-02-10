@@ -67,7 +67,7 @@ function generate_project_info_from_url_properties() {
     })
     return {
       "name": project,
-      "uses": uniq(used_services)
+      "uses": uniq(used_services).join(" ")
     }
   })
 }
