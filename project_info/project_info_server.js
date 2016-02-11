@@ -50,7 +50,12 @@ function scanUrlProperties(fn) {
         // f contains code that sets window.url
         var fStr = fs.readFileSync(f, 'utf8')
         var evalWindowStr = "(function() {var window={};" + fStr + ";return window;})();"
-        url_properties[project] = eval(evalWindowStr).urls
+        var urlProperties = eval(evalWindowStr).url_properties;
+        if(urlProperties) {
+          url_properties[project] = urlProperties
+        } else {
+          console.log(f, "does not include url_properties:", fStr)
+        }
       }
     })
     console.log("read url_properties from " + files)
