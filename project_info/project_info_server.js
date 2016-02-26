@@ -37,12 +37,13 @@ function scanProjectInfos(fn) {
 
 function scanUrlProperties(fn) {
   url_properties = {}
-  var p = path.join(dir, "**/+(*url.properties|*url_properties.js)")
+  var p = path.join(dir, "**/+(*url.properties|*url_properties.js|*oph.properties|*oph_properties.js)")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(f){
       var filename = f.substr(f.lastIndexOf('/') + 1)
-      var project = filename.substring(0,filename.lastIndexOf("url")-1)
+      var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
+      var project = filename.substring(0,filename.lastIndexOf(postfix)-1)
       var suffix = f.substr(f.lastIndexOf('.'))
       if(suffix === ".properties") {
         url_properties[project] = prop.read(f)
