@@ -37,7 +37,7 @@ function scanProjectInfos(fn) {
 
 function scanUrlProperties(fn) {
   url_properties = {}
-  var p = path.join(dir, "**/+(*url.properties|*url_properties.js|*oph.properties|*oph_properties.js)")
+  var p = path.join(dir, "**/+(*url.properties|*url_properties.json|*oph.properties|*oph_properties.json)")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(f){
@@ -47,16 +47,10 @@ function scanUrlProperties(fn) {
       var suffix = f.substr(f.lastIndexOf('.'))
       if(suffix === ".properties") {
         url_properties[project] = prop.read(f)
+      } else if(suffix == ".json") {
+        url_properties[project] = JSON.parse(fs.readFileSync(f, 'utf8'))
       } else {
-        // f contains code that sets window.url
-        var fStr = fs.readFileSync(f, 'utf8')
-        var evalWindowStr = "(function() {var window={};" + fStr + ";return window;})();"
-        var urlProperties = eval(evalWindowStr).url_properties;
-        if(urlProperties) {
-          url_properties[project] = urlProperties
-        } else {
-          console.log(f, "does not include url_properties:", fStr)
-        }
+        throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
       }
     })
     console.log("read url_properties from " + files)
