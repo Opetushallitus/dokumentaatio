@@ -10,4 +10,4 @@ fi
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 npm install
-./project_info_server.js $1 &> logs/project_info_server_logs.txt
+./project_info_server.js $1
