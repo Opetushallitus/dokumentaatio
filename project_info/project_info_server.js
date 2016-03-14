@@ -125,7 +125,8 @@ function uniq(arr) {
   }).reverse();
 }
 
-reload(startServer);
+startServer()
+reload()
 setInterval(reload, 15 * 60000)
 
 function startServer() {
