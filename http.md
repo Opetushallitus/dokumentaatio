@@ -15,10 +15,10 @@ Jokainen HTTP-pyyntö menee opintopolku.fi:n nginx-proxyn läpi. nginx-proxy var
 
 ID cookie ja siihen lisättävät satunnaiset merkkijonot mahdollistavat sovelluspyyntöjen seuraamisen eri järjestelmien läpi:
 
-# Selain tekee HTTP-pyynnön: /rest/v1/oppilas/1.1.23, CSRF: 123ABC
-# nginx käsittelee pyynnön ja välittää sen eteenpäin: /rest/v1/oppilas/1.1.23, CSRF: 123ABC, ID: 123ABC;234XYZ
-# backend-sovellus tekee lisäpyynnön: /rest/v1/lisatiedot/1.1.23, ID: 123ABC;234XYZ
-# nginx käsittelee pyynnön ja välittää sen eteenpäin: /rest/v1/lisatiedot/1.1.23, ID: 123ABC;234XYZ;562ZXZ
+* Selain tekee HTTP-pyynnön: /rest/v1/oppilas/1.1.23, CSRF: 123ABC
+* nginx käsittelee pyynnön ja välittää sen eteenpäin: /rest/v1/oppilas/1.1.23, CSRF: 123ABC, ID: 123ABC;234XYZ
+* backend-sovellus tekee lisäpyynnön: /rest/v1/lisatiedot/1.1.23, ID: 123ABC;234XYZ
+* nginx käsittelee pyynnön ja välittää sen eteenpäin: /rest/v1/lisatiedot/1.1.23, ID: 123ABC;234XYZ;562ZXZ
 
 Lisätietoa: https://github.com/Opetushallitus/nginx-utils
 
