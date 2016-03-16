@@ -6,14 +6,14 @@ HTTP-pyynnön tekevän sovelluksen pitää lisätä pyyntöön "clientSubSystemC
 
 Sovellus voi lähettää clientSubSystemCode:n myös post parameter muodossa (case sensitive)
 
-## ID cookie
+## ID header
 
-Jokainen HTTP-pyyntö menee opintopolku.fi:n nginx-proxyn läpi. nginx-proxy varmistaa että jokaisessa pyynnössä on ID cookie:
-* Jos pyynnössä ei ole ID-cookieta, CSRF-keksin arvo kopioidaan ID-keksin arvoksi
-* Olemassaolevaan ID-keksiin lisätään satunnainen merkkijono.
-* Jos opintopolku.fi backend-sovellus tekee lisä-HTTP-pyyntöjä muihin palveluihin, sen pitää lähettää saatu ID-keksi eteenpäin ilman muutoksia:
+Jokainen HTTP-pyyntö menee opintopolku.fi:n nginx-proxyn läpi. nginx-proxy varmistaa että jokaisessa pyynnössä on ID header:
+* Jos pyynnössä ei ole ID-headeria, CSRF-keksin arvo kopioidaan ID-headerin arvoksi, ja siihen lisätään satunnainen merkkijono
+* Olemassaolevaan ID-headeriin lisätään satunnainen merkkijono.
+* Jos opintopolku.fi backend-sovellus tekee lisä-HTTP-pyyntöjä muihin palveluihin, sen pitää lähettää saatu ID-header eteenpäin ilman muutoksia.
 
-ID cookie ja siihen lisättävät satunnaiset merkkijonot mahdollistavat sovelluspyyntöjen seuraamisen eri järjestelmien läpi:
+ID header ja siihen lisättävät satunnaiset merkkijonot mahdollistavat sovelluspyyntöjen seuraamisen eri järjestelmien läpi:
 
 1. Selain tekee HTTP-pyynnön: /rest/v1/oppilas/1.1.23, CSRF: 123ABC
 2. nginx käsittelee pyynnön ja välittää sen eteenpäin: /rest/v1/oppilas/1.1.23, CSRF: 123ABC, ID: 123ABC;234XYZ
@@ -30,8 +30,8 @@ Tilaa muuttavissa HTTP-pyynnöissä (verbi muu kuin "GET", "HEAD", "OPTIONS") pi
 * "CSRF" post parameter (case sensitive) samalla arvolla
 
 Tilaa muuttavia HTTP-pyyntöjä tekevien sovellusten pitää huomioida CSRF:
-* Backend-sovelluksien pitää asettaa sekä cookie että header. Sovellukset voivat käyttää kovakoodattuja CSRF arvoa, esim. sama kuin clientSubSystemCode.
-* opintopolku.fi selainsovelluksien pitää palauttaa tilaa muuttavissa pyynnöissä CSRF header
+* Backend-sovelluksien pitää kutsuessaan toisia palveluja asettaa HTTP-pyyntöön sekä cookie että header. Sovellukset voivat käyttää kovakoodattuja CSRF arvoa, esim. sama kuin clientSubSystemCode.
+* Opintopolku.fi -selainsovelluksien pitää palauttaa tilaa muuttavissa pyynnöissä CSRF header, joka vastaa CSRF-cookieta
 * Selainsovellukset muissa kuin opintopolku.fi domaineissa: tilaa muuttavia pyyntöjä ei voi tehdä koska CSRF keksiä ei voi selaimessa lukea.
 
 opintopolku.fi:n nginx-proxy lisää HTTP-vastaukseen CSRF keksin, satunnaisella merkkijonolla, jos pyynnössä sitä ei ole.
