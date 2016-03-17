@@ -35,9 +35,29 @@ function scanProjectInfos(fn) {
   })
 }
 
+function flattenNested(obj, dest, keyprefix) {
+  if(!dest) {
+    dest = {}
+  }
+  Object.keys(obj).forEach(function(key){
+    var val = obj[key];
+    var newkey = key
+    if(keyprefix) {
+      newkey = keyprefix + "." + key;
+    }
+    if(typeof val === 'string') {
+      console.log("added", newkey, val)
+      dest[newkey] = val
+    } else {
+      flattenNested(val, dest, newkey)
+    }
+  })
+  return dest
+}
+
 function scanUrlProperties(fn) {
   url_properties = {}
-  var p = path.join(dir, "**/+(*url.properties|*url_properties.json|*oph.properties|*oph_properties.json|*oph_properties.js)")
+  var p = path.join(dir, "**/+(*url.properties|*url_properties.json|*oph.properties|*oph_properties.json|*oph_properties.js|*oph.js)")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(f){
@@ -48,9 +68,9 @@ function scanUrlProperties(fn) {
       if(suffix === ".properties") {
         url_properties[project] = prop.read(f)
       } else if(suffix == ".json") {
-        url_properties[project] = JSON.parse(fs.readFileSync(f, 'utf8'))
+        url_properties[project] = flattenNested(JSON.parse(fs.readFileSync(f, 'utf8')))
       } else if(suffix == ".js") {
-        // f contains code that sets module.exports
+        // f contains code that sets module.exports (es5) or export default (es6)
         var fStr = fs.readFileSync(f, 'utf8').replace("export default", "module.exports=")
         var evalWindowStr = "(function() {var module={exports:null};\n" + fStr + "\n;return module.exports;})();"
         var urlProperties = eval(evalWindowStr);
@@ -59,7 +79,7 @@ function scanUrlProperties(fn) {
         } else {
           console.log(f, "does not include url_properties:", fStr)
         }
-        url_properties[project] = urlProperties
+        url_properties[project] = flattenNested(urlProperties)
       } else {
         throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
       }
