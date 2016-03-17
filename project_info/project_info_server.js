@@ -46,7 +46,6 @@ function flattenNested(obj, dest, keyprefix) {
       newkey = keyprefix + "." + key;
     }
     if(typeof val === 'string') {
-      console.log("added", newkey, val)
       dest[newkey] = val
     } else {
       flattenNested(val, dest, newkey)
