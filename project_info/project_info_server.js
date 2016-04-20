@@ -64,28 +64,32 @@ function scanUrlProperties(fn) {
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(f){
-      var filename = f.substr(f.lastIndexOf('/') + 1)
-      var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
-      var project = filename.substring(0,filename.lastIndexOf(postfix)-1)
-      var suffix = f.substr(f.lastIndexOf('.'))
-      if(suffix === ".properties") {
-        url_properties[project] = prop.read(f)
-      } else if(suffix == ".json") {
-        url_properties[project] = flattenNested(JSON.parse(fs.readFileSync(f, 'utf8')))
-      } else if(suffix == ".js") {
-        // f contains code that sets module.exports (es5) or export default (es6)
-        var fStr = fs.readFileSync(f, 'utf8').replace("export default", "module.exports=")
-        var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
-        var result = eval(evalWindowStr);
-        var urlProperties = result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
-        if(urlProperties) {
-          url_properties[project] = urlProperties
+      try {
+        var filename = f.substr(f.lastIndexOf('/') + 1)
+        var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
+        var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
+        var suffix = f.substr(f.lastIndexOf('.'))
+        if (suffix === ".properties") {
+          url_properties[project] = prop.read(f)
+        } else if (suffix == ".json") {
+          url_properties[project] = flattenNested(JSON.parse(fs.readFileSync(f, 'utf8')))
+        } else if (suffix == ".js") {
+          // f contains code that sets module.exports (es5) or export default (es6)
+          var fStr = fs.readFileSync(f, 'utf8').replace("export default", "module.exports=")
+          var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
+          var result = eval(evalWindowStr);
+          var urlProperties = result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
+          if (urlProperties) {
+            url_properties[project] = urlProperties
+          } else {
+            console.log(f, "does not include url_properties:", fStr)
+          }
+          url_properties[project] = flattenNested(urlProperties)
         } else {
-          console.log(f, "does not include url_properties:", fStr)
+          throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
         }
-        url_properties[project] = flattenNested(urlProperties)
-      } else {
-        throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
+      } catch(err) {
+        console.log("Error processing file: " + f + ": ", e)
       }
     })
     console.log("read url_properties from " + files.join(", "))
