@@ -71,8 +71,9 @@ function scanUrlProperties(fn) {
       } else if(suffix == ".js") {
         // f contains code that sets module.exports (es5) or export default (es6)
         var fStr = fs.readFileSync(f, 'utf8').replace("export default", "module.exports=")
-        var evalWindowStr = "(function() {var module={exports:null};\n" + fStr + "\n;return module.exports;})();"
-        var urlProperties = eval(evalWindowStr);
+        var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
+        var result = eval(evalWindowStr);
+        var urlProperties = result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
         if(urlProperties) {
           url_properties[project] = urlProperties
         } else {
