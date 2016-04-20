@@ -56,7 +56,11 @@ function flattenNested(obj, dest, keyprefix) {
 
 function scanUrlProperties(fn) {
   url_properties = {}
-  var p = path.join(dir, "**/+(*url.properties|*url_properties.json|*oph.properties|*oph_properties.json|*oph_properties.js|*oph.js)")
+  var prefixes = [
+    "*url.properties", "*oph.properties",
+    "*url_properties.json", "*oph_properties.json", "*oph.json",
+    "*oph_properties.js", "*oph.js"]
+  var p = path.join(dir, "**/+("+prefixes.join("|")+")")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(f){
@@ -84,7 +88,7 @@ function scanUrlProperties(fn) {
         throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
       }
     })
-    console.log("read url_properties from " + files)
+    console.log("read url_properties from " + files.join(", "))
     if(fn) {
       fn()
     }
@@ -93,9 +97,13 @@ function scanUrlProperties(fn) {
 
 function generate_project_info_from_url_properties() {
   return Object.keys(url_properties).map(function(project){
-    var used_services = Object.keys(url_properties[project]).map(function(key) {
-      return key.substring(0,key.indexOf("."))
-    })
+    var used_services = Object.keys(url_properties[project])
+        .filter(function(key) {
+          return key.indexOf(".") > 0
+        })
+        .map(function(key) {
+          return key.substring(0,key.indexOf("."))
+        })
     return {
       "name": project,
       "uses": uniq(used_services).join(" ")
