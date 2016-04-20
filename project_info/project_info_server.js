@@ -101,35 +101,50 @@ function scanUrlProperties(fn) {
 
 function generate_project_info_from_url_properties() {
   return Object.keys(url_properties).map(function(project){
-    var used_services = Object.keys(url_properties[project])
-        .filter(function(key) {
-          return key.indexOf(".") > 0
-        })
-        .map(function(key) {
-          return key.substring(0,key.indexOf("."))
-        })
+    var moreInfo = {}
+    var properties = url_properties[project];
+    var used_services = Object.keys(properties)
+      .filter(function(key) {
+        return key.indexOf(".") > 0
+      })
+      .map(function(key) {
+        var service = key.substring(0,key.indexOf("."));
+        var moreInfoKey = project + "-" + service;
+        moreInfo[moreInfoKey] = (moreInfo[moreInfoKey] || [])
+        moreInfo[moreInfoKey].push(key + "=" + properties[key])
+        return service
+      })
     return {
       "name": project,
-      "uses": uniq(used_services).join(" ")
+      "uses": uniq(used_services).join(" "),
+      "dependenciesPerService": moreInfo
     }
+  })
+}
+
+function merge(dest, from) {
+  Object.keys(from).forEach(function(key){
+    dest[key]=from[key];
   })
 }
 
 function resolve_uses(project_info_list) {
   var uses = {}, used_by = {}, items = [];
+  var dependenciesPerService = {}
   function add(j) {
     if(j.uses && j.name) {
       var name = j.name
-      var arr = j.uses.split(" ")
-      uses[name] = arr
+      var usedServicesAsArr = j.uses.split(" ")
+      uses[name] = usedServicesAsArr
       items.push(name)
-      arr.forEach(function(u){
+      usedServicesAsArr.forEach(function(u){
         items.push(u)
         if(!used_by[u]) {
           used_by[u] = []
         }
         used_by[u].push(name)
       })
+      merge(dependenciesPerService, j.dependenciesPerService || {})
     }
   }
   project_info_list.forEach(function(i){
@@ -147,7 +162,8 @@ function resolve_uses(project_info_list) {
     used_by: used_by,
     items: items,
     id_name_map: id_name_map,
-    name_id_map: name_id_map
+    name_id_map: name_id_map,
+    dependenciesPerService: dependenciesPerService
   }
 }
 

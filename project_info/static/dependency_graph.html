@@ -35,6 +35,10 @@ Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text"
 
 var nodes, edges, data;
 
+function makeLineTitle(label, u, moreInfo) {
+  return "<b>" + label + " -> " + u + "</b><br>" + moreInfo
+}
+
 function initGraph(json) {
   data = json
 
@@ -44,7 +48,7 @@ function initGraph(json) {
   var deepEdges = data.items.map(function(label){
     if(data.uses[label]) {
       return data.uses[label].map(function(u){
-        return {from: data.name_id_map[label], to: data.name_id_map[u]}
+        return {from: data.name_id_map[label], to: data.name_id_map[u], title: makeLineTitle(label, u, data.dependenciesPerService[label + "-" + u].join("<br>"))}
       })
     }
     return []
