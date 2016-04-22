@@ -62,14 +62,14 @@ function makeNode(label){
     title += "<br>"
   }
 
-  if(data.uses[label]) {
+  if(data.uses[label] && data.uses[label].length > 0 ) {
     data.uses[label].forEach(function(destLabel){
       title += makeService2ServiceText(label, destLabel)
       title += "<br>"
     })
   }
 
-  if(data.used_by[label]) {
+  if(data.used_by[label] && data.used_by[label].length > 0 ) {
     data.used_by[label].forEach(function(destLabel){
       title += makeService2ServiceText(destLabel, label)
       title += "<br>"
