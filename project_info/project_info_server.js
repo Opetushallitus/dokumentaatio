@@ -54,6 +54,22 @@ function flattenNested(obj, dest, keyprefix) {
   return dest
 }
 
+function parseProperties(f, originalFileContent) {
+  var suffix = f.substr(f.lastIndexOf('.'))
+  if (suffix === ".properties") {
+    return prop.read(f)
+  } else if (suffix == ".json") {
+    return JSON.parse(originalFileContent)
+  } else if (suffix == ".js") {
+    // f contains code that sets module.exports (es5) or export default (es6)
+    var fStr = originalFileContent.replace("export default", "module.exports=")
+    var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
+    var result = eval(evalWindowStr);
+    return result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
+  }
+  throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
+}
+
 function scanUrlProperties(fn) {
   url_properties = {}
   var prefixes = [
@@ -63,33 +79,27 @@ function scanUrlProperties(fn) {
   var p = path.join(dir, "**/+("+prefixes.join("|")+")")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
-    files.forEach(function(f){
+    files.forEach(function(filePath){
       try {
-        var filename = f.substr(f.lastIndexOf('/') + 1)
+        var filename = filePath.substr(filePath.lastIndexOf('/') + 1)
         var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
         var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
-        var suffix = f.substr(f.lastIndexOf('.'))
-        if (suffix === ".properties") {
-          url_properties[project] = prop.read(f)
-        } else if (suffix == ".json") {
-          url_properties[project] = flattenNested(JSON.parse(fs.readFileSync(f, 'utf8')))
-        } else if (suffix == ".js") {
-          // f contains code that sets module.exports (es5) or export default (es6)
-          var fStr = fs.readFileSync(f, 'utf8').replace("export default", "module.exports=")
-          var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
-          var result = eval(evalWindowStr);
-          var urlProperties = result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
-          if (urlProperties) {
-            url_properties[project] = urlProperties
-          } else {
-            console.log(f, "does not include url_properties:", fStr)
-          }
-          url_properties[project] = flattenNested(urlProperties)
+        var originalFileContent = fs.readFileSync(filePath, 'utf8')
+        var properties = parseProperties(filePath, originalFileContent);
+
+        if (properties) {
+          var urlPropertyInfo = {
+            name: project,
+            properties: flattenNested(properties),
+            path: filePath,
+            originalFileContent: originalFileContent
+            };
+            url_properties[project] = urlPropertyInfo
         } else {
-          throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
+          console.log(filePath, "does not include url_properties:", originalFileContent)
         }
       } catch(err) {
-        console.log("Error processing file: " + f + ": ", e)
+        console.log("Error processing file: " + filePath + ": ", e)
       }
     })
     console.log("read url_properties from " + files.join(", "))
@@ -101,24 +111,24 @@ function scanUrlProperties(fn) {
 
 function generate_project_info_from_url_properties() {
   return Object.keys(url_properties).map(function(project){
-    var moreInfo = {}
-    var properties = url_properties[project];
+    var s2sInfo = {}
+    var urlPropertyInfo = url_properties[project];
+    var properties = urlPropertyInfo.properties
     var used_services = Object.keys(properties)
       .filter(function(key) {
         return key.indexOf(".") > 0
       })
       .map(function(key) {
-        var service = key.substring(0,key.indexOf("."));
-        var moreInfoKey = project + "-" + service;
-        moreInfo[moreInfoKey] = (moreInfo[moreInfoKey] || [])
-        moreInfo[moreInfoKey].push(key + "=" + properties[key])
-        return service
+        var destService = key.substring(0,key.indexOf("."));
+        var s2sKey = project + "." + destService;
+        s2sInfo[s2sKey] = (s2sInfo[s2sKey] || [])
+        s2sInfo[s2sKey].push(key + "=" + properties[key])
+        return destService
       })
-    return {
-      "name": project,
-      "uses": uniq(used_services).join(" "),
-      "dependenciesPerService": moreInfo
-    }
+    return merge({
+      uses: uniq(used_services).join(" "),
+      service2service : s2sInfo
+    }, urlPropertyInfo)
   })
 }
 
@@ -126,11 +136,13 @@ function merge(dest, from) {
   Object.keys(from).forEach(function(key){
     dest[key]=from[key];
   })
+  return dest
 }
 
 function resolve_uses(project_info_list) {
   var uses = {}, used_by = {}, items = [];
-  var dependenciesPerService = {}
+  var service2service = {}
+  var project_info_map = {}
   function add(j) {
     if(j.uses && j.name) {
       var name = j.name
@@ -144,12 +156,13 @@ function resolve_uses(project_info_list) {
         }
         used_by[u].push(name)
       })
-      merge(dependenciesPerService, j.dependenciesPerService || {})
+      merge(service2service, j.service2service || {})
     }
   }
   project_info_list.forEach(function(i){
     add(i);
     (i["projects"] || []).forEach(add)
+    project_info_map[i.name]=i
   })
   items = uniq(items)
   var id_name_map = {}, name_id_map = {};
@@ -163,7 +176,8 @@ function resolve_uses(project_info_list) {
     items: items,
     id_name_map: id_name_map,
     name_id_map: name_id_map,
-    dependenciesPerService: dependenciesPerService
+    service2service: service2service,
+    project_infos: project_info_map
   }
 }
 
