@@ -16,6 +16,7 @@
 <body>
 
 Rajaa näytettävää <input onkeyup="filter(this.value);" type="text" id="q">
+<span id="filterInfo"></span>
 
 <table id="infos">
 
@@ -96,6 +97,7 @@ function redraw() {
     var infoRow = add(table, "tr")
     row.forEach(function(txt){add(infoRow, "td", txt)})
   })
+  document.getElementById("filterInfo").textContent = "Rows:" + rows.length + "/" + data.rows.length
 }
 
 function flatten(arr) {

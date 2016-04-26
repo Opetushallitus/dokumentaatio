@@ -21,6 +21,7 @@
 
 <p>
 Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text" id="q">
+  <span id="filterInfo"></span>
 <select id="type" onchange="reload(this)">
   <option>project_infos</option>
   <option selected="selected">url_properties</option>
@@ -98,6 +99,7 @@ function initGraph(json) {
     return []
   })
   edges = new vis.DataSet([].concat.apply([], deepEdges))
+  document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
 
   var container = document.getElementById('mynetwork');
   var options = {
@@ -178,7 +180,7 @@ function filter(value) {
       }
     }
   })
-  
+  var visibleNodeCount = 0, visibleEdgeCount = 0;
   nodes.forEach(function(i){
     var show = ( substrings.length == 0 || someMatches([i.label], substrings) || (uses[i.label] && someMatches(uses[i.label], substrings)) || (usedBy[i.label] && someMatches(usedBy[i.label], substrings))) && excluded.indexOf(i.label) == -1
     nodes.update({
@@ -186,7 +188,8 @@ function filter(value) {
       hidden: !show
     })
     if(show) {
-      visibleNodeIds.push(data.name_id_map[i.label])  
+      visibleNodeIds.push(data.name_id_map[i.label])
+      visibleNodeCount += 1
     }
   })
 
@@ -196,7 +199,12 @@ function filter(value) {
       id:i.id,
       hidden: !show
     })
+    if(show) {
+      visibleEdgeCount += 1
+    }
   })
+
+  document.getElementById("filterInfo").textContent = "Nodes:" + visibleNodeCount + "/" + nodes.length + " Links: " + visibleEdgeCount + "/" + edges.length
 }
 
 function ajaxJson(method, url, onload) {
