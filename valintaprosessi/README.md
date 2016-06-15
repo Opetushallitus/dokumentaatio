@@ -209,7 +209,10 @@ Jos haku ei käytä sijoittelua, virkailijat asettavat sijoittelun tilan käsin.
   - `PERUUNTUNUT`: Hakijan *korkeamman prioriteetin* hakutoive on mennyt
     `HYVAKSYTTY` tilaan jolloin tämä hakutoive peruuntuu. Tätä ei tapahdu
     jos hakija on [`VASTAANOTTANUT_SITOVASTI`](#sijoittelun-tila) tämän
-    hakutoiveen. Muita tilanteita: hakukohteen varasijatäyttö on päättynyt tai siellä ole lainkaan varasijatäyttöä.
+    hakutoiveen. Muita tilanteita:
+      * hakukohteen varasijatäyttö on päättynyt tai siellä ole lainkaan varasijatäyttöä, tai
+      * haku on yhden paikan säädöksen piirissä ja hakija on jo ottanut samalle koulutuksen alkamiskaudelle
+       vastaan toisen yhden paikan säädöksen piirissä olevan opiskelupaikan
 
 ![Sijoittelun tilat sijoittelua käyttävän haun kanssa](img/sijoittelun_tilat.png)
 
@@ -225,34 +228,41 @@ Tällöin [sijoittelun tila](#sijoittelun-tila) ilmestyy hakijalle [OHP:uun](#oh
 edelleen mahdollistaen *vastaanoton tilan* asettamisen siinä tapauksessa
 että hakutoive on [hyväksytty](#hyvaksytty).
 
-*vastaanoton tila* asetetaan hakijan ilmoituksen
-mukaan joko virkailijan tai hakijan itsensä toimesta.
-*Vastaanoton tila* voi muuttua myös sijoittelun tai vastaanoton seurauksena.
+*Vastaanoton tila* asetetaan hakijan ilmoituksen
+mukaan joko virkailijan tai hakijan itsensä toimesta.<br/>
+Vastaanoton tila voi muuttua myös sijoittelun tai vastaanoton seurauksena.</br>
+Vastaanoton tila päätellään valintarekisteri-tietokannan `vastaanotot` -tauluun tallennetuista eventeistä.
 
 - Tilat joita käytetään hakutyypistä riippumatta
-  - `KESKEN`: Odottaa hakijan vastaanottopäätöstä
-  - `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut
-    vastaanottopäätöstään määräaikaan mennessä
-  - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta. Jos vastaanottoa ei suoriteta *määräaikana* päädytään tähän tilaan.
+  - `KESKEN`: Odottaa hakijan vastaanottopäätöstä.
+  - `EI_VASTAANOTETTU_MAARA_AIKANA`: Hakija ei ilmoittanut vastaanottopäätöstään määräaikaan mennessä
+    ja virkailija merkitsi vastaanoton myöhästyneeksi virkailijan käyttöliittymästä.
+  - `PERUNUT`: Hakija itse peruu vastaanoton OHP:n kautta. Jos vastaanottoa ei suoriteta *määräaikana*,
+    hakijalle näytetään tämä tila.
   - `PERUUTETTU`: Oppilaitos peruu (hylkää) jo hyväksytyn paikan. Estää
-   sijoittelua tekemästä tilamuutoksia, esim: hakija on huijannut haussa.
-
-- Vain toisen asteen hauissa käytettävät tilat
-  - `VASTAANOTTANUT`: Hakija ilmoittaa vastaanoton 2. asteen haussa
+    sijoittelua tekemästä tilamuutoksia, esim: hakija on huijannut haussa.
+  - `VASTAANOTTANUT_SITOVASTI`: Hakija sitoutuu paikan vastaanottoon. Mikäli haku on yhden paikan säädöksen
+    piirissä, vastaanotto estää muiden yhden paikan säädöksen piirissä olevien paikkojen vastaanoton samalle
+    koulutuksen alkamiskaudelle.<br/>
+    **2. asteella tämä tila näytetään nimellä _VASTAANOTTANUT_.**
 
 - Vain korkeakouluhauissa käytettävät tilat
   - `EHDOLLISESTI_VASTAANOTTANUT`: KK-hakija vastaanottaa paikan jos
     korkeamman prioriteetin hakutoivetta vastaava [paikka](#opiskelupaikka) ei vapaudu
-    määräaikaan mennessä. Yhden paikan sääntö voimassa!
-  - `VASTAANOTTANUT_SITOVASTI`: KK-hakija sitoutuu paikan vastaanottoon. Yhden paikan sääntö voimassa: muiden vastaanotettavissa olevien paikkojen vastaanoton tila asetetaan `PERUNUT` tilaan.
+    määräaikaan mennessä. Mikäli haku on yhden paikan säädöksen piirissä, vastaanotto
+    estää muiden yhden paikan säädöksen piirissä olevien paikkojen vastaanoton samalle
+    koulutuksen alkamiskaudelle.<br/>
+    Tämä tila on käytössä vain hauissa, joissa on prioriteetit,
+    sijoittelu ja varasijatäyttö (joita käytetään ainakin toistaiseksi vain korkeakouluhauissa).
 
-- Tilat joita ei käytetä enää nykyisissä tai tulevissa hauissa
+- Tilat joita ei käytetä enää nykyisissä tai tulevissa hauissa eikä koodissa
   - `ILMOITETTU`: Ei käytetä enää, vanhoissa ennen 2014 olleissa 2. asteen haussa
     vastasi julkaistavuustietoa
   - `VASTAANOTTANUT_LASNA`: Ei käytetä enää, vanhoissa ennen 2014 olleissa 2. asteen
     haussa vastasi julkaistavuustietoa
   - `VASTAANOTTANUT_POISSAOLEVA`: Ei käytetä enää, vanhoissa ennen 2014 olleissa 2.
     asteen haussa vastasi julkaistavuustietoa
+  - `VASTAANOTTANUT`: Ei käytetä enää, käytettiin ennen kesää 2016 2. asteella `VASTAANOTTANUT_SITOVASTI` -tilan sijasta.
 
 ![Vastaanottotilan siirtymät](img/vastaanotto.png)
 
@@ -291,8 +301,8 @@ koulutuksen alkamiskaudesta.
   - Tietokanta: sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
 - Vastaanoton tila
   - Käyttöliittymä: vastaanotto, valintatuloksen tila, vastaanottotieto
-  - Koodi: sijoittelu-algoritmi-domain: Valintatulos.tila
-  - Tietokanta: sijoitteludb: Valintatulos.tila
+  - Koodi: valinta-tulos-service: Hakutoiveentulos.vastaanottotila, sijoittelu-algoritmi-domain: Valintatulos.tila
+  - Tietokanta: valintarekisteri: `select * from newest_vastaanotot;` -- `KESKEN`-tila näytetään, jos tietoja ei löydy
 - Ilmoittautumisen tila
   - Käyttöliittymä: ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto
   - Koodi: sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila
