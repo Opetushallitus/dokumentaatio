@@ -1,0 +1,13 @@
+#!/usr/bin/bash
+
+HOST=$1
+SERVICE=$2
+#PATH_TO_DEPLOY="${HOME}/src/oph/deploy"
+if [ -z "${PATH_TO_DEPLOY}" ]
+then
+    printf "Please set PATH_TO_DEPLOY\n"
+    exit 1
+fi
+HOST_FILE="${PATH_TO_DEPLOY}/hosts/${HOST}_hosts.txt"
+
+sed -n -e "/\[${SERVICE}/,/^$/ p" "${HOST_FILE}"
