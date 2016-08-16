@@ -1,6 +1,6 @@
-Kaikkien projektien checkout
+Kaikkien projektien checkout, ohittaa olemassaolevat repot ja lataa vain uudet
 
-    curl -u [USER] -s https://api.github.com/orgs/Opetushallitus/repos?per_page=200 | ruby -rubygems -e 'require "json"; JSON.load(STDIN.read).each { |repo| %x[git clone #{repo["ssh_url"]} ]}'
+    curl -u [USER] -s https://api.github.com/orgs/Opetushallitus/repos?per_page=200 | ruby -rubygems -e 'require "json"; JSON.load(STDIN.read).each { |repo| %x[git clone #{repo["ssh_url"]} unless File.exist?(repo["name"]) ]}'
 
 Kaikkien projektien pull
 
