@@ -54,15 +54,13 @@ function makeLine(label, destLabel){
 
 function makeNode(label){
 
-  var visibleLabel = label;
-
-  // title is the popup that appears when mouse hovers over the node
+  var labelHighlightBold = false;
   var title = "<h3>" + label + "</h3>"
   if(data.project_infos[label]) {
     var info = data.project_infos[label]
     if(info.path) {
       title += "File: " + info.path + "<br>"
-      visibleLabel = "<b>" + label + "</b>"
+      labelHighlightBold = true;
     }
     title += "<br>"
   }
@@ -81,12 +79,13 @@ function makeNode(label){
     })
   }
 
-  // returns the node
-  return {
+  var node = {
     id: data.name_id_map[label],
-    label: visibleLabel,
-    title: title
-  }
+    label: label,
+    title: title,
+    labelHighlightBold: labelHighlightBold
+  };
+  return node
 }
 function initGraph(json) {
   data = json
