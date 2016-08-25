@@ -7,8 +7,7 @@ sijoitettu omaan hakemistoonsa.
 
 * [Valintaprosessi](valintaprosessi/README.md) - Hakijoiden hakutoiveiden
   saattaminen vastaanotetuiksi opiskelupaikoiksi.
-* [opintopolku.fi HTTP-käytännöt](http.md) - Hakijoiden hakutoiveiden
-  saattaminen vastaanotetuiksi opiskelupaikoiksi.
+* [opintopolku.fi HTTP-käytännöt](http.md) - Sovellusten välisissä HTTP pyynnöissä käytettävät headerit ja muut käytännöt.
 * [Oneliners](admin/unix-oneliners.md) - Hyödyllisiä oneliner-komentoja
 
 ## Dokumentaation kehitys
