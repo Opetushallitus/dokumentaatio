@@ -99,7 +99,7 @@ function scanUrlProperties(fn) {
           console.log(filePath, "does not include url_properties:", originalFileContent)
         }
       } catch(err) {
-        console.log("Error processing file: " + filePath + ": ", e)
+        console.log("Error processing file: " + filePath + ": ", err)
       }
     })
     console.log("read url_properties from " + files.join(", "))
