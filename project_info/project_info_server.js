@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 "use strict";
 
-var dir = process.argv[2]
+var workDir = process.argv[2]
 
-if(!dir) {
+if(!workDir) {
   console.log("Please define work directory")
   process.exit(1);
 }
@@ -13,28 +13,38 @@ var glob = require("glob")
 var path = require('path')
 var fs = require('fs')
 var exphbs  = require('express-handlebars');
-var prop = require('properties-parser')
+var PropertiesParser = require('properties-parser')
 
 var app = express();
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-var project_infos = [], url_properties = {}
-
-function reload(fn) {
-  scanProjectInfos(fn)
+var serverState = {
+  projectInfos: [], urlProperties : {}
 }
 
+function reload(fn) {
+  scanProjectInfos(function(){scanUrlProperties(fn)})
+}
+
+// reads JSON files matching workDir/**/*project_info.json
+// project_info.json is just a map of values and is shown in an excel like table per project
+// {name: "Test", makeFile: "Yes"}
+// Project | makeFile
+// Test    | Yes
 function scanProjectInfos(fn) {
-  var p = path.join(dir, "**/*project_info.json")
+  var p = path.join(workDir, "**/*project_info.json")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
-    project_infos = files.map(function(f){ return JSON.parse(fs.readFileSync(f, 'utf8'))})
+    serverState.projectInfos = files.map(function(f){ return JSON.parse(fs.readFileSync(f, 'utf8'))})
     console.log("read project_infos from " + files)
-    scanUrlProperties(fn)
+    fn()
   })
 }
 
+// flattens nested map by concatenating keys with commas
+// {test: {map: {key: value}}} -> {"test.map.key": value}
+// note: supports only strings or maps as values
 function flattenNested(obj, dest, keyprefix) {
   if(!dest) {
     dest = {}
@@ -54,29 +64,34 @@ function flattenNested(obj, dest, keyprefix) {
   return dest
 }
 
-function parseProperties(f, originalFileContent) {
-  var suffix = f.substr(f.lastIndexOf('.'))
+// parses properties from .properties .json and .js files
+function parseProperties(filepath, originalFileContent) {
+  var suffix = filepath.substr(filepath.lastIndexOf('.'))
   if (suffix === ".properties") {
-    return prop.read(f)
+    return PropertiesParser.read(filepath)
   } else if (suffix == ".json") {
     return JSON.parse(originalFileContent)
   } else if (suffix == ".js") {
-    // f contains code that sets module.exports (es5) or export default (es6)
+    // file contains code that sets module.exports (es5) or export default (es6). replace converts es6 to es5
     var fStr = originalFileContent.replace("export default", "module.exports=")
+    // eval inside function for security, inspect values returned from eval's result
     var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
     var result = eval(evalWindowStr);
+    // eval result might contain result.moduleExports (es6) or result.windowUrls (es5)
     return result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
   }
-  throw new Error("Unsupported file format: " + f + " with suffix " + suffix)
+  throw new Error("Unsupported file format: " + filepath + " with suffix " + suffix)
 }
 
+// scans for .properties .json and .js files and loads them in to urlProperties
+// creates a list of project_info kind of map with {name: .. properties: .. path: .. originalFileContent: ..}
 function scanUrlProperties(fn) {
-  url_properties = {}
+  var scannedProperties = {}
   var prefixes = [
-    "*url.properties", "*oph.properties",
-    "*url_properties.json", "*oph_properties.json", "*oph.json",
-    "*oph_properties.js", "*oph.js"]
-  var p = path.join(dir, "**/+("+prefixes.join("|")+")")
+    "*oph.properties", "*oph.json", "*oph.js", "*url.properties", // preferred suffixes
+    "*url_properties.json", "*oph_properties.json", "*oph_properties.js"
+  ]
+  var p = path.join(workDir, "**/+("+prefixes.join("|")+")")
   console.log("Scanning for files matching " + p)
   glob(p, function (er, files) {
     files.forEach(function(filePath){
@@ -94,7 +109,7 @@ function scanUrlProperties(fn) {
             path: filePath,
             originalFileContent: originalFileContent
             };
-            url_properties[project] = urlPropertyInfo
+            scannedProperties[project] = urlPropertyInfo
         } else {
           console.log(filePath, "does not include url_properties:", originalFileContent)
         }
@@ -103,91 +118,102 @@ function scanUrlProperties(fn) {
       }
     })
     console.log("read url_properties from " + files.join(", "))
+    serverState.urlProperties = scannedProperties
     if(fn) {
       fn()
     }
   })
 }
 
-function generate_project_info_from_url_properties() {
-  return Object.keys(url_properties).map(function(project){
+// convert url properties to project info
+// collects "uses" and "service2service" information from flattened "properties"
+// "service2service" groups properties by {"thisProject.destProject": ["key=value"]}
+function appendUsesAndS2SInfoToUrlProperties(urlProperties) {
+  return Object.keys(urlProperties).map(function(project){
     var s2sInfo = {}
-    var urlPropertyInfo = url_properties[project];
+    var urlPropertyInfo = urlProperties[project];
     var properties = urlPropertyInfo.properties
-    var used_services = Object.keys(properties)
+    var usedServices = []
+    Object.keys(properties)
+      // ignore keys without .
       .filter(function(key) {
         return key.indexOf(".") > 0
       })
-      .map(function(key) {
+      .forEach(function(key) {
         var destService = key.substring(0,key.indexOf("."));
         var s2sKey = project + "." + destService;
         s2sInfo[s2sKey] = (s2sInfo[s2sKey] || [])
         s2sInfo[s2sKey].push(key + "=" + properties[key])
-        return destService
+        usedServices.push(destService)
       })
-    return merge({
-      uses: uniq(used_services).join(" "),
-      service2service : s2sInfo
-    }, urlPropertyInfo)
+    return copyMap(urlPropertyInfo, {
+        uses: uniq(usedServices).join(" "),
+        service2service: s2sInfo
+    })
   })
 }
 
-function merge(dest, from) {
+function copyMap(from, target) {
   Object.keys(from).forEach(function(key){
-    dest[key]=from[key];
+    target[key]=from[key];
   })
-  return dest
+  return target
 }
 
-function resolve_uses(project_info_list) {
-  var uses = {}, used_by = {}, items = [];
-  var service2service = {}
-  var project_info_map = {}
-  function add(j) {
-    if(j.uses && j.name) {
-      var name = j.name
-      var usedServicesAsArr = j.uses.split(" ")
-      uses[name] = usedServicesAsArr
-      items.push(name)
+// walks through the projectInfoList and collects information that is used to generate the graph
+function createGraphInfoFromProjectInfos(projectInfoList) {
+  var allData = {
+    // use information, by project.name
+    uses : {}, used_by : {},
+    // list of project.names
+    items: [],
+    // maps for project.name's id in items
+    id_name_map: {}, name_id_map: {},
+    // lists each myProject.destProject dependency and the original property value {"thisProject.destProject": ["key=value"]}
+    service2service: {},
+    // project_info list in map, key = project.name
+    project_infos: {}
+  };
+
+  function add(projectInfo) {
+    if(projectInfo.uses && projectInfo.name) {
+      var name = projectInfo.name
+      var usedServicesAsArr = projectInfo.uses.split(" ");
+      allData.uses[name] = usedServicesAsArr
+      allData.items.push(name)
       usedServicesAsArr.forEach(function(u){
-        items.push(u)
-        if(!used_by[u]) {
-          used_by[u] = []
+        allData.items.push(u)
+        if(!allData.used_by[u]) {
+          allData.used_by[u] = []
         }
-        used_by[u].push(name)
+        allData.used_by[u].push(name)
       })
-      merge(service2service, j.service2service || {})
+      copyMap(projectInfo.service2service || {}, allData.service2service)
     }
   }
-  project_info_list.forEach(function(i){
-    add(i);
-    (i["projects"] || []).forEach(add)
-    project_info_map[i.name]=i
+  // add information from every projectInfo and go through projectInfo.projects
+  projectInfoList.forEach(function(projectInfo){
+    add(projectInfo);
+    (projectInfo["projects"] || []).forEach(add)
+    allData.project_infos[projectInfo.name]=projectInfo
+  });
+  allData.items = uniq(allData.items)
+  allData.items.forEach(function(name, index){
+    allData.id_name_map[index]=name
+    allData.name_id_map[name]=index
   })
-  items = uniq(items)
-  var id_name_map = {}, name_id_map = {};
-  items.forEach(function(name, i){
-    id_name_map[i]=name
-    name_id_map[name]=i   
-  })
-  return {
-    uses: uses,
-    used_by: used_by,
-    items: items,
-    id_name_map: id_name_map,
-    name_id_map: name_id_map,
-    service2service: service2service,
-    project_infos: project_info_map
-  }
+  return allData
 }
 
-function resolve_project_infos_and_fields() {
+// generates map for showing the project info table
+// {fields: ["name","makeFile"], project_infos:[{name: "Test", makeFile: "Yes"}]}
+function resolveProjectInfoTable(projectInfos) {
   var fields = [];
-  project_infos.forEach(function(i){
+  projectInfos.forEach(function(i){
     fields = fields.concat(Object.keys(i))
   })
   return {
-    project_infos: project_infos,
+    project_infos: projectInfos,
     fields: uniq(fields)
   }
 }
@@ -208,33 +234,33 @@ function startServer() {
 
   app.get('/project_infos.md', function(req, res){
     text(res)
-    res.render("project_infos_md", {layout: false, data: resolve_project_infos_and_fields()})
+    res.render("project_infos_md", {layout: false, data: resolveProjectInfoTable(serverState.projectInfos)})
   });
 
   app.get('/rest/project_infos', function(req, res){
     json(res)
-    res.json(resolve_project_infos_and_fields())
+    res.json(resolveProjectInfoTable(serverState.projectInfos))
   });
 
   app.get('/rest/project_infos/uses', function(req, res){
     json(res)
-    res.json(resolve_uses(project_infos))
+    res.json(createGraphInfoFromProjectInfos(serverState.projectInfos))
   });
 
   app.get('/rest/url_properties', function(req, res){
     json(res)
-    res.json(url_properties)
+    res.json(serverState.urlProperties)
   });
 
   app.get('/rest/url_properties/uses', function(req, res){
     json(res)
-    res.json(resolve_uses(generate_project_info_from_url_properties()))
+    res.json(createGraphInfoFromProjectInfos(appendUsesAndS2SInfoToUrlProperties(serverState.urlProperties)))
   });
 
   app.get('/rest/reload', function(req, res){
     json(res)
     reload(function(){
-      res.json({"message": "Project_infos: " + project_infos.length + " Url_properties: " + Object.keys(url_properties)})
+      res.json({"message": "Project_infos: " + serverState.projectInfos.length + " Url_properties: " + Object.keys(serverState.urlProperties)})
     })
   });
 
