@@ -1,8 +1,9 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 HOST=$1
 SERVICE=$2
-#PATH_TO_DEPLOY="${HOME}/src/oph/deploy"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PATH_TO_DEPLOY="${SCRIPT_DIR}/../../deploy"
 if [ -z "${PATH_TO_DEPLOY}" ]
 then
     printf "Please set PATH_TO_DEPLOY\n"
