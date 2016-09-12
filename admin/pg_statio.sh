@@ -4,6 +4,7 @@ set -euo pipefail
 
 DB=$1
 HOST=$2
+SLEEP=$3
 QUERY="select * from pg_statio_all_tables where schemaname = 'public';"
 
 while true
@@ -14,5 +15,5 @@ do
         head -n-2 | \
         sed "s/\s/${TIME}, /" | \
         sed 's/\s*|\s*/, /g'
-    sleep 1
+    sleep "${SLEEP}"
 done
