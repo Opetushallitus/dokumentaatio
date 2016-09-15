@@ -20,7 +20,7 @@ echo "========================"
 for S in $SERVERS
 do
   echo $S :
-  ssh $S 'ps -Af' | grep apache-tomcat | sed "s/.*apache-tomcat-//"
+  ssh $S 'ps -Af' | (grep apache-tomcat || true) | sed "s/.*apache-tomcat-//"
   echo
   echo "======================="
 done
