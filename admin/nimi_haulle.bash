@@ -7,7 +7,5 @@ fi
 
 TARJONTA_URL=https://virkailija.opintopolku.fi/tarjonta-service
 
-NIMI=`http GET ${TARJONTA_URL}/rest/v1/haku/$1 | jq '.result.nimi.kieli_fi'`
-
-echo $1 : $NIMI
+http GET https://virkailija.opintopolku.fi/tarjonta-service/rest/v1/haku/$1 | jq -c '[.result.oid, .result.nimi.kieli_fi, .result.hakukausiVuosi, .result.hakukausiUri]'
 
