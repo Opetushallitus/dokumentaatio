@@ -39,7 +39,7 @@ var nodes, edges, data;
 function makeService2ServiceText(label, destLabel){
   var service2service = data.service2service[label + "." + destLabel]
   if(service2service) {
-    return "<b>" + label + " -> " + destLabel + "</b><br>" + service2service.join("<br>");
+    return "<b>" + label + " -> " + destLabel + "</b> [" + service2service.length + "]:<br>" + service2service.join("<br>");
   } else {
     return ""
   }
@@ -55,9 +55,35 @@ function makeLine(label, destLabel){
 function makeNode(label){
 
   var borderWidth = 0.5;
+  var usesTxt = "", usedByTxt = "", summaryUseTxt =[]
+
+  if(data.uses[label] && data.uses[label].length > 0 ) {
+    var urlCount = 0
+    data.uses[label].forEach(function(destLabel){
+      usesTxt += makeService2ServiceText(label, destLabel)
+      usesTxt += "<br>"
+      urlCount += data.service2service[label + "." + destLabel].length
+    })
+    summaryUseTxt.push("Uses: " + data.uses[label].length + " services with " + urlCount + " urls")
+  }
+
+  if(data.used_by[label] && data.used_by[label].length > 0 ) {
+    var urlCount = 0
+    data.used_by[label].forEach(function(destLabel){
+      usedByTxt += makeService2ServiceText(destLabel, label)
+      usedByTxt += "<br>"
+      urlCount += data.service2service[destLabel + "." + label].length
+    })
+    summaryUseTxt.push("Used by: " + data.used_by[label].length + " services with " + urlCount + " urls")
+  }
+
   var title = "<h3>" + label + "</h3>"
   if(data.project_infos[label]) {
     var info = data.project_infos[label]
+    if(summaryUseTxt.length > 0) {
+      title += summaryUseTxt.join("<br>")
+      title += "<br>"
+    }
     if(info.path) {
       title += "File: " + info.path + "<br>"
       borderWidth = 1.4;
@@ -65,19 +91,8 @@ function makeNode(label){
     title += "<br>"
   }
 
-  if(data.uses[label] && data.uses[label].length > 0 ) {
-    data.uses[label].forEach(function(destLabel){
-      title += makeService2ServiceText(label, destLabel)
-      title += "<br>"
-    })
-  }
-
-  if(data.used_by[label] && data.used_by[label].length > 0 ) {
-    data.used_by[label].forEach(function(destLabel){
-      title += makeService2ServiceText(destLabel, label)
-      title += "<br>"
-    })
-  }
+  title += usesTxt
+  title += usedByTxt
 
   var node = {
     id: data.name_id_map[label],
