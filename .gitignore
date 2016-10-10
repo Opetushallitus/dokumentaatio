@@ -4,3 +4,6 @@
 .idea
 node_modules/
 logs/
+
+*victims-cve-db
+*victims-version-search
