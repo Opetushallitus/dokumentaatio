@@ -45,11 +45,15 @@ function makeService2ServiceText(label, destLabel){
   }
 }
 function makeLine(label, destLabel){
-  return {
+  var edgeData = {
     from: data.name_id_map[label],
     to: data.name_id_map[destLabel],
-    title: makeService2ServiceText(label, destLabel)
+    title: makeService2ServiceText(label, destLabel),
+  };
+  if(label != destLabel && data.service2service[label + "." + destLabel] && data.service2service[destLabel + "." + label]) {
+    edgeData.color="red"
   }
+  return edgeData
 }
 
 function makeNode(label){
