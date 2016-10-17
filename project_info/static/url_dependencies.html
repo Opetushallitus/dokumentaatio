@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>OPH project_info.json yhteenveto</title>
+
+    <style type="text/css">
+        #infos {
+            border: 1px solid lightgray;
+        }
+        #infos tr:nth-child(2n) {
+            background-color: #f8f8f8;
+        }
+        tr {
+            vertical-align: top;
+        }
+    </style>
+    <script src="lib/sorttable.js"></script>
+    <script src="common_ui.js"></script>
+</head>
+<body>
+
+[<a href="/">menu</a>] Rajaa näytettävää <input onkeyup="filter(this.value);" type="text" id="q">
+<span id="filterInfo"></span>
+
+<table id="infos">
+
+</table>
+
+<script type="text/javascript">
+
+    var data;
+    var table = document.getElementById('infos');
+
+    handleHash()
+    ajaxJson('GET', "/rest/url_properties/uses", initTable)
+
+    function initTable(json) {
+        console.log(json)
+        data = {
+            headers: ["project", "url", "count", "users"],
+            rows: json.url_uses
+        };
+        console.log(data)
+        redraw()
+    }
+
+    function redraw() {
+        redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
+            addNode(infoRow, "td", row.project)
+            addNode(infoRow, "td", row.url)
+            addNode(infoRow, "td", row.count)
+            var useTable = addNode(addNode(infoRow, "td"))
+            row.uses.forEach(function(use){
+                var useTr = addNode(useTable, "tr")
+                addNode(addNode(useTr, "td"), "b", use.project)
+
+                addNode(useTr, "td", use.key)
+                addNode(useTr, "td", use.original_url)
+            })
+        }, function(row, included, excluded){
+            // collect filtering strings from row. if any matches excludes don't show
+            var texts = [row.project, row.url]
+            row.uses.forEach(function(use){
+                texts.push(use.project, use.key, use.original_url)
+            })
+
+            var hide = someMatches(texts, excluded) || !(included.length == 0 || someMatches(texts, included))
+            return !hide
+        })
+        sorttable.makeSortable(table);
+    }
+
+</script>
+
+</body>
+</html>

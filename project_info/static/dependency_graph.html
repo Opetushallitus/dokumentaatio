@@ -16,11 +16,13 @@
       border: 1px solid lightgray;
     }
   </style>
+
+  <script src="common_ui.js"></script>
 </head>
 <body>
 
 <p>
-Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text" id="q">
+[<a href="/">menu</a>] Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text" id="q">
   <span id="filterInfo"></span>
 <select id="type" onchange="reload(this)">
   <option>project_infos</option>
@@ -106,6 +108,7 @@ function makeNode(label){
   };
   return node
 }
+
 function initGraph(json) {
   data = json
   console.log(data)
@@ -165,7 +168,7 @@ function initGraph(json) {
     }
   };
   
-  var network = new vis.Network(container, {
+  new vis.Network(container, {
     nodes: nodes,
     edges: edges
   }, options);
@@ -173,72 +176,35 @@ function initGraph(json) {
   handleHash()
 }
 
-function someMatches(arr, substrings) {
-  return arr.some(function(str){
-    return substrings.some(function(substring) {
-      return str.indexOf(substring) > -1
-    }) 
-  })
-}
-
-function handleHash() {
-  var h = window.location.href.split('#')[1]
-  if (h && h.length > 0) {
-    document.getElementById("q").value=h
-    filter(h)
-  }
-}
-
-function filter(value) {
-  window.location.hash=value
+function redraw() {
   var uses = data.uses
   var usedBy = data.used_by
   var visibleNodeIds = []
-  var substrings = [], excluded = [];
-  value.split(" ").forEach(function(s){
-    if(s.length>0) {
-      if(s.startsWith("-")) {
-        excluded.push(s.substring(1,s.length + 1))
-      } else {
-        substrings.push(s);
-      }
-    }
-  })
   var visibleNodeCount = 0, visibleEdgeCount = 0;
-  nodes.forEach(function(i){
-    var show = ( substrings.length == 0 || someMatches([i.label], substrings) || (uses[i.label] && someMatches(uses[i.label], substrings)) || (usedBy[i.label] && someMatches(usedBy[i.label], substrings))) && excluded.indexOf(i.label) == -1
+  nodes.forEach(function (i) {
+    var show = ( filter.included.length == 0 || someMatches([i.label], filter.included) || (uses[i.label] && someMatches(uses[i.label], filter.included)) || (usedBy[i.label] && someMatches(usedBy[i.label], filter.included))) && filter.excluded.indexOf(i.label) == -1
     nodes.update({
-      id:i.id,
+      id: i.id,
       hidden: !show
     })
-    if(show) {
+    if (show) {
       visibleNodeIds.push(data.name_id_map[i.label])
       visibleNodeCount += 1
     }
   })
 
-  edges.forEach(function(i){
+  edges.forEach(function (i) {
     var show = visibleNodeIds.indexOf(i.from) != -1 && visibleNodeIds.indexOf(i.to) != -1
     edges.update({
-      id:i.id,
+      id: i.id,
       hidden: !show
     })
-    if(show) {
+    if (show) {
       visibleEdgeCount += 1
     }
   })
 
   document.getElementById("filterInfo").textContent = "Nodes:" + visibleNodeCount + "/" + nodes.length + " Links: " + visibleEdgeCount + "/" + edges.length
-}
-
-function ajaxJson(method, url, onload) {
-  var oReq = new XMLHttpRequest();
-  oReq.onload = function (e) {
-    onload(e.target.response)
-  };
-  oReq.open(method, url, true);
-  oReq.responseType = 'json';
-  oReq.send();
 }
 
 function reload() {

@@ -12,10 +12,12 @@
         background-color: #f8f8f8;
     }
   </style>
+  <script src="lib/sorttable.js"></script>
+  <script src="common_ui.js"></script>
 </head>
 <body>
 
-Rajaa näytettävää <input onkeyup="filter(this.value);" type="text" id="q">
+[<a href="/">menu</a>] Rajaa näytettävää <input onkeyup="filter(this.value);" type="text" id="q">
 <span id="filterInfo"></span>
 
 <table id="infos">
@@ -24,102 +26,36 @@ Rajaa näytettävää <input onkeyup="filter(this.value);" type="text" id="q">
 
 <script type="text/javascript">
 
-var substrings=[], excluded=[];
-var data;
-
-handleHash()
-ajaxJson('GET', "/rest/url_properties/uses", initTable)
-
-function handleHash() {
-  var h = window.location.href.split('#')[1]
-  if (h && h.length > 0) {
-    document.getElementById("q").value=h
-    filter(h)
-  }
-}
-
-function filter(value) {
-  window.location.hash=value
-  substrings = [], excluded = []
-  value.split(" ").forEach(function(s){
-    if(s.length>0) {
-      if(s.startsWith("-")) {
-        excluded.push(s.substring(1,s.length + 1))
-      } else {
-        substrings.push(s);
-      }
-    }
-  })
-  if(data) {
-    redraw()
-  }
-}
-
-function someMatches(arr, subs) {
-  return arr.some(function(str){
-    return subs.some(function(substring) {
-      return str.indexOf(substring) > -1
-    }) 
-  })
-}
-
-function ajaxJson(method, url, onload) {
-  var oReq = new XMLHttpRequest();
-  oReq.onload = function (e) {
-    onload(e.target.response)
-  };
-  oReq.open(method, url, true);
-  oReq.responseType = 'json';
-  oReq.send();
-}
-
-function redraw() {
+  var data;
   var table = document.getElementById('infos');
-  while (table.firstChild) {
-    table.removeChild(table.firstChild);
-  }
-  function add(dest, elementType, text) {
-    var node = document.createElement(elementType);
-    if(text) {
-      node.appendChild(document.createTextNode(text))
-    }
-    dest.appendChild(node)
-    return node;
-  }
-  var rows = data.rows.filter(function(row){
-    var hide = someMatches(row, excluded) || !(substrings.length == 0 || someMatches(row, substrings))
-    console.log("show", row, !hide)
-    return !hide
-  })
-  var headerRow = add(table, "tr")
-  data.headers.forEach(function(f){add(headerRow, "th", f)})
-  rows.forEach(function(row){
-    var infoRow = add(table, "tr")
-    row.forEach(function(txt){add(infoRow, "td", txt)})
-  })
-  document.getElementById("filterInfo").textContent = "Rows:" + rows.length + "/" + data.rows.length
-}
 
-function flatten(arr) {
-  return arr.reduce(function(a, b) {
-    return a.concat(b);
-  }, []);
-}
+  handleHash()
+  ajaxJson('GET', "/rest/url_properties/uses", initTable)
 
-function initTable(json) {
-  console.log(json)
-  data = {
-    headers: ["from","to","url"],
-    rows: flatten(Object.keys(json.service2service).map(function (key) {
-      var arr = key.split("\.")
-      var from = arr[0], to = arr[1];
-      return json.service2service[key].map(function (urlProperty) {
-        return [from, to, urlProperty]
-      })
-    }))
-  };
-  redraw();
-}
+  function redraw() {
+    redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
+      row.forEach(function(txt){addNode(infoRow, "td", txt)})
+    }, function (row, included, excluded) {
+      var hide = someMatches(row, excluded) || !(included.length == 0 || someMatches(row, included))
+      return !hide
+    })
+    sorttable.makeSortable(table);
+  }
+
+  function initTable(json) {
+    console.log(json)
+    data = {
+      headers: ["from","to","url"],
+      rows: flatten(Object.keys(json.service2service).map(function (key) {
+        var arr = key.split("\.")
+        var from = arr[0], to = arr[1];
+        return json.service2service[key].map(function (urlProperty) {
+          return [from, to, urlProperty]
+        })
+      }))
+    };
+    redraw();
+  }
 </script>
 
 </body>

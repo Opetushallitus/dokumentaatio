@@ -134,23 +134,27 @@ function appendUsesAndS2SInfoToUrlProperties(urlProperties) {
     var urlPropertyInfo = urlProperties[project];
     var properties = urlPropertyInfo.properties
     var usedServices = []
-    Object.keys(properties)
-      // ignore keys without .
-      .filter(function(key) {
-        return key.indexOf(".") > 0
-      })
-      .forEach(function(key) {
-        var destService = key.substring(0,key.indexOf("."));
-        var s2sKey = project + "." + destService;
-        s2sInfo[s2sKey] = (s2sInfo[s2sKey] || [])
-        s2sInfo[s2sKey].push(key + "=" + properties[key])
-        usedServices.push(destService)
+    Object.keys(properties).forEach(function(key) {
+        var destService = parseServiceName(key);
+        // ignore keys without .
+        if(destService) {
+          var s2sKey = project + "." + destService;
+          s2sInfo[s2sKey] = (s2sInfo[s2sKey] || [])
+          s2sInfo[s2sKey].push(key + "=" + properties[key])
+          usedServices.push(destService)
+        }
       })
     return copyMap(urlPropertyInfo, {
         uses: uniq(usedServices).join(" "),
         service2service: s2sInfo
     })
   })
+}
+
+function parseServiceName(key) {
+  if(key.indexOf(".") > 0) {
+    return key.substring(0,key.indexOf("."));
+  }
 }
 
 function copyMap(from, target) {
@@ -172,8 +176,50 @@ function createGraphInfoFromProjectInfos(projectInfoList) {
     // lists each myProject.destProject dependency and the original property value {"thisProject.destProject": ["key=value"]}
     service2service: {},
     // project_info list in map, key = project.name
-    project_infos: {}
+    project_infos: {},
+    // list of all urls and their uses: {project: "", url: "", count: 20, uses: [{project: "", key: "", original_url: ""}]}
+    url_uses: []
   };
+
+  function collectUrlUse(projectInfoList) {
+    var urlUseLookup = {}
+    var urlUsesList = []
+    function addUrl(destService, plainUrl, userProject, userKey, originalUrl) {
+      var lookupKey = destService + "." + plainUrl
+      if(!urlUseLookup[lookupKey]) {
+        urlUsesList.push(urlUseLookup[lookupKey]={
+          project: destService,
+          url: plainUrl,
+          count: 0,
+          uses: []
+        })
+      }
+      var info = urlUseLookup[lookupKey]
+      info.count = info.count + 1
+      info.uses.push({project: userProject, key: userKey, original_url: originalUrl})
+    }
+    function parsePlainUrl(url) {
+      if(url.indexOf("?") > 0) {
+        url = url.substring(0,url.indexOf("?"));
+      }
+      if(url.startsWith("${")) {
+        url = url.substring(url.indexOf("}")+1)
+      }
+      return url;
+    }
+    projectInfoList.forEach(function (projectInfo) {
+      var properties = projectInfo.properties
+      Object.keys(properties).forEach(function (userKey) {
+        var destService = parseServiceName(userKey)
+        if(destService) {
+          var originalUrl = properties[userKey]
+          var plainUrl = parsePlainUrl(originalUrl)
+          addUrl(destService, plainUrl, projectInfo.name, userKey, originalUrl)
+        }
+      })
+    })
+    return urlUsesList
+  }
 
   function add(projectInfo) {
     if(projectInfo.uses && projectInfo.name) {
@@ -191,6 +237,7 @@ function createGraphInfoFromProjectInfos(projectInfoList) {
       copyMap(projectInfo.service2service || {}, allData.service2service)
     }
   }
+
   // add information from every projectInfo and go through projectInfo.projects
   projectInfoList.forEach(function(projectInfo){
     add(projectInfo);
@@ -202,6 +249,8 @@ function createGraphInfoFromProjectInfos(projectInfoList) {
     allData.id_name_map[index]=name
     allData.name_id_map[name]=index
   })
+
+  allData.url_uses = collectUrlUse(projectInfoList)
   return allData
 }
 
