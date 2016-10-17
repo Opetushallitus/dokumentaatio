@@ -202,7 +202,7 @@ function createGraphInfoFromProjectInfos(projectInfoList) {
       if(url.indexOf("?") > 0) {
         url = url.substring(0,url.indexOf("?"));
       }
-      if(url.startsWith("${")) {
+      if(url.indexOf("${") == 0) {
         url = url.substring(url.indexOf("}")+1)
       }
       return url;
