@@ -55,8 +55,8 @@
                 var useTr = addNode(useTable, "tr")
                 addNode(addNode(useTr, "td"), "b", use.project)
 
-                addNode(useTr, "td", use.key)
                 addNode(useTr, "td", use.original_url)
+                addNode(useTr, "td", use.key)
             })
         }, function(row, included, excluded){
             // collect filtering strings from row. if any matches excludes don't show

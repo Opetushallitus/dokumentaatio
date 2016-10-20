@@ -75,7 +75,12 @@ function parseProperties(filepath, originalFileContent) {
     // file contains code that sets module.exports (es5) or export default (es6). replace converts es6 to es5
     var fStr = originalFileContent.replace("export default", "module.exports=")
     // eval inside function for security, inspect values returned from eval's result
-    var evalWindowStr = "(function() {var module={exports:null};var window={urls: {}};\n" + fStr + "\n;return {moduleExports: module.exports, windowUrls: window.urls};})();"
+    var evalWindowStr = "(function() {" +
+      "var module={exports:null};" +
+      "var window={urls: {addProperties: function(props){window.urls.properties=props},addOverride: function(props){window.urls.override=props},addDefaults: function(props){window.urls.defaults=props}}};\n" +
+      fStr +
+      "\n;return {moduleExports: module.exports, windowUrls: window.urls};" +
+      "})();"
     var result = eval(evalWindowStr);
     // eval result might contain result.moduleExports (es6) or result.windowUrls (es5)
     return result.moduleExports || result.windowUrls.override || result.windowUrls.properties || window.urls.defaults;
@@ -99,19 +104,21 @@ function scanUrlProperties(fn) {
         var filename = filePath.substr(filePath.lastIndexOf('/') + 1)
         var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
         var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
-        var originalFileContent = fs.readFileSync(filePath, 'utf8')
-        var properties = parseProperties(filePath, originalFileContent);
+        if(project != "") {
+          var originalFileContent = fs.readFileSync(filePath, 'utf8')
+          var properties = parseProperties(filePath, originalFileContent);
 
-        if (properties) {
-          var urlPropertyInfo = {
-            name: project,
-            properties: flattenNested(properties),
-            path: filePath,
-            originalFileContent: originalFileContent
+          if (properties) {
+            var urlPropertyInfo = {
+              name: project,
+              properties: flattenNested(properties),
+              path: filePath,
+              originalFileContent: originalFileContent
             };
             scannedProperties[project] = urlPropertyInfo
-        } else {
-          console.log(filePath, "does not include url_properties:", originalFileContent)
+          } else {
+            console.log(filePath, "does not include url_properties:", originalFileContent)
+          }
         }
       } catch(err) {
         console.log("Error processing file: " + filePath + ": ", err)
