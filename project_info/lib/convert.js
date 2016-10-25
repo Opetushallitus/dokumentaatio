@@ -1,3 +1,5 @@
+var util = require('./util.js')
+
 var convert = {}
 
 module.exports = convert
@@ -6,13 +8,6 @@ function parseServiceName(key) {
   if(key.indexOf(".") > 0) {
     return key.substring(0,key.indexOf("."));
   }
-}
-
-function copyMap(from, target) {
-  Object.keys(from).forEach(function(key){
-    target[key]=from[key];
-  })
-  return target
 }
 
 // convert url properties to project info
@@ -34,8 +29,8 @@ convert.appendUsesAndS2SInfoToUrlProperties = function (urlProperties) {
         usedServices.push(destService)
       }
     })
-    return copyMap(urlPropertyInfo, {
-      uses: convert.uniq(usedServices).join(" "),
+    return util.copyMap(urlPropertyInfo, {
+      uses: util.uniq(usedServices).join(" "),
       service2service: s2sInfo
     })
   })
@@ -111,7 +106,7 @@ convert.createGraphInfoFromProjectInfos = function(projectInfoList) {
         }
         allData.used_by[u].push(name)
       })
-      copyMap(projectInfo.service2service || {}, allData.service2service)
+      util.copyMap(projectInfo.service2service || {}, allData.service2service)
     }
   }
 
@@ -121,7 +116,7 @@ convert.createGraphInfoFromProjectInfos = function(projectInfoList) {
     (projectInfo["projects"] || []).forEach(add)
     allData.project_infos[projectInfo.name]=projectInfo
   });
-  allData.items = convert.uniq(allData.items)
+  allData.items = util.uniq(allData.items)
   allData.items.forEach(function(name, index){
     allData.id_name_map[index]=name
     allData.name_id_map[name]=index
@@ -140,12 +135,6 @@ convert.generateProjectInfoTable = function(projectInfos) {
   })
   return {
     project_infos: projectInfos,
-    fields: convert.uniq(fields)
+    fields: util.uniq(fields)
   }
-}
-
-convert.uniq = function(arr) {
-  return arr.reverse().filter(function (e, i, arr) {
-    return arr.indexOf(e, i+1) === -1;
-  }).reverse();
 }
