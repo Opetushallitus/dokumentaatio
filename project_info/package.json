@@ -11,6 +11,11 @@
     "express": "4.13.3",
     "express-handlebars": "2.0.1",
     "glob": "6.0.4",
-    "properties-parser": "^0.3.1"
+    "mocha": "3.1.2",
+    "properties-parser": "^0.3.1",
+    "safe-eval": "^0.3.0"
+  },
+  "scripts": {
+    "test": "npm install -s && mocha test/project_info_spec.js"
   }
 }
