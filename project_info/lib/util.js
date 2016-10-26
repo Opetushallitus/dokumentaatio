@@ -1,3 +1,4 @@
+require("./polyfills.js")
 var fs = require('fs')
 var PropertiesParser = require('properties-parser')
 
