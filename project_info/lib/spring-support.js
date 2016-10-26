@@ -83,7 +83,7 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
   var package = classNameArr.join(".")
   var found = []
   var str = []
-  var classFiles = fileLookupFn(className + ".java")
+  var classFiles = fileLookupFn(className + ".java") || []
   classFiles.forEach(function (classFilePath) {
     var fileStr = util.read(classFilePath)
     if (fileStr.indexOf(package) > -1) {
