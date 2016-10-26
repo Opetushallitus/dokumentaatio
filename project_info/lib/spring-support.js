@@ -81,16 +81,9 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
   var classNameArr = serviceClass.split(".");
   var className = classNameArr.pop()
   var package = classNameArr.join(".")
-  var classFiles = fileLookupFn(className + ".java")
-  if (!classFiles || classFiles.length == 0) {
-    var error = "Could not find matching file for " + serviceClass + " Creating a key for the baseUrl " + baseUrl;
-    errors.push(error)
-    var fullPath = resolvePropertyReferences(baseUrl, properties)
-    var key=resolveKey(fullPath)
-    return ["# " + error, key + "=" + fullPath]
-  }
   var found = []
   var str = []
+  var classFiles = fileLookupFn(className + ".java")
   classFiles.forEach(function (classFilePath) {
     var fileStr = util.read(classFilePath)
     if (fileStr.indexOf(package) > -1) {
@@ -102,7 +95,16 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
     }
   })
   if (found.length == 0) {
-    throw "Could not find definition for " + serviceClass + " from " + classFiles.join(", ")
+    var error = "Could not find matching file for " + serviceClass
+    if(classFiles.length > 0) {
+      error = "Could not find definition for " + serviceClass + " from " + classFiles.join(", ")
+    }
+    error = error + " Creating a key for the baseUrl " + baseUrl
+    errors.push(error)
+    var fullPath = resolvePropertyReferences(baseUrl, properties)
+    var key=resolveKey(fullPath)
+    str.push("# " + error)
+    str.push( key + "=" + fullPath)
   }
   return str
 }
