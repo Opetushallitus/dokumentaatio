@@ -1,11 +1,16 @@
 var assert = require('assert');
 var convert = require('../lib/convert.js')
 var scan = require('../lib/scan.js')
+var util = require('../lib/util.js')
+var spring = require('../lib/spring-support.js')
+
+describe("util.js", function () {
+  it('uniq', function () {
+    assert.deepEqual(util.uniq([1, 1, 3]), [1, 3])
+  })
+})
 
 describe('convert.js', function () {
-  it('uniq', function () {
-    assert.deepEqual(convert.uniq([1, 1, 3]), [1, 3])
-  })
 
   it('generateProjectInfoTable', function () {
     assert.deepEqual(convert.generateProjectInfoTable([{
@@ -74,7 +79,6 @@ describe('convert.js', function () {
         }
       }
     });
-    console.log(JSON.stringify(convert.createGraphInfoFromProjectInfos(projectInfoList)))
     assert.deepEqual(convert.createGraphInfoFromProjectInfos(projectInfoList), {
       "uses": {"a": ["b"], "b": ["a"]},
       "used_by": {"b": ["a"], "a": ["b"]},
@@ -104,9 +108,22 @@ describe('convert.js', function () {
         "project": "a",
         "url": "1",
         "count": 1,
-        "uses": [{"project": "b", "key": "a.url", "original_url": "1"}]}]
+        "uses": [{"project": "b", "key": "a.url", "original_url": "1"}]
+      }]
     })
   })
 
+})
 
+describe("spring-support.js", function () {
+  it('spring.scanForJaxUrls', function (done) {
+    var serverState = {workDir: __dirname + "/spring"}
+    scan.scan(serverState, function () {
+      assert.deepEqual(serverState.urlProperties.viestintapalvelu.properties, {
+        "viestintapalvelu.foo.bar.api.v1.addresslabel.sync.pdf": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/addresslabel/sync/pdf",
+        "viestintapalvelu.foo.bar.api.v1.template.getHistory": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/template/getHistory"
+      })
+      done()
+    })
+  })
 })

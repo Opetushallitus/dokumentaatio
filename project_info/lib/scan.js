@@ -1,22 +1,28 @@
 var glob = require("glob")
-var path = require('path')
-var fs = require('fs')
-var PropertiesParser = require('properties-parser')
+var Path = require('path')
 var safeEval = require('safe-eval')
 var util = require('./util.js')
+var spring = require('./spring-support.js')
 
 var scan = {
   scan: function (serverState, fn) {
     console.log("Scanning", serverState.workDir)
     scanFileTree(serverState.workDir, function (er, fileTree) {
+      var start = (new Date).getTime()
       var state = {
+        workDir: serverState.workDir,
         scanInfo: {
           files: [],
-          errors: []
+          errors: [],
+          duration: 0,
+          start: new Date().toString()
         },
+        urlProperties: {}
       }
       state.projectInfos = scanProjectInfoJsonFiles(fileTree, state.scanInfo)
-      state.urlProperties = scanUrlProperties(fileTree, state.scanInfo)
+      scanUrlProperties(fileTree, state.scanInfo, state.urlProperties)
+      spring.scanForJaxUrls(state, fileTree)
+      state.scanInfo.duration=(new Date).getTime() - start
       util.copyMap(state, serverState)
       console.log("Parsed", state.scanInfo.files.length, "files:", state.scanInfo.files)
       if (state.scanInfo.errors.length > 0) {
@@ -31,22 +37,10 @@ var scan = {
 
 module.exports = scan
 
-function scanFileTree(root, fn) {
-  var p = path.join(root, "**/*")
+scanFileTree = function(root, fn) {
+  var p = Path.join(root, "**/*")
   glob(p, function (er, files) {
-    var ret = {
-      root: root,
-      files: files,
-      filesBySuffix: function () {
-        var suffixes = util.flatten(Array.prototype.slice.call(arguments));
-        return util.uniq(util.flatten(suffixes.map(function (suffix) {
-          return ret.files.filter(function (file) {
-            return file.endsWith(suffix)
-          })
-        })))
-      }
-    }
-    fn(er, ret)
+    fn(er, util.createFileTree(root, files))
   })
 }
 
@@ -58,33 +52,7 @@ function scanFileTree(root, fn) {
 function scanProjectInfoJsonFiles(fileTree, info) {
   var files = fileTree.filesBySuffix("project_info.json")
   info.files = info.files.concat(files)
-  return files.map(readJSON)
-}
-
-// flattens nested map by concatenating keys with commas
-// {test: {map: {key: value}}} -> {"test.map.key": value}
-// note: supports only strings or maps as values
-function flattenNested(obj, dest, keyprefix) {
-  if (!dest) {
-    dest = {}
-  }
-  Object.keys(obj).forEach(function (key) {
-    var val = obj[key];
-    var newkey = key
-    if (keyprefix) {
-      newkey = keyprefix + "." + key;
-    }
-    if (typeof val === 'string') {
-      dest[newkey] = val
-    } else {
-      flattenNested(val, dest, newkey)
-    }
-  })
-  return dest
-}
-
-function parseProperties(originalFileContent) {
-  return PropertiesParser.parse(originalFileContent)
+  return files.map(function(filePath){ var ret = readJSON(filePath); ret.path=filePath; return ret})
 }
 
 function parseJSON(originalFileContent) {
@@ -92,7 +60,7 @@ function parseJSON(originalFileContent) {
 }
 
 function readJSON(filePath) {
-  return parseJSON(fs.readFileSync(filePath, 'utf8'))
+  return parseJSON(util.read(filePath))
 }
 
 function evalJS(originalFileContent) {
@@ -124,9 +92,7 @@ function evalJS(originalFileContent) {
 
 // scans for .properties .json and .js files and loads them in to urlProperties
 // creates a list of project_info kind of map with {name: .. properties: .. path: .. originalFileContent: ..}
-function scanUrlProperties(fileTree, info) {
-  var scannedProperties = {}
-
+function scanUrlProperties(fileTree, info, urlProperties) {
   function parse(fileSuffixes, fn) {
     return fileTree.filesBySuffix(fileSuffixes).forEach(function (filePath) {
       try {
@@ -134,17 +100,11 @@ function scanUrlProperties(fileTree, info) {
         var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
         var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
         if (project != "") {
-          var originalFileContent = fs.readFileSync(filePath, 'utf8');
+          var originalFileContent = util.read(filePath);
           var properties = fn(originalFileContent);
 
           if (properties) {
-            var urlPropertyInfo = {
-              name: project,
-              properties: flattenNested(properties),
-              path: filePath,
-              originalFileContent: originalFileContent
-            };
-            scannedProperties[project] = urlPropertyInfo
+            util.addUrlProperties(urlProperties, project, properties, originalFileContent, filePath)
             info.files.push(filePath)
           } else {
             info.errors.push(filePath + " does not include url_properties: " + originalFileContent)
@@ -156,8 +116,7 @@ function scanUrlProperties(fileTree, info) {
     })
   }
 
-  parse(["oph.properties", "url.properties"], parseProperties)
+  parse(["oph.properties", "url.properties"], util.parseProperties)
   parse(["oph.json", "oph_properties.json", "*url_properties.json"], parseJSON)
   parse(["oph.js", "oph_properties.js"], evalJS)
-  return scannedProperties
 }

@@ -13,9 +13,10 @@
     "glob": "6.0.4",
     "mocha": "3.1.2",
     "properties-parser": "^0.3.1",
-    "safe-eval": "^0.3.0"
+    "safe-eval": "^0.3.0",
+    "xml2js": "^0.4.17"
   },
   "scripts": {
-    "test": "npm install -s && mocha test/project_info_spec.js"
+    "test": "mocha test/project_info_spec.js"
   }
 }

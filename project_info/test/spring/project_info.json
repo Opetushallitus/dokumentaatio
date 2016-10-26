@@ -1,0 +1,13 @@
+{
+  "name": "viestintapalvelu",
+
+  "spring-urls": {
+      "xml": "spring-test.xml",
+      "properties": "spring.properties"
+    },
+
+  "projects": [
+    {"name": "koulutusinformaatio-web", "uses": "viestintapalvelu-rest oppija-raamit"},
+    {"name": "koulutusinformaatio-rest", "uses": ""}
+  ]
+}
