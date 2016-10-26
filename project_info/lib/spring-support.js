@@ -33,7 +33,7 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
         .forEach(function (xmlPath) {
           var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo.errors)
           var parsedProperties = util.parseProperties(originalFileContent)
-          util.addUrlProperties(serverState.urlProperties, project, parsedProperties, originalFileContent)
+          util.addUrlProperties(serverState.urlProperties, project, parsedProperties, originalFileContent, xmlPath)
         })
     }
     if(projectInfo["projects"]) {
