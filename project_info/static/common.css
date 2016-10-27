@@ -1,0 +1,9 @@
+.dataTable {
+    border: 1px solid lightgray;
+}
+.dataTable tr:nth-child(2n) {
+    background-color: #f8f8f8;
+}
+tr {
+    vertical-align: top;
+}

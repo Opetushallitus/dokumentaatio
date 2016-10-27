@@ -3,7 +3,8 @@
 
 var serverState = {
   workDir: process.argv[2],
-  projectInfos: [], urlProperties : {}
+  projectInfos: [], urlProperties : {},
+  scanInfo: {}
 }
 
 if(!serverState.workDir) {
@@ -56,6 +57,11 @@ function startServer() {
   app.get('/rest/url_properties/uses', function(req, res){
     json(res)
     res.json(convert.createGraphInfoFromProjectInfos(convert.appendUsesAndS2SInfoToUrlProperties(serverState.urlProperties)))
+  });
+
+  app.get('/rest/server_state/scaninfo', function(req, res){
+    json(res)
+    res.json(serverState.scanInfo)
   });
 
   app.get('/rest/reload', function(req, res){

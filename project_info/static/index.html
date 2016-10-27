@@ -2,6 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="common.css"/>
+  <script src="common_ui.js"></script>
 </head>
 <body>
 
@@ -19,6 +21,12 @@ To add more projects:
   <li>ssh to USER@pulpetti.hard.ware.fi, cd /data00/oph/project_info/all_repos/ and clone the repo there</li>
 </ul>
 
+<h1>Previous scan</h1>
+
+<p id="infoTxt"></p>
+
+<table class="dataTable" id="infos"></table>
+
 <h1>Development stuff</h1>
 
 <pre>
@@ -31,6 +39,26 @@ To add more projects:
   <a href="rest/url_properties/uses">/rest/url_properties/uses</a> - json data required to display display service level dependencies
   /quit - POST: quits server process
 </pre>
+
+<script type="text/javascript">
+
+  var table = document.getElementById('infos');
+
+  ajaxJson('GET', "/rest/server_state/scaninfo", initTable)
+
+  function initTable(json) {
+    var infoTxt = "Previous scan took " + Number((6.688689).toFixed(1)) + " seconds. It started at " + json.start + ". Scanned files: " + json.files.length
+    document.getElementById('infoTxt').textContent=infoTxt
+    if(json.errors.length > 0) {
+      addNode(addNode(table, "th"), "td", "Errors: " + json.errors.length);
+      json.errors.forEach(function (errorTxt) {
+        var tr = addNode(table, "tr");
+        addNode(tr, "td", errorTxt)
+      })
+    }
+  }
+</script>
+
 
 </body>
 </html>

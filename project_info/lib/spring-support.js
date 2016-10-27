@@ -31,7 +31,7 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
       util.flatten(springUrls.xml || [])
         .map(relativePath)
         .forEach(function (xmlPath) {
-          var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo.errors)
+          var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo)
           var parsedProperties = util.parseProperties(originalFileContent)
           util.addUrlProperties(serverState.urlProperties, project, parsedProperties, originalFileContent, xmlPath)
         })
@@ -42,8 +42,9 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
   })
 }
 
-spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLookupFn, errors) {
+spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLookupFn, scanInfo) {
  var xml = parseXmlFile(springXmlPath)
+  scanInfo.files.push(springXmlPath)
   if(xml) {
     function parseXmlClientDef(client) {
       var attrs = client["$"];
@@ -51,7 +52,7 @@ spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLooku
         var baseUrl = attrs["address"]
         var serviceClass = attrs["serviceClass"]
         var urlDefinitions = {}
-        return resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, errors)
+        return resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, scanInfo)
       } else {
         return []
       }
@@ -77,7 +78,7 @@ function resolveKey(value) {
   return value.replace(/\//g,".")
 }
 
-function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, errors) {
+function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, scanInfo) {
   var classNameArr = serviceClass.split(".");
   var className = classNameArr.pop()
   var package = classNameArr.join(".")
@@ -85,6 +86,7 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
   var str = []
   var classFiles = fileLookupFn(className + ".java") || []
   classFiles.forEach(function (classFilePath) {
+    scanInfo.files.push(classFilePath)
     var fileStr = util.read(classFilePath)
     if (fileStr.indexOf(package) > -1) {
       if (found.length != 0) {
@@ -100,7 +102,7 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
       error = "Could not find definition for " + serviceClass + " from " + classFiles.join(", ")
     }
     error = error + " Creating a key for the baseUrl " + baseUrl
-    errors.push(error)
+    scanInfo.errors.push(error)
     var fullPath = resolvePropertyReferences(baseUrl, properties)
     var key=resolveKey(fullPath)
     str.push("# " + error)

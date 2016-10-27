@@ -24,7 +24,7 @@ var scan = {
       spring.scanForJaxUrls(state, fileTree)
       state.scanInfo.duration=(new Date).getTime() - start
       util.copyMap(state, serverState)
-      console.log("Parsed", state.scanInfo.files.length, "files:", state.scanInfo.files)
+      console.log("Parsed", state.scanInfo.files.length, "files")
       if (state.scanInfo.errors.length > 0) {
         console.log("Errors", state.scanInfo.errors.length, ":", state.scanInfo.errors)
       }
