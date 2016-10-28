@@ -22,7 +22,7 @@ var scan = {
       state.projectInfos = scanProjectInfoJsonFiles(fileTree, state.scanInfo)
       scanUrlProperties(fileTree, state.scanInfo, state.urlProperties)
       spring.scanForJaxUrls(state, fileTree)
-      state.scanInfo.duration=(new Date).getTime() - start
+      state.scanInfo.duration = (new Date).getTime() - start
       util.copyMap(state, serverState)
       console.log("Parsed", state.scanInfo.files.length, "files")
       if (state.scanInfo.errors.length > 0) {
@@ -37,7 +37,7 @@ var scan = {
 
 module.exports = scan
 
-scanFileTree = function(root, fn) {
+scanFileTree = function (root, fn) {
   var p = Path.join(root, "**/*")
   glob(p, function (er, files) {
     fn(er, util.createFileTree(root, files))
@@ -52,7 +52,11 @@ scanFileTree = function(root, fn) {
 function scanProjectInfoJsonFiles(fileTree, info) {
   var files = fileTree.filesBySuffix("project_info.json")
   info.files = info.files.concat(files)
-  return files.map(function(filePath){ var ret = readJSON(filePath); ret.path=filePath; return ret})
+  return files.map(function (filePath) {
+    var ret = readJSON(filePath);
+    ret.path = filePath;
+    return ret
+  })
 }
 
 function parseJSON(originalFileContent) {
@@ -93,30 +97,38 @@ function evalJS(originalFileContent) {
 // scans for .properties .json and .js files and loads them in to urlProperties
 // creates a list of project_info kind of map with {name: .. properties: .. path: .. originalFileContent: ..}
 function scanUrlProperties(fileTree, info, urlProperties) {
-  function parse(fileSuffixes, fn) {
-    return fileTree.filesBySuffix(fileSuffixes).forEach(function (filePath) {
-      try {
-        var filename = filePath.substr(filePath.lastIndexOf('/') + 1)
-        var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
-        var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
-        if (project != "") {
-          var originalFileContent = util.read(filePath);
-          var properties = fn(originalFileContent);
 
-          if (properties) {
-            util.addUrlProperties(urlProperties, project, properties, originalFileContent, filePath)
-            info.files.push(filePath)
-          } else {
-            info.errors.push(filePath + " does not include url_properties: " + originalFileContent)
-          }
-        }
-      } catch (err) {
-        info.errors.push("Error processing file: " + filePath + ": " + err)
-      }
-    })
+  // parse based on file suffix
+  function parse(filePath, originalFileContent) {
+    if (filePath.endsWith(".js")) {
+      return evalJS(originalFileContent)
+    } else if (filePath.endsWith(".json")) {
+      return parseJSON(originalFileContent)
+    } else if (filePath.endsWith(".properties")) {
+      return util.parseProperties(originalFileContent);
+    }
   }
 
-  parse(["oph.properties", "url.properties"], util.parseProperties)
-  parse(["oph.json", "oph_properties.json", "*url_properties.json"], parseJSON)
-  parse(["oph.js", "oph_properties.js"], evalJS)
+  var supportedFileSuffixes = ["oph.properties", "url.properties", "oph.json", "oph_properties.json", "url_properties.json", "oph.js", "oph_properties.js", "url_properties.js"];
+  fileTree.filesBySuffix(supportedFileSuffixes).forEach(function (filePath) {
+    try {
+      // figure out project from filename
+      var filename = filePath.substr(filePath.lastIndexOf('/') + 1)
+      var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
+      var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
+      if (project != "") {
+        var originalFileContent = util.read(filePath);
+        var properties = parse(filePath, originalFileContent);
+
+        if (properties) {
+          util.addUrlProperties(urlProperties, project, properties, originalFileContent, filePath)
+          info.files.push(filePath)
+        } else {
+          info.errors.push(filePath + " does not include url_properties: " + originalFileContent)
+        }
+      }
+    } catch (err) {
+      info.errors.push("Error processing file: " + filePath + ": " + err)
+    }
+  })
 }
