@@ -47,7 +47,7 @@ To add more projects:
   ajaxJson('GET', "/rest/server_state/scaninfo", initTable)
 
   function initTable(json) {
-    var infoTxt = "Previous scan took " + Number((6.688689).toFixed(1)) + " seconds. It started at " + json.start + ". Scanned files: " + json.files.length
+    var infoTxt = "Previous scan took " + Number((json.duration/1000.0).toFixed(1)) + " seconds. It started at " + json.start + ". Scanned files: " + json.files.length
     document.getElementById('infoTxt').textContent=infoTxt
     if(json.errors.length > 0) {
       addNode(addNode(table, "th"), "td", "Errors: " + json.errors.length);

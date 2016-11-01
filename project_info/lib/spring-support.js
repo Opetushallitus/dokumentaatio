@@ -1,8 +1,9 @@
 var xml2js = require('xml2js')
-var util = require('../lib/util.js')
+var util = require('../static/util.js')
+var fileutil = require('./fileutil.js')
 var path = require('path')
-var spring = {}
 
+var spring = {}
 module.exports = spring
 
 spring.scanForJaxUrls = function(serverState, fileTree) {
@@ -19,21 +20,20 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
       return path.join(path.dirname(root), filePath)
     }
     var project = projectInfo["name"];
-    var springUrls = projectInfo["spring-urls"];
-    if(project && springUrls) {
+    var springUrlConfig = util.safeGet(projectInfo, "urls.spring", [])
+    if(project && springUrlConfig) {
       var properties = {}
-      util.flatten(springUrls.properties || [])
+      util.flatten(springUrlConfig.properties || [])
         .map(relativePath)
-        .map(util.readProperties)
         .forEach(function (props) {
-          util.copyMap(props, properties)
+          util.copyMap(fileutil.readProperties(props), properties)
         })
-      util.flatten(springUrls.xml || [])
+      util.flatten(springUrlConfig.xml || [])
         .map(relativePath)
         .forEach(function (xmlPath) {
           var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo)
-          var parsedProperties = util.parseProperties(originalFileContent)
-          util.addUrlProperties(serverState.urlProperties, project, parsedProperties, originalFileContent, xmlPath)
+          var parsedProperties = fileutil.parseProperties(originalFileContent)
+          fileutil.addUrlProperties(serverState.urlProperties, project, parsedProperties, originalFileContent, xmlPath, projectInfo)
         })
     }
     if(projectInfo["projects"]) {
@@ -87,7 +87,7 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
   var classFiles = fileLookupFn(className + ".java") || []
   classFiles.forEach(function (classFilePath) {
     scanInfo.files.push(classFilePath)
-    var fileStr = util.read(classFilePath)
+    var fileStr = fileutil.read(classFilePath)
     if (fileStr.indexOf(package) > -1) {
       if (found.length != 0) {
         throw "Already found " + found.join(", ") + " for " + serviceClass + " Has configuration also in " + classFilePath
@@ -156,7 +156,7 @@ function parseXmlFile(xmlPath) {
     explicitChildren: true,
     preserveChildrenOrder: true,
     explicitRoot: false
-  }).parseString(util.read(xmlPath), function (err, result) {
+  }).parseString(fileutil.read(xmlPath), function (err, result) {
     retErr = err;
     ret = result;
   });

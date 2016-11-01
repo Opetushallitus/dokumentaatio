@@ -9,6 +9,7 @@
     <script src="lib/sorttable.js"></script>
     <link rel="stylesheet" type="text/css" href="common.css"/>
     <script src="common_ui.js"></script>
+    <script src="util.js"></script>
 </head>
 <body>
 
@@ -25,15 +26,16 @@
     var table = document.getElementById('infos');
 
     handleHash()
-    ajaxJson('GET', "/rest/url_properties/uses", initTable)
+    ajaxJson('GET', "/rest/server_state", initTable)
 
     function initTable(json) {
-        console.log(json)
+        var showHidden = false;
+        json = util.createGraphInfoFromProjectInfos(util.convertUrlPropertiesToProjectInfo(json.urlProperties, showHidden), showHidden)
+
         data = {
             headers: ["project", "url", "count", "users"],
             rows: json.url_uses
         };
-        console.log(data)
         redraw()
     }
 
@@ -57,7 +59,7 @@
                 texts.push(use.project, use.key, use.original_url)
             })
 
-            var hide = someMatches(texts, excluded) || !(included.length == 0 || someMatches(texts, included))
+            var hide = util.someMatches(texts, excluded) || !(included.length == 0 || someMatches(texts, included))
             return !hide
         })
         sorttable.makeSortable(table);

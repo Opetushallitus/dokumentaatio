@@ -15,7 +15,6 @@ if(!serverState.workDir) {
 var express = require('express')
 var exphbs  = require('express-handlebars');
 
-var convert = require('./lib/convert.js')
 var scan = require('./lib/scan.js')
 
 var app = express();
@@ -56,7 +55,12 @@ function startServer() {
 
   app.get('/rest/url_properties/uses', function(req, res){
     json(res)
-    res.json(convert.createGraphInfoFromProjectInfos(convert.appendUsesAndS2SInfoToUrlProperties(serverState.urlProperties)))
+    res.json(convert.createGraphInfoFromProjectInfos(convert.convertUrlPropertiesToProjectInfo(serverState.urlProperties)))
+  });
+
+  app.get('/rest/server_state', function(req, res){
+    json(res)
+    res.json(serverState)
   });
 
   app.get('/rest/server_state/scaninfo', function(req, res){

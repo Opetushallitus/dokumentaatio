@@ -1,229 +1,284 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>OPH Palveluriippuvuudet</title>
+    <meta charset="utf-8">
+    <title>OPH Palveluriippuvuudet</title>
 
-  <script type="text/javascript" src="http://visjs.org/dist/vis.js"></script>
-  <link href="http://visjs.org/dist/vis.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="lib/vis.js"></script>
+    <link href="lib/vis.css" rel="stylesheet" type="text/css"/>
 
-  <style type="text/css">
-    #mynetwork {
-      position: absolute;
-      width: 100%;
-       top: 40px;
-       bottom: 0px;
-      border: 1px solid lightgray;
-    }
-  </style>
+    <style type="text/css">
+        #mynetwork {
+            position: absolute;
+            width: 100%;
+            top: 40px;
+            bottom: 0px;
+            border: 1px solid lightgray;
+        }
+    </style>
 
-  <script src="common_ui.js"></script>
+    <script src="common_ui.js"></script>
+    <script src="util.js"></script>
 </head>
 <body>
 
 <p>
-[<a href="/">menu</a>] Rajaa näytettäviä palveluita <input onkeyup="filter(this.value);" type="text" id="q">
-  <span id="filterInfo"></span>
-<select id="type" onchange="reload(this)">
-  <option>project_infos</option>
-  <option selected="selected">url_properties</option>
-</select>
-<a href="javascript:void(0)" onclick="exportCanvas()">Tee PNG</a>
-<a href="" id="download" download="palveluriippuvuudet.png"></a>
+    [<a href="/">menu</a>] Filter by name: <input onkeyup="filter(this.value);" type="text" id="q">
+    <span id="filterInfo"></span>
+    <select id="type" onchange="redraw()">
+        <option>project_infos</option>
+        <option selected="selected">url_properties</option>
+    </select>
+    Show hidden: <input id="showHidden" type="checkbox" onchange="redraw()" value="checked"/>
+    <a href="javascript:void(0)" onclick="exportCanvas()">Tee PNG</a>
+    <a href="" id="download" download="palveluriippuvuudet.png"></a>
 </p>
 
 <div id="mynetwork"></div>
 
 <script type="text/javascript">
 
-var nodes, edges, data;
+    var nodes, edges, data, originalJSON, viewInfo = {
+        graphType: undefined,
+        showHidden: undefined,
+        filterValue: undefined
+    };
 
-function makeService2ServiceText(label, destLabel){
-  var service2service = data.service2service[label + "." + destLabel]
-  if(service2service) {
-    return "<b>" + label + " -> " + destLabel + "</b> [" + service2service.length + "]:<br>" + service2service.join("<br>");
-  } else {
-    return ""
-  }
-}
-function makeLine(label, destLabel){
-  var edgeData = {
-    from: data.name_id_map[label],
-    to: data.name_id_map[destLabel],
-    title: makeService2ServiceText(label, destLabel),
-  };
-  if(label != destLabel && data.service2service[label + "." + destLabel] && data.service2service[destLabel + "." + label]) {
-    edgeData.color="red"
-  }
-  return edgeData
-}
-
-function makeNode(label){
-
-  var borderWidth = 0.5;
-  var usesTxt = "", usedByTxt = "", summaryUseTxt =[]
-
-  if(data.uses[label] && data.uses[label].length > 0 ) {
-    var urlCount = 0
-    data.uses[label].forEach(function(destLabel){
-      usesTxt += makeService2ServiceText(label, destLabel)
-      usesTxt += "<br>"
-      urlCount += data.service2service[label + "." + destLabel].length
-    })
-    summaryUseTxt.push("Uses: " + data.uses[label].length + " services with " + urlCount + " urls")
-  }
-
-  if(data.used_by[label] && data.used_by[label].length > 0 ) {
-    var urlCount = 0
-    data.used_by[label].forEach(function(destLabel){
-      usedByTxt += makeService2ServiceText(destLabel, label)
-      usedByTxt += "<br>"
-      urlCount += data.service2service[destLabel + "." + label].length
-    })
-    summaryUseTxt.push("Used by: " + data.used_by[label].length + " services with " + urlCount + " urls")
-  }
-
-  var title = "<h3>" + label + "</h3>"
-  if(data.project_infos[label]) {
-    var info = data.project_infos[label]
-    if(summaryUseTxt.length > 0) {
-      title += summaryUseTxt.join("<br>")
-      title += "<br>"
-    }
-    if(info.sources) {
-      title += "File: " + info.path + "<br>"
-      borderWidth = 1.4;
-    }
-    title += "<br>"
-  }
-
-  title += usesTxt
-  title += usedByTxt
-
-  var node = {
-    id: data.name_id_map[label],
-    label: label,
-    title: title,
-    borderWidth: borderWidth
-  };
-  return node
-}
-
-function initGraph(json) {
-  data = json
-  console.log(data)
-
-  nodes = new vis.DataSet(data.items.map(function(label){
-    return makeNode(label);
-  }))
-  var deepEdges = data.items.map(function(label){
-    if(data.uses[label]) {
-      return data.uses[label].map(function(useLabel){
-        return makeLine(label, useLabel);
-      })
-    }
-    return []
-  })
-  edges = new vis.DataSet([].concat.apply([], deepEdges))
-  document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
-
-  var container = document.getElementById('mynetwork');
-  var options = {
-    autoResize: true,
-    configure: {
-      enabled: true,
-      filter: true,
-      showButton: true
-    },
-    interaction: {
-      "multiselect": true
-    },
-    nodes: {
-        "color": {
-          "background": "rgba(245,245,255,1)"
-        },
-        "font": {
-          "size": 20
+    function makeService2ServiceText(titleArr, e2eArr, info) {
+        var e2eUrls = data.service2service[e2eArr.join(".")]
+        if (e2eUrls) {
+            info.count += e2eUrls.length
+            return "<b>" + titleArr.join(" -> ") + "</b> [" + e2eUrls.length + "]:<br>" + e2eUrls.join("<br>");
+        } else {
+            return []
         }
-      },
-    edges: {
-      "arrows": {
-        "to": {
-          "enabled": true,
-          "scaleFactor": 1.0
+    }
+    function makeLine(label, destLabel) {
+        var edgeData = {
+            from: data.name_id_map[label],
+            to: data.name_id_map[destLabel],
+            title: util.flatten(makeService2ServiceText([label, destLabel], [label, destLabel], {count: 0})).join("<br>"),
+        };
+        if (label != destLabel && data.service2service[label + "." + destLabel] && data.service2service[destLabel + "." + label]) {
+            edgeData.color = "red"
         }
-      },
-      "smooth": {
-        "forceDirection": "none"
-      }
-    },
-    physics: {
-      "forceAtlas2Based": {
-        "springLength": 25,
-        "avoidOverlap": 0.23,
-        "damping": 0.89
-      },
-      "minVelocity": 0.75,
-      "solver": "forceAtlas2Based"
+        if(data.project_infos[destLabel] && "library" == data.project_infos[destLabel].type) {
+            edgeData.color = {
+                inherit: false,
+                color: "rgba(43,233,124,1)"
+            }
+        }
+        return edgeData
     }
-  };
-  
-  new vis.Network(container, {
-    nodes: nodes,
-    edges: edges
-  }, options);
 
-  handleHash()
-}
+    function makeNode(label) {
+      var borderWidth = 0.5;
+      var usesTxt = "", usedByTxt = "", includesTxt = "", summaryUseTxt =[]
 
-function redraw() {
-  var uses = data.uses
-  var usedBy = data.used_by
-  var visibleNodeIds = []
-  var visibleNodeCount = 0, visibleEdgeCount = 0;
-  nodes.forEach(function (i) {
-    var show = ( filter.included.length == 0 || someMatches([i.label], filter.included) || (uses[i.label] && someMatches(uses[i.label], filter.included)) || (usedBy[i.label] && someMatches(usedBy[i.label], filter.included))) && filter.excluded.indexOf(i.label) == -1
-    nodes.update({
-      id: i.id,
-      hidden: !show
-    })
-    if (show) {
-      visibleNodeIds.push(data.name_id_map[i.label])
-      visibleNodeCount += 1
+        var usesData = util.safeGet(data, "uses."+label, [])
+        if (usesData.length > 0) {
+            var info = {count: 0}
+            usesTxt = util.flatten(usesData.map(function (destLabel) {
+                return makeService2ServiceText([label, destLabel], [label, destLabel], info)
+            })).join("<br>")+"<br><br>"
+            summaryUseTxt.push("Uses: " + usesData.length + " services with " + info.count + " urls")
+        }
+
+        // includes should be resolved recursively
+        var includes = util.safeGet(data, "project_infos." + label + ".includes", [])
+        if (includes.length > 0) {
+            var info = {count: 0}
+            includesTxt = util.flatten(includes.map(function (includeName) {
+                        return util.safeGet(data, "uses."+includeName, []).map(function (includeUseName) {
+                            return makeService2ServiceText([label, includeName, includeUseName], [includeName, includeUseName], info)
+                        })
+                    })).join("<br>")+"<br><br>"
+            summaryUseTxt.push("Includes " + includes.length + " libraries with " + info.count + " urls")
+        }
+
+        var usedbyData = util.safeGet(data, "used_by."+label, [])
+        if (usedbyData.length > 0) {
+            var info = {count: 0}
+            usedByTxt = util.flatten(usedbyData.map(function (destLabel) {
+                return makeService2ServiceText([destLabel, label], [destLabel, label], info)
+            })).join("<br>")+"<br><br>"
+            summaryUseTxt.push("Used by: " + usedbyData.length + " services with " + info.count + " urls")
+        }
+
+        var title = "<h3>" + label + "</h3>"
+        if(!data.project_infos[label]) {
+            title += "Does not have its own definition!<br>"
+        }
+
+        var sources = util.safeCollect(util.safeGet(data, "project_infos."+label+".sources",[]), "path")
+        if (sources && sources.length > 0) {
+            summaryUseTxt.push("Sources: " + sources.join(", "))
+            borderWidth = 1.4;
+        }
+
+        if (summaryUseTxt.length > 0) {
+            title += summaryUseTxt.join("<br>")+"<br><br>"
+        }
+
+        title += usesTxt
+        title += includesTxt
+        title += usedByTxt
+
+        var node = {
+            id: data.name_id_map[label],
+            label: label,
+            title: title,
+            borderWidth: borderWidth
+        };
+        if(util.safeGet(data.project_infos, label + ".type") == "library") {
+            node.color = {
+                background: "rgba(245,255,245,1)",
+                border: "rgba(43,233,124,1)",
+                highlight: {
+                    border: "rgba(43,233,124,1)",
+                    background: "rgba(210,255, 229,1)"
+                }
+            }
+        }
+        return node
     }
-  })
 
-  edges.forEach(function (i) {
-    var show = visibleNodeIds.indexOf(i.from) != -1 && visibleNodeIds.indexOf(i.to) != -1
-    edges.update({
-      id: i.id,
-      hidden: !show
-    })
-    if (show) {
-      visibleEdgeCount += 1
+    function initGraph(json) {
+        originalJSON = json
+
+        var container = document.getElementById('mynetwork');
+        var options = {
+            autoResize: true,
+            configure: {
+                enabled: true,
+                filter: true,
+                showButton: true
+            },
+            interaction: {
+                "multiselect": true
+            },
+            nodes: {
+                "color": {
+                    "background": "rgba(245,245,255,1)"
+                },
+                "font": {
+                    "size": 20
+                }
+            },
+            edges: {
+                "arrows": {
+                    "to": {
+                        "enabled": true,
+                        "scaleFactor": 1.0
+                    }
+                },
+                "smooth": {
+                    "forceDirection": "none"
+                }
+            },
+            physics: {
+                "forceAtlas2Based": {
+                    "springLength": 25,
+                    "avoidOverlap": 0.23,
+                    "damping": 0.89
+                },
+                "minVelocity": 0.75,
+                "solver": "forceAtlas2Based"
+            }
+        };
+
+        viewInfo.container = new vis.Network(container, {}, options);
+
+        handleHash()
+        redraw()
     }
-  })
 
-  document.getElementById("filterInfo").textContent = "Nodes:" + visibleNodeCount + "/" + nodes.length + " Links: " + visibleEdgeCount + "/" + edges.length
-}
+    function generateData(graphType, showHidden) {
+        if (graphType == "url_properties") {
+            data = util.createGraphInfoFromProjectInfos(util.convertUrlPropertiesToProjectInfo(originalJSON.urlProperties, showHidden), showHidden)
+        } else {
+            data = util.createGraphInfoFromProjectInfos(originalJSON.projectInfos, showHidden)
+        }
+        nodes = new vis.DataSet(data.items.map(function (label) {
+            return makeNode(label);
+        }))
+        // does not support visualizing includes links
+        edges = new vis.DataSet(util.flatten(data.items.map(function (label) {
+            return util.safeGet(data.uses, label, []).map(function (useLabel) {
+                return makeLine(label, useLabel);
+            })
+        })))
+        document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
+        viewInfo.container.setData({
+            nodes: nodes,
+            edges: edges
+        })
+    }
 
-function reload() {
-  var e = document.getElementById("type");
-  var strType = e.options[e.selectedIndex].value;
-  ajaxJson('GET', "/rest/"+strType+"/uses", initGraph)
-}
+    function applyFilter() {
+        var uses = data.uses
+        var usedBy = data.used_by
+        var visibleNodeIds = []
+        var visibleNodeCount = 0, visibleEdgeCount = 0;
+        nodes.forEach(function (i) {
+            var show = ( filter.included.length == 0 || util.someMatches([i.label], filter.included) || (uses[i.label] && util.someMatches(uses[i.label], filter.included)) ||
+                    (usedBy[i.label] && util.someMatches(usedBy[i.label], filter.included))) && filter.excluded.indexOf(i.label) == -1
+            if (!show != i.hidden) {
+                nodes.update({
+                    id: i.id,
+                    hidden: !show
+                })
+            }
+            if (show) {
+                visibleNodeIds.push(data.name_id_map[i.label])
+                visibleNodeCount += 1
+            }
+        })
 
-reload()
+        edges.forEach(function (i) {
+            var show = visibleNodeIds.indexOf(i.from) != -1 && visibleNodeIds.indexOf(i.to) != -1
+            if (!show != i.hidden) {
+                edges.update({
+                    id: i.id,
+                    hidden: !show
+                })
+            }
+            if (show) {
+                visibleEdgeCount += 1
+            }
+        })
+        document.getElementById("filterInfo").textContent = "Nodes:" + visibleNodeCount + "/" + nodes.length + " Links: " + visibleEdgeCount + "/" + edges.length
+    }
 
-function exportCanvas() {
-  var mycanvas = document.getElementsByTagName("canvas")[0];
-  if(mycanvas && mycanvas.getContext) {
-      var img = mycanvas.toDataURL("image/png;base64;");
-      anchor = document.getElementById("download");
-      anchor.href = img;
-      anchor.innerHTML = "Download";
-  }
-}
+    function redraw() {
+        var e = document.getElementById("type");
+        var graphType = e.options[e.selectedIndex].value
+        var showHidden = document.getElementById("showHidden").checked
+
+        if (viewInfo.graphType != graphType || viewInfo.showHidden != showHidden) {
+            generateData(graphType, showHidden);
+            viewInfo.graphType = graphType
+            viewInfo.showHidden = showHidden
+            viewInfo.filterValue = undefined
+        }
+
+        if (viewInfo.filterValue != filter.value) {
+            applyFilter();
+            viewInfo.filterValue = filter.value
+        }
+    }
+
+    ajaxJson('GET', "/rest/server_state", initGraph)
+
+    function exportCanvas() {
+        var mycanvas = document.getElementsByTagName("canvas")[0];
+        if (mycanvas && mycanvas.getContext) {
+            var img = mycanvas.toDataURL("image/png;base64;");
+            anchor = document.getElementById("download");
+            anchor.href = img;
+            anchor.innerHTML = "Download";
+        }
+    }
 
 </script>
 

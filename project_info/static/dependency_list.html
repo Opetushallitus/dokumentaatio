@@ -2,11 +2,12 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>OPH project_info.json yhteenveto</title>
+  <title>Url dependency list</title>
 
   <script src="lib/sorttable.js"></script>
   <script src="common_ui.js"></script>
   <link rel="stylesheet" type="text/css" href="common.css"/>
+  <script src="util.js"></script>
 </head>
 <body>
 
@@ -23,29 +24,32 @@
   var table = document.getElementById('infos');
 
   handleHash()
-  ajaxJson('GET', "/rest/url_properties/uses", initTable)
+  ajaxJson('GET', "/rest/server_state", initTable)
 
   function redraw() {
     redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
-      row.forEach(function(txt){addNode(infoRow, "td", txt)})
+      data.headers.forEach(function(header){addNode(infoRow, "td", row[header])})
     }, function (row, included, excluded) {
-      var hide = someMatches(row, excluded) || !(included.length == 0 || someMatches(row, included))
+      var lookup = [row.from, row.to, row.url]
+      var hide = util.someMatches(lookup, excluded) || !(included.length == 0 || util.someMatches(lookup, included))
       return !hide
     })
     sorttable.makeSortable(table);
   }
 
   function initTable(json) {
-    console.log(json)
+    var showHidden=true
+    json = util.createGraphInfoFromProjectInfos(util.convertUrlPropertiesToProjectInfo(json.urlProperties, showHidden), showHidden)
+    var rows = util.flatten(Object.keys(json.service2service).map(function (key) {
+      var arr = key.split("\.")
+      var from = arr[0], to = arr[1];
+      return json.service2service[key].map(function (urlProperty) {
+        return {from: from, to: to, url: urlProperty}
+      })
+    }))
     data = {
       headers: ["from","to","url"],
-      rows: flatten(Object.keys(json.service2service).map(function (key) {
-        var arr = key.split("\.")
-        var from = arr[0], to = arr[1];
-        return json.service2service[key].map(function (urlProperty) {
-          return [from, to, urlProperty]
-        })
-      }))
+      rows: rows
     };
     redraw();
   }

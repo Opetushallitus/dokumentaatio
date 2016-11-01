@@ -16,24 +16,6 @@ function handleHash() {
   }
 }
 
-function arrToLowerCase(array) {
-  return array.map(function (txt) {
-    return txt.toLowerCase();
-  })
-}
-
-function someMatches(arr, subs, caseSensitive) {
-  if(!caseSensitive) {
-    arr = arrToLowerCase(arr)
-    subs = arrToLowerCase(subs)
-  }
-  return arr.some && arr.some(function(str){
-      return subs.some(function(substring) {
-        return str.indexOf(substring) > -1
-      })
-    })
-}
-
 function addNode(dest, elementType, text) {
   var node = document.createElement(elementType);
   if(text) {
@@ -63,7 +45,7 @@ function redrawFilteredInfoTable(rows, table, headers, drawRow, showRow) {
 
 var filter = function(value) {
   window.location.hash=value
-  filter.included = [], filter.excluded = []
+  filter.included = [], filter.excluded = [], filter.value=value
   value.split(" ").forEach(function(s){
     if(s.length>0) {
       if(s.startsWith("-")) {
@@ -77,10 +59,5 @@ var filter = function(value) {
     redraw()
   }
 }
-filter.included = [], filter.excluded = []
+filter.included = [], filter.excluded = [], filter.value = ""
 
-function flatten(arr) {
-  return arr.reduce(function(a, b) {
-    return a.concat(b);
-  }, []);
-}
