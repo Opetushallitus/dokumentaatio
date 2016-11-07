@@ -86,7 +86,7 @@ function linkProject(name) {
 function convertProjectNamesToLinks(arr, excludes) {
   excludes = excludes || []
   return arr.map(function (name) {
-    if(util.someMatches([name], excludes)) {
+    if(excludes.indexOf(name) !== -1) {
       return name
     } else {
       return linkProject(name)
