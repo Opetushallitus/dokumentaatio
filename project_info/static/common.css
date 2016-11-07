@@ -7,3 +7,12 @@
 tr {
     vertical-align: top;
 }
+
+.leftMargin2 {
+    margin-left: 1em;
+}
+
+.noMargins {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}

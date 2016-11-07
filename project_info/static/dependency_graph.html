@@ -40,23 +40,6 @@
         filterValue: undefined
     };
 
-    function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
-        var summary = data.summary;
-        var e2eUrlMap = summary.service2service[e2eArr.join(".")]
-        if (e2eUrlMap) {
-            var e2eUrls = util.mapEachPair(e2eUrlMap, function (key, value) {
-                return key + "=" + value;
-            })
-            if (info) {
-                info.count += e2eUrls.length
-            }
-            return listOfTitleArrs.map(function (titleArr) {
-                        return "<b>" + titleArr.join(" -> ") + "</b>"
-                    }).join("<br>") + " [" + e2eUrls.length + "]:<br>" + e2eUrls.join("<br>");
-        } else {
-            return []
-        }
-    }
     function makeEdgeLine(edgeInfo) {
         var label = data.summary.id_name_map[edgeInfo.from]
         var destLabel = data.summary.id_name_map[edgeInfo.to]
@@ -69,7 +52,7 @@
             edgeData.color = "red"
         }
         if (edgeInfo.include) {
-            edgeData.title="<b>"+label +"</b><br>" + " includes " + destLabel
+            edgeData.title = "<b>" + label + "</b><br>" + " includes " + destLabel
             edgeData.color = {
                 inherit: false,
                 color: "rgba(43,233,124,1)"
@@ -82,78 +65,19 @@
         var borderWidth = 0.5;
         var summary = data.summary;
         var projectInfoMap = data.projectInfoMap;
-        var usesTxt = "", usedByTxt = "", includesTxt = "", summaryUseTxt = []
         var from = nodeInfo.name
+        var projectInfo = projectInfoMap[from]
 
-        if(nodeInfo.type) {
-            summaryUseTxt.push("Type: " + nodeInfo.type)
-        }
-
-        var usesData = util.safeGet(summary, "uses." + from, [])
-        if (usesData.length > 0) {
-            var info = {count: 0}
-            usesTxt = util.flatten(usesData.map(function (to) {
-                        return makeService2ServiceText([[from, to]], [from, to], info)
-                    })).join("<br>") + "<br><br>"
-            summaryUseTxt.push("Uses: " + usesData.length + " services with " + info.count + " urls")
-        }
-
-        // resolved includes: {project: {library: [[project, library], [project, dep, library]]}]}
-        var includes = util.safeGet(data, "summary.resolved_includes." + from, {})
-        if (!util.isEmptyObject(includes)) {
-            var info = {count: 0}
-            includesTxt = util.mapEachPair(includes, function (libraryName, includePaths) {
-                        // iterate through library's direct uses
-                        var libraryUses = summary.uses[libraryName] || []
-                        return libraryUses.map(function (libraryUse) {
-                            // each includePath is appended with libraryUse to get correct headers
-                            var fullToPaths = includePaths.map(function (includePath) {
-                                return includePath.concat([libraryUse])
-                            })
-                            // generate link information for library and its used service
-                            return makeService2ServiceText(fullToPaths, [libraryName, libraryUse], info)
-                        })
-                    }).join("<br>") + "<br><br>"
-            summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
-        }
-
-        var includedBy = summary.included_by[from];
-        if(includedBy && includedBy.length > 0) {
-            summaryUseTxt.push("Included by " + includedBy.length + " services: " + includedBy.join(", "))
-        }
-
-        var usedbyData = util.safeGet(data, "summary.used_by." + from, [])
-        if (usedbyData.length > 0) {
-            var info = {count: 0}
-            usedByTxt = util.flatten(usedbyData.map(function (destLabel) {
-                        return makeService2ServiceText([[destLabel, from]], [destLabel, from], info)
-                    })).join("<br>") + "<br><br>"
-            summaryUseTxt.push("Used by: " + usedbyData.length + " services with " + info.count + " urls")
-        }
-
-        var title = "<h3>" + from + "</h3>"
-        if (!projectInfoMap[from]) {
-            title += "Does not have its own definition!<br>"
-        }
-
-        var sources = util.safeCollect(util.safeGet(data, "projectInfoMap." + from + ".sources", []), "path")
+        var sources = util.safeCollect(util.safeGet(projectInfo, "sources", []), "path")
         if (sources && sources.length > 0) {
-            summaryUseTxt.push("Sources: " + sources.join(", "))
             borderWidth = 1.4;
         }
 
-        if (summaryUseTxt.length > 0) {
-            title += summaryUseTxt.join("<br>") + "<br><br>"
-        }
-
-        title += usesTxt
-        title += includesTxt
-        title += usedByTxt
+//            title: makeNodeTxt(from, projectInfo, summary, {showUrls: false}),
 
         var node = {
             id: nodeInfo.id,
             label: nodeInfo.name,
-            title: title,
             borderWidth: borderWidth
         };
         if (nodeInfo.type == "library") {
@@ -215,7 +139,20 @@
             }
         };
 
-        viewInfo.container = new vis.Network(container, {}, options);
+        viewInfo.network = new vis.Network(container, {}, options);
+
+        viewInfo.network.on("click", function (params) {
+            if(params.nodes && params.nodes.length > 0) {
+                var id = params.nodes[0]
+                var name = data.summary.id_name_map[id]
+                var newWnd = window.open("/project.html#"+name, "dep_info", {})
+                if(newWnd) {
+                    newWnd.opener = null
+                } else {
+                    alert("Could not open popup window. You need to enable window.open()")
+                }
+            }
+        });
 
         handleHash()
         redraw()
@@ -226,7 +163,7 @@
         nodes = new vis.DataSet(data.graphInfo.nodes.map(makeNode))
         edges = new vis.DataSet(data.graphInfo.edges.map(makeEdgeLine))
         document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
-        viewInfo.container.setData({
+        viewInfo.network.setData({
             nodes: nodes,
             edges: edges
         })

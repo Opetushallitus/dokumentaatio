@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Project info</title>
+
+    <script src="common_ui.js"></script>
+    <script src="util.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css"/>
+</head>
+<body>
+<p>
+    [<a href="/">menu</a>]
+</p>
+
+<p id="info"></p>
+
+<script type="text/javascript">
+
+    var data = {};
+    var info = document.getElementById("info");
+
+    ajaxJson('GET', "/rest/server_state", initGraph)
+
+    function initGraph(json) {
+        data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
+        data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
+        redraw()
+    }
+
+    function redraw() {
+        var projectName = getHash()
+        if (projectName.length > 0) {
+            info.innerHTML = makeNodeTxt(projectName, data.projectInfoMap[projectName], data.summary)
+        }
+    }
+
+    window.onhashchange = redraw
+
+</script>
+</body>
+</html>
