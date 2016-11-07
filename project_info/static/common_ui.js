@@ -14,16 +14,24 @@ function getHash() {
 
 function handleHash() {
   var h = getHash()
-  if (h.length > 0) {
-    document.getElementById("q").value=h
-    filter(h)
-  }
+  document.getElementById("q").value=h
+  filter(h)
 }
 
-function addNode(dest, elementType, text) {
+function addNode(dest, elementType, args) {
   var node = document.createElement(elementType);
-  if(text) {
-    node.appendChild(document.createTextNode(text))
+  if(args) {
+    if(typeof args === 'object') {
+      if(args.text) {
+        node.appendChild(document.createTextNode(args.text))
+        delete args.text
+      }
+      util.mapEachPair(args, function (key, value) {
+        node.setAttribute(key, value)
+      })
+    } else {
+      node.appendChild(document.createTextNode(args))
+    }
   }
   dest.appendChild(node)
   return node;
@@ -92,7 +100,7 @@ function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
   if (e2eUrlMap) {
     var urlCount = Object.keys(e2eUrlMap).length;
     var e2eUrlsTxt = util.mapEachPair(e2eUrlMap, function (key, value) {
-      return key + "=" + value;
+      return '<a class="blueUpArrowLink" href="/url_dependencies.html#'+util.parsePlainUrl(value)+'"></a>' + key + "=" + value
     }).join("<br>")
     var excludeFromProjectLinks = []
     if (info) {

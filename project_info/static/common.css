@@ -16,3 +16,23 @@ tr {
     margin-top: 0px;
     margin-bottom: 0px;
 }
+
+.blueUpArrowLink {
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 6px solid #c0c0ff;
+    top: -0.8em;
+    position: relative;
+    margin-right: 0.3em;
+}
+
+.blacktextHoverUnderline {
+    color: #000000;
+    text-decoration: none;
+}
+
+.blacktextHoverUnderline:hover {
+    text-decoration: underline;
+}
