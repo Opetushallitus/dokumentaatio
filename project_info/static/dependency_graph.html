@@ -148,6 +148,9 @@
                 var newWnd = window.open("/project.html#"+name, "dep_info", {})
                 if(newWnd) {
                     newWnd.opener = null
+                    newWnd.selectNodeFromGraph = function (label) {
+                        viewInfo.network.selectNodes([data.summary.name_id_map[label]], true)
+                    }
                 } else {
                     alert("Could not open popup window. You need to enable window.open()")
                 }
