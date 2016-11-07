@@ -9,10 +9,18 @@ require("./polyfills.js")
 var scan = {}
 module.exports = scan
 
-scan.scan=function (serverState, fn) {
+scan.scan = function (serverState, fn) {
   console.log("Scanning", serverState.workDir)
   scanFileTree(serverState.workDir, function (er, fileTree) {
     var start = (new Date).getTime()
+    if (serverState.scanInfo) {
+      if (serverState.scanInfo.latestScan) {
+        console.log("There is a scan running which started at ", serverState.scanInfo.latestScan, " aborting new scan...")
+        return
+      } else {
+        serverState.scanInfo.latestScan = start
+      }
+    }
     var state = {
       workDir: serverState.workDir,
       scanInfo: {
@@ -21,11 +29,11 @@ scan.scan=function (serverState, fn) {
         duration: 0,
         start: new Date().toString()
       },
-      urlProperties: {}
+      sources: []
     }
-    state.projectInfos = scanProjectInfoJsonFiles(fileTree, state.scanInfo)
-    scanUrlProperties(fileTree, state.scanInfo, state.urlProperties)
-    spring.scanForJaxUrls(state, fileTree, scan)
+    scanProjectInfoJsonFiles(fileTree, state)
+    scanUrlProperties(fileTree, state)
+    spring.scanForJaxUrls(fileTree, state)
     state.scanInfo.duration = (new Date).getTime() - start
     util.copyMap(state, serverState)
     console.log("Parsed", state.scanInfo.files.length, "files")
@@ -51,13 +59,22 @@ function scanFileTree(root, fn) {
 // {name: "Test", makeFile: "Yes"}
 // Project | makeFile
 // Test    | Yes
-function scanProjectInfoJsonFiles(fileTree, info) {
+function scanProjectInfoJsonFiles(fileTree, serverState) {
   var files = fileTree.filesBySuffix("project_info.json")
-  info.files = info.files.concat(files)
   return files.map(function (filePath) {
+    serverState.scanInfo.files.push(filePath)
     var ret = readJSON(filePath);
-    ret.path = filePath;
-    return ret
+    if (ret.name) {
+      ret.sources = [
+        {
+          path: filePath
+        }]
+      // backwards compatability
+      if (ret.uses && !Array.isArray(ret.uses)) {
+        ret.uses = ret.uses.split(" ")
+      }
+      serverState.sources.push(ret)
+    }
   })
 }
 
@@ -98,7 +115,7 @@ function evalJS(originalFileContent) {
 
 // scans for .properties .json and .js files and loads them in to urlProperties
 // creates a list of project_info kind of map with {name: .. properties: .. path: .. originalFileContent: ..}
-function scanUrlProperties(fileTree, info, urlProperties) {
+function scanUrlProperties(fileTree, serverState) {
 
   // parse based on file suffix
   function parse(filePath, originalFileContent) {
@@ -119,18 +136,26 @@ function scanUrlProperties(fileTree, info, urlProperties) {
       var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
       var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
       if (project != "") {
+        serverState.scanInfo.files.push(filePath)
         var originalFileContent = fileutil.read(filePath);
         var properties = parse(filePath, originalFileContent);
-
         if (properties) {
-          fileutil.addUrlProperties(urlProperties, project, properties, originalFileContent, filePath, {})
-          info.files.push(filePath)
+          var sourceInfo = {
+            name: project,
+            properties: util.flattenNested(properties),
+            sources: [
+              {
+                path: filePath,
+                content: originalFileContent
+              }]
+          };
+          serverState.sources.push(sourceInfo)
         } else {
-          info.errors.push(filePath + " does not include url_properties: " + originalFileContent)
+          serverState.scanInfo.errors.push(filePath + " does not include url_properties: " + originalFileContent)
         }
       }
     } catch (err) {
-      info.errors.push("Error processing file: " + filePath + ": " + err)
+      serverState.scanInfo.errors.push("Error processing file: " + filePath + ": " + err)
     }
   })
 }

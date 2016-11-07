@@ -29,12 +29,10 @@
     ajaxJson('GET', "/rest/server_state", initTable)
 
     function initTable(json) {
-        var showHidden = false;
-        json = util.createGraphInfoFromProjectInfos(util.convertUrlPropertiesToProjectInfo(json.urlProperties, showHidden), showHidden)
-
+        var projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources);
         data = {
             headers: ["project", "url", "count", "users"],
-            rows: json.url_uses
+            rows: util.collectUrlUse(projectInfoMap)
         };
         redraw()
     }

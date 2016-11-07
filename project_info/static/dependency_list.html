@@ -38,12 +38,12 @@
   }
 
   function initTable(json) {
-    var showHidden=true
-    json = util.createGraphInfoFromProjectInfos(util.convertUrlPropertiesToProjectInfo(json.urlProperties, showHidden), showHidden)
-    var rows = util.flatten(Object.keys(json.service2service).map(function (key) {
+    var projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
+    var summary = util.collectProjectInfoSummary(projectInfoMap)
+    var rows = util.flatten(Object.keys(summary.service2service).map(function (key) {
       var arr = key.split("\.")
       var from = arr[0], to = arr[1];
-      return json.service2service[key].map(function (urlProperty) {
+      return util.values(summary.service2service[key]).map(function (urlProperty) {
         return {from: from, to: to, url: urlProperty}
       })
     }))

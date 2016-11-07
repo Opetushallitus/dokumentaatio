@@ -1,7 +1,7 @@
 {
   "name": "viestintapalvelu",
   "type": "jar",
-  "urls.spring": {
+  "spring": {
       "xml": "spring-test.xml",
       "properties": "spring.properties"
     },

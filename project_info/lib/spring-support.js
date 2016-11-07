@@ -6,38 +6,46 @@ var path = require('path')
 var spring = {}
 module.exports = spring
 
-spring.scanForJaxUrls = function(serverState, fileTree) {
-  processProjectInfoList(serverState.projectInfos, serverState, fileTree.createFileLookupFn())
+spring.scanForJaxUrls = function (fileTree, serverState) {
+  var projectInfos = util.values(util.combineSourcesToProjectInfoMap(serverState.sources))
+  processProjectInfoList(projectInfos, serverState, fileTree.createFileLookupFn())
 }
 
 function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
   list.forEach(function (projectInfo) {
-    var root = projectInfo.path || pathRoot
-    if(!root) {
-      throw "Can't resolve root directory for " + JSON.stringify(projectInfo)
-    }
-    function relativePath(filePath) {
-      return path.join(path.dirname(root), filePath)
-    }
-    var project = projectInfo["name"];
-    var springUrlConfig = util.safeGet(projectInfo, "urls.spring", [])
-    if(project && springUrlConfig) {
-      var properties = {}
-      util.flatten(springUrlConfig.properties || [])
-        .map(relativePath)
-        .forEach(function (props) {
-          util.copyMap(fileutil.readProperties(props), properties)
-        })
-      util.flatten(springUrlConfig.xml || [])
-        .map(relativePath)
-        .forEach(function (xmlPath) {
-          var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo)
-          var parsedProperties = fileutil.parseProperties(originalFileContent)
-          fileutil.addUrlProperties(serverState.urlProperties, project, parsedProperties, originalFileContent, xmlPath, projectInfo)
-        })
-    }
-    if(projectInfo["projects"]) {
-      processProjectInfoList(projectInfo["projects"], serverState, fileLookupFn, root)
+    var project = projectInfo.name
+    if(project && projectInfo.spring && projectInfo.spring.length > 0) {
+      projectInfo.spring.forEach(function (springConfig) {
+        var filePath = projectInfo.sources[0].path;
+        var root = filePath || pathRoot
+        if(!root) {
+          throw "Can't resolve root directory for " + JSON.stringify(projectInfo)
+        }
+        function relativePath(filePath) {
+          return path.join(path.dirname(root), filePath)
+        }
+        var properties = {}
+        util.flatten(springConfig.properties || [])
+          .map(relativePath)
+          .forEach(function (props) {
+            util.copyMap(fileutil.readProperties(props), properties)
+          })
+        util.flatten(springConfig.xml || [])
+          .map(relativePath)
+          .forEach(function (xmlPath) {
+            var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo)
+            var parsedProperties = fileutil.parseProperties(originalFileContent)
+            var source = {
+              name: project,
+              properties: parsedProperties,
+              sources: [
+                {
+                  path: xmlPath
+                }]
+            };
+            serverState.sources.push(source)
+          })
+      })
     }
   })
 }
@@ -63,15 +71,7 @@ spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLooku
 }
 
 function resolveKey(value) {
-  if(value.indexOf("${") == 0) {
-    value = value.slice(value.indexOf("}") + 1, value.length)
-  }
-  if(value.indexOf("{{") == 0) {
-    value = value.slice(value.indexOf("}}") + 2, value.length)
-  }
-  if(value.indexOf("https://{{") == 0) {
-    value = value.slice(value.indexOf("}}")+2, value.length)
-  }
+  value = util.parsePlainUrl(value);
   if(value[0] == "/") {
     value = value.slice(1, value.length)
   }
@@ -103,7 +103,7 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
     }
     error = error + " Creating a key for the baseUrl " + baseUrl
     scanInfo.errors.push(error)
-    var fullPath = resolvePropertyReferences(baseUrl, properties)
+    var fullPath = util.resolvePropertyReferences(baseUrl, properties)
     var key=resolveKey(fullPath)
     str.push("# " + error)
     str.push( key + "=" + fullPath)
@@ -125,7 +125,7 @@ function convertAnnotationsToUrlProperties(serviceClass, classFilePath, baseUrl,
   var pathPrefix = headerPaths[0] || ""
   bodyPaths.forEach(function(pathString){
     var unresolvedPath = path.join(baseUrl, pathPrefix, pathString);
-    var fullPath = resolvePropertyReferences(unresolvedPath, properties)
+    var fullPath = util.resolvePropertyReferences(unresolvedPath, properties)
     var key=resolveKey(fullPath)
     if(urlDefinitions[key]) {
       if (urlDefinitions[key] != fullPath) {
@@ -178,30 +178,4 @@ function collectTagsRecursively(tagName, o) {
     })
   }
   return list
-}
-
-function resolvePropertyReferences(value, properties) {
-  var keyStart
-  while((keyStart=value.indexOf("${"))!=-1) {
-    var keyEnd = value.indexOf("}", keyStart+2);
-    if(keyEnd == -1) {
-      throw "Value contains open key reference: " + value
-    }
-    var keyAndDefault = value.slice(keyStart + 2, keyEnd)
-    var args = keyAndDefault.split(":")
-    var key=args[0]
-    var subValue = undefined
-    if(args.length == 2) {
-      subValue = properties[key] || args[1]
-    } else {
-      if(!properties[key]) {
-        throw "Missing property '" + key+ "'!"
-      }
-      subValue = properties[key]
-    }
-    var strStart = value.slice(0, Math.max(0, keyStart))
-    var strEnd = value.slice(Math.min(value.length, keyEnd+1), value.length)
-    value = strStart + subValue + strEnd
-  }
-  return value
 }

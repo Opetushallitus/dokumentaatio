@@ -45,7 +45,7 @@ function startServer() {
 
   app.get('/rest/project_infos/uses', function(req, res){
     json(res)
-    res.json(convert.createGraphInfoFromProjectInfos(serverState.projectInfos))
+    res.json(convert.collectProjectInfoSummary(serverState.projectInfos))
   });
 
   app.get('/rest/url_properties', function(req, res){
@@ -55,7 +55,7 @@ function startServer() {
 
   app.get('/rest/url_properties/uses', function(req, res){
     json(res)
-    res.json(convert.createGraphInfoFromProjectInfos(convert.convertUrlPropertiesToProjectInfo(serverState.urlProperties)))
+    res.json(convert.collectProjectInfoSummary(convert.convertUrlPropertiesToProjectInfo(serverState.urlProperties)))
   });
 
   app.get('/rest/server_state', function(req, res){

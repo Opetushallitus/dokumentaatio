@@ -29,49 +29,53 @@ describe('util.js', function () {
     })
   })
 
-  it('appendUsesAndS2SInfoToUrlProperties', function () {
-    assert.deepEqual(util.convertUrlPropertiesToProjectInfo({
-        a: {
-          name: "a",
-          properties: {
-            "b.url": 1
-          }
+  it('collectProjectInfoSummary', function () {
+    var projectInfoMap = {
+      a: {
+        name: "a",
+        properties: {
+          "b.url": "1"
         },
-        b: {
-          name: "b",
-          properties: {
-            "a.url": 1
-          }
-        }
-      }), [{
-        "name": "a",
-        "properties": {
-          "b.url": 1
-        },
-        "service2service": {
-          "a.b": [
-            "b.url=1"
-          ]
-        },
-        "uses": "b"
+        includes: ["c"]
       },
-        {
-          "name": "b",
-          "properties": {
-            "a.url": 1
-          },
-          "service2service": {
-            "b.a": [
-              "a.url=1"
-            ]
-          },
-          "uses": "a"
-        }]
+      b: {
+        name: "b",
+        properties: {
+          "a.url": "1"
+        }
+      }, c: {
+        name: "c",
+        includes: ["d"],
+        properties: {
+          "b.url2": "2"
+        }
+      }, d: {
+        name: "d",
+        properties: {
+          "b.url3": "3"
+        }
+      }
+    };
+    assert.deepEqual(util.collectProjectInfoSummary(projectInfoMap), {
+        "uses": {
+          "a": ["b"],
+          "b": ["a"],
+          "c": ["b"],
+          "d": ["b"]
+        },
+        "used_by": {"b": ["a", "c", "d"], "a": ["b"]},
+        "resolved_includes": {"a": {"c": [["a", "c"]], "d": [["a", "c", "d"]]}, "c": {"d": [["c", "d"]]}},
+        "included_by": {"c": ["a"], "d": ["a", "c"]},
+        "items": ["a", "b", "c", "d"],
+        "id_name_map": {"0": "a", "1": "b", "2": "c", "3": "d"},
+        "name_id_map": {"a": 0, "b": 1, "c": 2, "d": 3},
+        "service2service": {"a.b": {"b.url": "1"}, "b.a": {"a.url": "1"}, "c.b": {"b.url2": "2"}, "d.b": {"b.url3": "3"}}
+      }
     )
   })
 
   it('createGraphInfoFromProjectInfos', function () {
-    var projectInfoList = util.convertUrlPropertiesToProjectInfo({
+    var projectInfoMap = {
       a: {
         name: "a",
         properties: {
@@ -84,8 +88,8 @@ describe('util.js', function () {
           "a.url": "1"
         }
       }
-    });
-    assert.deepEqual(util.createGraphInfoFromProjectInfos(projectInfoList), {
+    };
+    assert.deepEqual(util.collectProjectInfoSummary(projectInfoMap), {
       "uses": {"a": ["b"], "b": ["a"]},
       "used_by": {"b": ["a"], "a": ["b"]},
       "items": ["a", "b"],
@@ -125,12 +129,109 @@ describe("spring-support.js", function () {
   it('spring.scanForJaxUrls', function (done) {
     var serverState = {workDir: __dirname + "/spring"}
     scan.scan(serverState, function () {
-      assert.deepEqual(serverState.urlProperties.viestintapalvelu.type, "jar")
-      assert.deepEqual(serverState.urlProperties.viestintapalvelu.properties, {
-        "viestintapalvelu.foo.bar.api.v1.addresslabel.sync.pdf": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/addresslabel/sync/pdf",
-        "viestintapalvelu.foo.bar.api.v1.template.getHistory": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/template/getHistory"
+      delete serverState.scanInfo.duration
+      delete serverState.scanInfo.start
+      assert.deepEqual(serverState, {
+        "workDir": __dirname + "/spring",
+        "scanInfo": {
+          "files": [__dirname + "/spring/project_info.json", __dirname + "/spring/spring-test.xml", __dirname + "/spring/ViestintapalveluResource.java"],
+          "errors": []
+        },
+        "sources": [{
+          "name": "viestintapalvelu",
+          "type": "jar",
+          "spring": {"xml": "spring-test.xml", "properties": "spring.properties"},
+          "projects": [{
+            "name": "koulutusinformaatio-web",
+            "uses": "viestintapalvelu-rest oppija-raamit"
+          }, {"name": "koulutusinformaatio-rest", "uses": ""}],
+          "sources": [{"path": __dirname + "/spring/project_info.json"}]
+        }, {
+          "name": "viestintapalvelu",
+          "properties": {
+            "viestintapalvelu.foo.bar.api.v1.addresslabel.sync.pdf": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/addresslabel/sync/pdf",
+            "viestintapalvelu.foo.bar.api.v1.template.getHistory": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/template/getHistory"
+          },
+          "sources": [{"path": __dirname + "/spring/spring-test.xml"}]
+        }]
       })
       done()
+    })
+  })
+})
+
+describe("scan.js", function () {
+  it('should scan both project_info.json and url properties', function (done) {
+    var workDir = __dirname + "/project_info_and_url_properties";
+    var serverState = {workDir: workDir}
+    scan.scan(serverState, function () {
+      delete serverState.scanInfo.duration
+      delete serverState.scanInfo.start
+      assert.deepEqual(serverState, {
+        "workDir": __dirname + "/project_info_and_url_properties",
+        "scanInfo": {
+          "errors": [],
+          "files": [
+            __dirname + "/project_info_and_url_properties/project_info.json",
+            __dirname + "/project_info_and_url_properties/koodisto-client-url.properties"
+          ]
+        },
+        "sources": [
+          {
+            "name": "koodisto-client",
+            "sources": [
+              {
+                "path": __dirname + "/project_info_and_url_properties/project_info.json"
+              }
+            ],
+            "type": "library"
+          },
+          {
+            "name": "koodisto-client",
+            "properties": {
+              "koodisto-service.getKoodistoRyhmas": "/koodisto-service/rest/json"
+            },
+            "sources": [
+              {
+                "content": "koodisto-service.getKoodistoRyhmas=/koodisto-service/rest/json\n",
+                "path": __dirname + "/project_info_and_url_properties/koodisto-client-url.properties"
+              }
+            ]
+          }
+        ]
+      })
+      done()
+    })
+  })
+})
+
+describe('util.combineSourcesToProjectInfoMap', function () {
+  it('should merge project_info and json', function () {
+    assert.deepEqual(util.combineSourcesToProjectInfoMap([{
+      name: "a",
+      uses: [1, 2],
+      properties: {
+        e: 9
+      },
+      projects: [{
+        name: "b",
+        uses: ["a", "c"]
+      }]
+    }, {
+      name: "a",
+      includes: "b",
+      uses: [3, 4],
+      properties: {
+        f: 10
+      }
+    }]), {
+      "a": {
+        "name": "a",
+        "uses": [1, 2, 3, 4],
+        "properties": {"e": 9, "f": 10},
+        "projects": [{"name": "b", "uses": ["a", "c"]}],
+        "includes": ["b"]
+      }, "b": {"name": "b", "uses": ["a", "c"]}
     })
   })
 })

@@ -1,0 +1,27 @@
+{
+  "name": "test includes",
+  "projects": [
+    {
+      "name": "a",
+      "includes": ["b"],
+      "properties": {
+        "d.url1": "1"
+      }
+    },
+    {
+      "name": "b",
+      "type": "library",
+      "includes": ["c"],
+      "properties": {
+        "d.url2": "2"
+      }
+    },
+    {
+      "name": "c",
+      "type": "library",
+      "properties": {
+        "d.url3": "3"
+      }
+    }
+  ]
+}

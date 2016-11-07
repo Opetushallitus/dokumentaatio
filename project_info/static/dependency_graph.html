@@ -25,10 +25,6 @@
 <p>
     [<a href="/">menu</a>] Filter by name: <input onkeyup="filter(this.value);" type="text" id="q">
     <span id="filterInfo"></span>
-    <select id="type" onchange="redraw()">
-        <option>project_infos</option>
-        <option selected="selected">url_properties</option>
-    </select>
     Show hidden: <input id="showHidden" type="checkbox" onchange="redraw()" value="checked"/>
     <a href="javascript:void(0)" onclick="exportCanvas()">Tee PNG</a>
     <a href="" id="download" download="palveluriippuvuudet.png"></a>
@@ -38,31 +34,40 @@
 
 <script type="text/javascript">
 
-    var nodes, edges, data, originalJSON, viewInfo = {
+    var nodes, edges, data = {}, originalJSON, viewInfo = {
         graphType: undefined,
         showHidden: undefined,
         filterValue: undefined
     };
 
-    function makeService2ServiceText(titleArr, e2eArr, info) {
-        var e2eUrls = data.service2service[e2eArr.join(".")]
-        if (e2eUrls) {
-            info.count += e2eUrls.length
-            return "<b>" + titleArr.join(" -> ") + "</b> [" + e2eUrls.length + "]:<br>" + e2eUrls.join("<br>");
+    function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
+        var summary = data.summary;
+        var e2eUrlMap = summary.service2service[e2eArr.join(".")]
+        if (e2eUrlMap) {
+            var e2eUrls = util.values(e2eUrlMap)
+            if (info) {
+                info.count += e2eUrls.length
+            }
+            return listOfTitleArrs.map(function (titleArr) {
+                        return "<b>" + titleArr.join(" -> ") + "</b>"
+                    }).join("<br>") + " [" + e2eUrls.length + "]:<br>" + e2eUrls.join("<br>");
         } else {
             return []
         }
     }
-    function makeLine(label, destLabel) {
+    function makeEdgeLine(edgeInfo) {
+        var label = data.summary.id_name_map[edgeInfo.from]
+        var destLabel = data.summary.id_name_map[edgeInfo.to]
         var edgeData = {
-            from: data.name_id_map[label],
-            to: data.name_id_map[destLabel],
-            title: util.flatten(makeService2ServiceText([label, destLabel], [label, destLabel], {count: 0})).join("<br>"),
+            from: edgeInfo.from,
+            to: edgeInfo.to,
+            title: util.flatten(makeService2ServiceText([[label, destLabel]], [label, destLabel])).join("<br>"),
         };
-        if (label != destLabel && data.service2service[label + "." + destLabel] && data.service2service[destLabel + "." + label]) {
+        if (edgeInfo.twoway) {
             edgeData.color = "red"
         }
-        if(data.project_infos[destLabel] && "library" == data.project_infos[destLabel].type) {
+        if (edgeInfo.include) {
+            edgeData.title="<b>"+label +"</b><br>" + " includes " + destLabel
             edgeData.color = {
                 inherit: false,
                 color: "rgba(43,233,124,1)"
@@ -71,53 +76,67 @@
         return edgeData
     }
 
-    function makeNode(label) {
-      var borderWidth = 0.5;
-      var usesTxt = "", usedByTxt = "", includesTxt = "", summaryUseTxt =[]
+    function makeNode(nodeInfo) {
+        var borderWidth = 0.5;
+        var summary = data.summary;
+        var projectInfoMap = data.projectInfoMap;
+        var usesTxt = "", usedByTxt = "", includesTxt = "", summaryUseTxt = []
+        var from = nodeInfo.name
 
-        var usesData = util.safeGet(data, "uses."+label, [])
+        if(nodeInfo.type) {
+            summaryUseTxt.push("Type: " + nodeInfo.type)
+        }
+
+        var usesData = util.safeGet(summary, "uses." + from, [])
         if (usesData.length > 0) {
             var info = {count: 0}
-            usesTxt = util.flatten(usesData.map(function (destLabel) {
-                return makeService2ServiceText([label, destLabel], [label, destLabel], info)
-            })).join("<br>")+"<br><br>"
+            usesTxt = util.flatten(usesData.map(function (to) {
+                        return makeService2ServiceText([[from, to]], [from, to], info)
+                    })).join("<br>") + "<br><br>"
             summaryUseTxt.push("Uses: " + usesData.length + " services with " + info.count + " urls")
         }
 
-        // includes should be resolved recursively
-        var includes = util.safeGet(data, "project_infos." + label + ".includes", [])
-        if (includes.length > 0) {
+        // resolved includes: {project: {library: [[project, library], [project, dep, library]]}]}
+        var includes = util.safeGet(data, "summary.resolved_includes." + from, {})
+        if (!util.isEmptyObject(includes)) {
             var info = {count: 0}
-            includesTxt = util.flatten(includes.map(function (includeName) {
-                        return util.safeGet(data, "uses."+includeName, []).map(function (includeUseName) {
-                            return makeService2ServiceText([label, includeName, includeUseName], [includeName, includeUseName], info)
+            includesTxt = util.mapEachPair(includes, function (libraryName, includePaths) {
+                        // iterate through library's direct uses
+                        var libraryUses = summary.uses[libraryName] || []
+                        return libraryUses.map(function (libraryUse) {
+                            // each includePath is appended with libraryUse to get correct headers
+                            var fullToPaths = includePaths.map(function (includePath) {
+                                return includePath.concat([libraryUse])
+                            })
+                            // generate link information for library and its used service
+                            return makeService2ServiceText(fullToPaths, [libraryName, libraryUse], info)
                         })
-                    })).join("<br>")+"<br><br>"
-            summaryUseTxt.push("Includes " + includes.length + " libraries with " + info.count + " urls")
+                    }).join("<br>") + "<br><br>"
+            summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
         }
 
-        var usedbyData = util.safeGet(data, "used_by."+label, [])
+        var usedbyData = util.safeGet(data, "summary.used_by." + from, [])
         if (usedbyData.length > 0) {
             var info = {count: 0}
             usedByTxt = util.flatten(usedbyData.map(function (destLabel) {
-                return makeService2ServiceText([destLabel, label], [destLabel, label], info)
-            })).join("<br>")+"<br><br>"
+                        return makeService2ServiceText([[destLabel, from]], [destLabel, from], info)
+                    })).join("<br>") + "<br><br>"
             summaryUseTxt.push("Used by: " + usedbyData.length + " services with " + info.count + " urls")
         }
 
-        var title = "<h3>" + label + "</h3>"
-        if(!data.project_infos[label]) {
+        var title = "<h3>" + from + "</h3>"
+        if (!projectInfoMap[from]) {
             title += "Does not have its own definition!<br>"
         }
 
-        var sources = util.safeCollect(util.safeGet(data, "project_infos."+label+".sources",[]), "path")
+        var sources = util.safeCollect(util.safeGet(data, "projectInfoMap." + from + ".sources", []), "path")
         if (sources && sources.length > 0) {
             summaryUseTxt.push("Sources: " + sources.join(", "))
             borderWidth = 1.4;
         }
 
         if (summaryUseTxt.length > 0) {
-            title += summaryUseTxt.join("<br>")+"<br><br>"
+            title += summaryUseTxt.join("<br>") + "<br><br>"
         }
 
         title += usesTxt
@@ -125,12 +144,12 @@
         title += usedByTxt
 
         var node = {
-            id: data.name_id_map[label],
-            label: label,
+            id: nodeInfo.id,
+            label: nodeInfo.name,
             title: title,
             borderWidth: borderWidth
         };
-        if(util.safeGet(data.project_infos, label + ".type") == "library") {
+        if (nodeInfo.type == "library") {
             node.color = {
                 background: "rgba(245,255,245,1)",
                 border: "rgba(43,233,124,1)",
@@ -145,6 +164,8 @@
 
     function initGraph(json) {
         originalJSON = json
+        data.projectInfoMap = util.combineSourcesToProjectInfoMap(originalJSON.sources)
+        data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
 
         var container = document.getElementById('mynetwork');
         var options = {
@@ -193,21 +214,10 @@
         redraw()
     }
 
-    function generateData(graphType, showHidden) {
-        if (graphType == "url_properties") {
-            data = util.createGraphInfoFromProjectInfos(util.convertUrlPropertiesToProjectInfo(originalJSON.urlProperties, showHidden), showHidden)
-        } else {
-            data = util.createGraphInfoFromProjectInfos(originalJSON.projectInfos, showHidden)
-        }
-        nodes = new vis.DataSet(data.items.map(function (label) {
-            return makeNode(label);
-        }))
-        // does not support visualizing includes links
-        edges = new vis.DataSet(util.flatten(data.items.map(function (label) {
-            return util.safeGet(data.uses, label, []).map(function (useLabel) {
-                return makeLine(label, useLabel);
-            })
-        })))
+    function generateData(showHidden) {
+        data.graphInfo = util.generateGraphInfo(data.projectInfoMap, data.summary, showHidden)
+        nodes = new vis.DataSet(data.graphInfo.nodes.map(makeNode))
+        edges = new vis.DataSet(data.graphInfo.edges.map(makeEdgeLine))
         document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
         viewInfo.container.setData({
             nodes: nodes,
@@ -216,8 +226,8 @@
     }
 
     function applyFilter() {
-        var uses = data.uses
-        var usedBy = data.used_by
+        var uses = data.summary.uses
+        var usedBy = data.summary.used_by
         var visibleNodeIds = []
         var visibleNodeCount = 0, visibleEdgeCount = 0;
         nodes.forEach(function (i) {
@@ -230,7 +240,7 @@
                 })
             }
             if (show) {
-                visibleNodeIds.push(data.name_id_map[i.label])
+                visibleNodeIds.push(data.summary.name_id_map[i.label])
                 visibleNodeCount += 1
             }
         })
@@ -251,17 +261,12 @@
     }
 
     function redraw() {
-        var e = document.getElementById("type");
-        var graphType = e.options[e.selectedIndex].value
-        var showHidden = document.getElementById("showHidden").checked
-
-        if (viewInfo.graphType != graphType || viewInfo.showHidden != showHidden) {
-            generateData(graphType, showHidden);
-            viewInfo.graphType = graphType
+        var showHidden = !!document.getElementById("showHidden").checked
+        if (viewInfo.showHidden != showHidden) {
+            generateData(showHidden);
             viewInfo.showHidden = showHidden
             viewInfo.filterValue = undefined
         }
-
         if (viewInfo.filterValue != filter.value) {
             applyFilter();
             viewInfo.filterValue = filter.value
