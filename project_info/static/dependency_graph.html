@@ -147,6 +147,7 @@
                 var name = data.summary.id_name_map[id]
                 var newWnd = window.open("/project.html#"+name, "dep_info", {})
                 if(newWnd) {
+                    newWnd.focus()
                     newWnd.opener = null
                     newWnd.selectNodeFromGraph = function (label) {
                         viewInfo.network.selectNodes([data.summary.name_id_map[label]], true)
