@@ -44,7 +44,9 @@
         var summary = data.summary;
         var e2eUrlMap = summary.service2service[e2eArr.join(".")]
         if (e2eUrlMap) {
-            var e2eUrls = util.values(e2eUrlMap)
+            var e2eUrls = util.mapEachPair(e2eUrlMap, function (key, value) {
+                return key + "=" + value;
+            })
             if (info) {
                 info.count += e2eUrls.length
             }
@@ -113,6 +115,11 @@
                         })
                     }).join("<br>") + "<br><br>"
             summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
+        }
+
+        var includedBy = summary.included_by[from];
+        if(includedBy && includedBy.length > 0) {
+            summaryUseTxt.push("Included by " + includedBy.length + " services: " + includedBy.join(", "))
         }
 
         var usedbyData = util.safeGet(data, "summary.used_by." + from, [])
