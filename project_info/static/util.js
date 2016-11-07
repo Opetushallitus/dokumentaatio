@@ -341,7 +341,7 @@ function exportUtil(module, window) {
         to: summary.name_id_map[to]
       })
       if(from != to && summary.service2service[from + "." + to] && summary.service2service[to + "." + from]) {
-        edgeData.twoway= truenso
+        edgeData.twoway= true
       }
       if(fromInclude) {
         edgeData.include=true
