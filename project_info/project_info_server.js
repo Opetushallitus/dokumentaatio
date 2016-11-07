@@ -16,6 +16,7 @@ var express = require('express')
 var exphbs  = require('express-handlebars');
 
 var scan = require('./lib/scan.js')
+var util = require('./static/util.js')
 
 var app = express();
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
@@ -35,27 +36,7 @@ function startServer() {
 
   app.get('/project_infos.md', function(req, res){
     text(res)
-    res.render("project_infos_md", {layout: false, data: convert.generateProjectInfoTable(serverState.projectInfos)})
-  });
-
-  app.get('/rest/project_infos', function(req, res){
-    json(res)
-    res.json(convert.generateProjectInfoTable(serverState.projectInfos))
-  });
-
-  app.get('/rest/project_infos/uses', function(req, res){
-    json(res)
-    res.json(convert.collectProjectInfoSummary(serverState.projectInfos))
-  });
-
-  app.get('/rest/url_properties', function(req, res){
-    json(res)
-    res.json(serverState.urlProperties)
-  });
-
-  app.get('/rest/url_properties/uses', function(req, res){
-    json(res)
-    res.json(convert.collectProjectInfoSummary(convert.convertUrlPropertiesToProjectInfo(serverState.urlProperties)))
+    res.render("project_infos_md", {layout: false, data:  util.generateProjectInfoTable(util.values(util.combineSourcesToProjectInfoMap(serverState.sources)))})
   });
 
   app.get('/rest/server_state', function(req, res){

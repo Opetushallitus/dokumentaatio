@@ -5,10 +5,13 @@
   <title>OPH project_info.json yhteenveto</title>
 
   <link rel="stylesheet" type="text/css" href="common.css"/>
+  <script src="common_ui.js"></script>
+  <script src="util.js"></script>
 </head>
 <body>
 
-Rajaa näytettävää sarakkeita <input onkeyup="filter(this.value);" type="text" id="q">
+[<a href="/">menu</a>] Filter columns <input onkeyup="filter(this.value);" type="text" id="q">
+<span id="filterInfo"></span>
 
 <table id="infos" class="dataTable">
 
@@ -16,85 +19,26 @@ Rajaa näytettävää sarakkeita <input onkeyup="filter(this.value);" type="text
 
 <script type="text/javascript">
 
-var substrings=[], excluded=[];
-var json;
-
-handleHash()
-ajaxJson('GET', "/rest/project_infos", initTable)
-
-function handleHash() {
-  var h = window.location.href.split('#')[1]
-  if (h && h.length > 0) {
-    document.getElementById("q").value=h
-    filter(h)
-  }
-}
-
-function filter(value) {
-  window.location.hash=value
-  substrings = [], excluded = []
-  value.split(" ").forEach(function(s){
-    if(s.length>0) {
-      if(s.startsWith("-")) {
-        excluded.push(s.substring(1,s.length + 1))
-      } else {
-        substrings.push(s);
-      }
-    }
-  })
-  if(json) {
-    redraw()
-  }
-}
-
-function someMatches(arr, subs) {
-  return arr.some(function(str){
-    return subs.some(function(substring) {
-      return str.indexOf(substring) > -1
-    }) 
-  })
-}
-
-function ajaxJson(method, url, onload) {
-  var oReq = new XMLHttpRequest();
-  oReq.onload = function (e) {
-    onload(e.target.response)
-  };
-  oReq.open(method, url, true);
-  oReq.responseType = 'json';
-  oReq.send();
-}
-
-function redraw() {
+  var data;
   var table = document.getElementById('infos');
-  while (table.firstChild) {
-    table.removeChild(table.firstChild);
-  }
-  function add(dest, n, text) {
-    var node = document.createElement(n);
-    if(text) {
-      node.appendChild(document.createTextNode(text))
-    }
-    dest.appendChild(node)
-    return node;
-  }
-  var fields = json.fields.filter(function(f){
-    var hide = someMatches([f], excluded) || !(substrings.length == 0 || someMatches([f], substrings))
-//    console.log("show", f, !hide)
-    return !hide 
-  })
-  var headerRow = add(table, "tr")
-  fields.forEach(function(f){add(headerRow, "th", f)})
-  json.project_infos.forEach(function(info){
-    var infoRow = add(table, "tr")
-    fields.forEach(function(f){add(infoRow, "td", info[f])})
-  })
-}
 
-function initTable(data) {
-  json = data;
-  redraw();
-}
+  handleHash()
+  ajaxJson('GET', "/rest/server_state", initTable)
+
+  function redraw() {
+      var fields = data.fields.filter(function(f){
+          var hide = util.someMatches([f], filter.excluded) || !(filter.included.length == 0 || util.someMatches([f], filter.included))
+          return !hide
+      })
+      redrawFilteredInfoTable(data.project_infos, table, fields, function(row, infoRow){
+          fields.forEach(function(header){addNode(infoRow, "td", JSON.stringify(row[header]))})
+      })
+  }
+
+  function initTable(json) {
+    data = util.generateProjectInfoTable(util.values(util.combineSourcesToProjectInfoMap(json.sources)));
+    redraw();
+  }
 </script>
 
 </body>

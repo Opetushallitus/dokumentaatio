@@ -29,9 +29,12 @@ function redrawFilteredInfoTable(rows, table, headers, drawRow, showRow) {
   while (table.firstChild) {
     table.removeChild(table.firstChild);
   }
-  var visibleRows = rows.filter(function(row){
-    return showRow(row, filter.included, filter.excluded)
-  })
+  var visibleRows = rows;
+  if(showRow) {
+    visibleRows = rows.filter(function(row){
+      return showRow(row, filter.included, filter.excluded)
+    })
+  }
   var thead = addNode(table, "thead")
   var headerRow = addNode(thead, "tr")
   headers.forEach(function(f){addNode(headerRow, "th", f)})
