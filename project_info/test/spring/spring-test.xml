@@ -19,12 +19,12 @@
 
 	<beans>
 		<bean id="jacksonMapper" class="com.fasterxml.jackson.databind.ObjectMapper" />
-		<bean class="fi.vm.sade.valinta.kooste.CasInterceptors" />
-		<bean class="fi.vm.sade.valinta.kooste.KoostepalveluContext" />
+		<bean class="fi.valinta.kooste.CasInterceptors" />
+		<bean class="fi.valinta.kooste.KoostepalveluContext" />
 
 		<jaxrs-client:client id="viestintapalveluClient"
 							 name="ViestintapalveluRestClient"
-							 serviceClass="fi.vm.sade.valinta.kooste.viestintapalvelu.resource.ViestintapalveluResource"
+							 serviceClass="fi.valinta.kooste.viestintapalvelu.resource.ViestintapalveluResource"
 							 address="${valintalaskentakoostepalvelu.viestintapalvelu.url}"
 							 inheritHeaders="true">
 			<jaxrs-client:outInterceptors>
@@ -35,7 +35,7 @@
 			</jaxrs-client:inInterceptors>
 			<jaxrs-client:providers>
 				<bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider" />
-				<bean class="fi.vm.sade.valinta.kooste.ObjectMapperProvider" />
+				<bean class="fi.valinta.kooste.ObjectMapperProvider" />
 			</jaxrs-client:providers>
 		</jaxrs-client:client>
 	</beans>

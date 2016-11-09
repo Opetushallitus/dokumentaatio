@@ -1,4 +1,4 @@
-package fi.vm.sade.valinta.kooste.viestintapalvelu.resource;
+package fi.valinta.kooste.viestintapalvelu.resource;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.MediaType.APPLICATION_OCTET_STREAM;
@@ -15,11 +15,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import fi.vm.sade.valinta.kooste.viestintapalvelu.dto.Kirje;
-import fi.vm.sade.valinta.kooste.viestintapalvelu.dto.Kirjeet;
-import fi.vm.sade.valinta.kooste.viestintapalvelu.dto.Koekutsukirje;
-import fi.vm.sade.valinta.kooste.viestintapalvelu.dto.Osoitteet;
-import fi.vm.sade.valinta.kooste.viestintapalvelu.dto.letter.TemplateHistory;
+import fi.valinta.kooste.viestintapalvelu.dto.Kirje;
+import fi.valinta.kooste.viestintapalvelu.dto.Kirjeet;
+import fi.valinta.kooste.viestintapalvelu.dto.Koekutsukirje;
+import fi.valinta.kooste.viestintapalvelu.dto.Osoitteet;
+import fi.valinta.kooste.viestintapalvelu.dto.letter.TemplateHistory;
 
 @Path("/api/v1")
 public interface ViestintapalveluResource {

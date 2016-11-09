@@ -92,35 +92,40 @@ describe('util.js', function () {
     assert.deepEqual(util.collectProjectInfoSummary(projectInfoMap), {
       "uses": {"a": ["b"], "b": ["a"]},
       "used_by": {"b": ["a"], "a": ["b"]},
+      "resolved_includes": {},
+      "included_by": {},
       "items": ["a", "b"],
       "id_name_map": {"0": "a", "1": "b"},
       "name_id_map": {"a": 0, "b": 1},
-      "service2service": {"a.b": ["b.url=1"], "b.a": ["a.url=1"]},
-      "project_infos": {
-        "a": {
-          "uses": "b",
-          "service2service": {"a.b": ["b.url=1"]},
-          "name": "a",
-          "properties": {"b.url": "1"}
-        }, "b": {
-          "uses": "a",
-          "service2service": {"b.a": ["a.url=1"]},
-          "name": "b",
-          "properties": {"a.url": "1"}
+      "service2service": {"a.b": {"b.url": "1"}, "b.a": {"a.url": "1"}}
+    })
+  })
+  it('collectUrlUse', function () {
+    var projectInfoMap = {
+      a: {
+        name: "a",
+        properties: {
+          "b.url": "1"
         }
       },
-      "url_uses": [{
-        "project": "b",
-        "url": "1",
-        "count": 1,
-        "uses": [{"project": "a", "key": "b.url", "original_url": "1"}]
-      }, {
-        "project": "a",
-        "url": "1",
-        "count": 1,
-        "uses": [{"project": "b", "key": "a.url", "original_url": "1"}]
-      }]
-    })
+      b: {
+        name: "b",
+        properties: {
+          "a.url": "1"
+        }
+      }
+    };
+    assert.deepEqual(util.collectUrlUse(projectInfoMap), [{
+      "project": "b",
+      "url": "1",
+      "count": 1,
+      "uses": [{"project": "a", "key": "b.url", "original_url": "1"}]
+    }, {
+      "project": "a",
+      "url": "1",
+      "count": 1,
+      "uses": [{"project": "b", "key": "a.url", "original_url": "1"}]
+    }])
   })
 
 })
