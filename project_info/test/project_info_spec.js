@@ -139,7 +139,7 @@ describe("spring-support.js", function () {
       assert.deepEqual(serverState, {
         "workDir": __dirname + "/spring",
         "scanInfo": {
-          "files": [__dirname + "/spring/project_info.json", __dirname + "/spring/spring-test.xml", __dirname + "/spring/ViestintapalveluResource.java"],
+          "files": ["project_info.json", "spring-test.xml", "ViestintapalveluResource.java"],
           "errors": []
         },
         "sources": [{
@@ -150,14 +150,14 @@ describe("spring-support.js", function () {
             "name": "koulutusinformaatio-web",
             "uses": "viestintapalvelu-rest oppija-raamit"
           }, {"name": "koulutusinformaatio-rest", "uses": ""}],
-          "sources": [{"path": __dirname + "/spring/project_info.json"}]
+          "sources": [{"path": "project_info.json"}]
         }, {
           "name": "viestintapalvelu",
           "properties": {
             "viestintapalvelu.foo.bar.api.v1.addresslabel.sync.pdf": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/addresslabel/sync/pdf",
             "viestintapalvelu.foo.bar.api.v1.template.getHistory": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/template/getHistory"
           },
-          "sources": [{"path": __dirname + "/spring/spring-test.xml"}]
+          "sources": [{"path": "spring-test.xml"}]
         }]
       })
       done()
@@ -177,8 +177,8 @@ describe("scan.js", function () {
         "scanInfo": {
           "errors": [],
           "files": [
-            __dirname + "/project_info_and_url_properties/project_info.json",
-            __dirname + "/project_info_and_url_properties/koodisto-client-url.properties"
+            "project_info.json",
+            "koodisto-client-url.properties"
           ]
         },
         "sources": [
@@ -186,7 +186,7 @@ describe("scan.js", function () {
             "name": "koodisto-client",
             "sources": [
               {
-                "path": __dirname + "/project_info_and_url_properties/project_info.json"
+                "path": "project_info.json"
               }
             ],
             "type": "library"
@@ -199,7 +199,7 @@ describe("scan.js", function () {
             "sources": [
               {
                 "content": "koodisto-service.getKoodistoRyhmas=/koodisto-service/rest/json\n",
-                "path": __dirname + "/project_info_and_url_properties/koodisto-client-url.properties"
+                "path": "koodisto-client-url.properties"
               }
             ]
           }

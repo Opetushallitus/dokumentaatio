@@ -11,8 +11,8 @@ module.exports = scan
 
 scan.scan = function (serverState, fn) {
   console.log("Scanning", serverState.workDir)
+  var start = (new Date).getTime()
   scanFileTree(serverState.workDir, function (er, fileTree) {
-    var start = (new Date).getTime()
     if (serverState.scanInfo) {
       if (serverState.scanInfo.latestScan) {
         console.log("There is a scan running which started at ", serverState.scanInfo.latestScan, " aborting new scan...")
@@ -62,12 +62,12 @@ function scanFileTree(root, fn) {
 function scanProjectInfoJsonFiles(fileTree, serverState) {
   var files = fileTree.filesBySuffix("project_info.json")
   return files.map(function (filePath) {
-    serverState.scanInfo.files.push(filePath)
+    serverState.scanInfo.files.push(fileutil.removeRootPath(filePath, serverState.workDir))
     var ret = readJSON(filePath);
     if (ret.name) {
       ret.sources = [
         {
-          path: filePath
+          path: fileutil.removeRootPath(filePath, serverState.workDir)
         }]
       // backwards compatability
       if (ret.uses && !Array.isArray(ret.uses)) {
@@ -135,8 +135,9 @@ function scanUrlProperties(fileTree, serverState) {
       var filename = filePath.substr(filePath.lastIndexOf('/') + 1)
       var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
       var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
+      var relativeFilePath = fileutil.removeRootPath(filePath, serverState.workDir);
       if (project != "") {
-        serverState.scanInfo.files.push(filePath)
+        serverState.scanInfo.files.push(relativeFilePath)
         var originalFileContent = fileutil.read(filePath);
         var properties = parse(filePath, originalFileContent);
         if (properties) {
@@ -145,7 +146,7 @@ function scanUrlProperties(fileTree, serverState) {
             properties: util.flattenNested(properties),
             sources: [
               {
-                path: filePath,
+                path: relativeFilePath,
                 content: originalFileContent
               }]
           };

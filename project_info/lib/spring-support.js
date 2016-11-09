@@ -21,26 +21,28 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
         if(!root) {
           throw "Can't resolve root directory for " + JSON.stringify(projectInfo)
         }
-        function relativePath(filePath) {
-          return path.join(path.dirname(root), filePath)
+        function resolveFullPath(filePath) {
+          return path.join(serverState.workDir, path.dirname(root), filePath)
         }
         var properties = {}
         util.flatten(springConfig.properties || [])
-          .map(relativePath)
+          .map(resolveFullPath)
           .forEach(function (props) {
             util.copyMap(fileutil.readProperties(props), properties)
           })
         util.flatten(springConfig.xml || [])
-          .map(relativePath)
+          .map(resolveFullPath)
           .forEach(function (xmlPath) {
-            var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState.scanInfo)
+            var relativePath = fileutil.removeRootPath(xmlPath, serverState.workDir);
+            serverState.scanInfo.files.push(relativePath)
+            var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState)
             var parsedProperties = fileutil.parseProperties(originalFileContent)
             var source = {
               name: project,
               properties: parsedProperties,
               sources: [
                 {
-                  path: xmlPath
+                  path: relativePath
                 }]
             };
             serverState.sources.push(source)
@@ -50,9 +52,8 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
   })
 }
 
-spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLookupFn, scanInfo) {
+spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLookupFn, serverState) {
  var xml = parseXmlFile(springXmlPath)
-  scanInfo.files.push(springXmlPath)
   if(xml) {
     function parseXmlClientDef(client) {
       var attrs = client["$"];
@@ -60,7 +61,7 @@ spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLooku
         var baseUrl = attrs["address"]
         var serviceClass = attrs["serviceClass"]
         var urlDefinitions = {}
-        return resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, scanInfo)
+        return resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState)
       } else {
         return []
       }
@@ -78,15 +79,16 @@ function resolveKey(value) {
   return value.replace(/\//g,".")
 }
 
-function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, scanInfo) {
+function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState) {
   var classNameArr = serviceClass.split(".");
   var className = classNameArr.pop()
   var package = classNameArr.join(".")
+  var scanInfo = serverState.scanInfo
   var found = []
   var str = []
   var classFiles = fileLookupFn(className + ".java") || []
   classFiles.forEach(function (classFilePath) {
-    scanInfo.files.push(classFilePath)
+    scanInfo.files.push(fileutil.removeRootPath(classFilePath, serverState.workDir))
     var fileStr = fileutil.read(classFilePath)
     if (fileStr.indexOf(package) > -1) {
       if (found.length != 0) {
@@ -117,8 +119,8 @@ function convertAnnotationsToUrlProperties(serviceClass, classFilePath, baseUrl,
   var indexOfFirstOpenCurly = fileStr.indexOf("{")
   var header = fileStr.slice(0, indexOfFirstOpenCurly)
   var body = fileStr.slice(indexOfFirstOpenCurly, fileStr.length)
-  var headerPaths = collectPaths(header)
-  var bodyPaths = collectPaths(body)
+  var headerPaths = collectPathAnnotations(header)
+  var bodyPaths = collectPathAnnotations(body)
   if (headerPaths.length > 1) {
     throw classFilePath +" has more than one path in header part: " + headerPaths
   }
@@ -139,7 +141,7 @@ function convertAnnotationsToUrlProperties(serviceClass, classFilePath, baseUrl,
   return str
 }
 
-function collectPaths(str) {
+function collectPathAnnotations(str) {
   var ret = []
   var re = /@Path\("([^"]*)"\)/g;
   var m;

@@ -50,42 +50,13 @@ fileutil.readProperties = function(filePath) {
   return fileutil.parseProperties(fileutil.read(filePath))
 }
 
-fileutil.addUrlProperties = function(urlProperties, project, properties, originalFileContent, sourcePath, originalData) {
-  var urlPropertyInfo=urlProperties[project];
-  if(!urlPropertyInfo) {
-    urlProperties[project]=urlPropertyInfo={name: project, properties: {}}
-    if(originalData.type) {
-      urlPropertyInfo["type"]=originalData.type
-    }
+fileutil.removeRootPath = function(path, root) {
+  if(!root.endsWith("/")) {
+    root = root + "/"
   }
-  var urlsInclude = util.safeGet(originalData, "urls.includes")
-  if(urlsInclude) {
-    if(!urlPropertyInfo.includes) {
-      urlPropertyInfo.includes=[]
-    }
-    urlPropertyInfo.includes=urlPropertyInfo.includes.concat(urlsInclude)
+  if(!path.startsWith(root)) {
+    throw "Path "+path+" doesn't start with " + root
   }
-  var originalProperties = urlPropertyInfo.properties
-  var flattenedProperties = util.flattenNested(properties);
-  Object.keys(flattenedProperties).forEach(function (key) {
-    if(originalProperties[key]) {
-      if(originalProperties[key] != flattenedProperties[key]) {
-        throw "Can't add urlProperties to " + project + ". Key " + key + " is already defined as " + originalProperties[key] +". New value: " + flattenedProperties[key]
-      }
-    }
-    originalProperties[key] = flattenedProperties[key]
-  })
-  var sourceInfo = {
-    properties: flattenedProperties
-  }
-  if(sourcePath) {
-    sourceInfo.path = sourcePath;
-  }
-  if(originalFileContent) {
-    sourceInfo.originalFileContent = originalFileContent;
-  }
-  if(!urlPropertyInfo.sources) {
-    urlPropertyInfo.sources = []
-  }
-  urlPropertyInfo.sources.push(sourceInfo)
+  return path.substring(root.length)
+
 }

@@ -52,7 +52,7 @@ function startServer() {
   app.get('/rest/reload', function(req, res){
     json(res)
     reload(function(){
-      res.json({"message": "Project_infos: " + serverState.projectInfos.length + " Url_properties: " + Object.keys(serverState.urlProperties)})
+      res.json({"message": "Scan finished. Loaded sources: " + serverState.sources.length})
     })
   });
 
