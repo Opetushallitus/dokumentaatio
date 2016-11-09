@@ -138,9 +138,9 @@ function makeNodeTxt(from, projectInfo, summary, options) {
   var usesData = util.safeGet(summary.uses, from, [])
   if (usesData.length > 0) {
     var info = util.copyMap({count: 0}, options)
-    usesTxt = util.flatten(usesData.map(function (to) {
+    usesTxt = usesData.map(function (to) {
         return makeService2ServiceText([[from, to]], [from, to], info)
-      })).join("")  + "<br>"
+      }).join("")  + "<br>"
     summaryUseTxt.push("Uses: " + usesData.length + " services with " + info.count + " urls")
   }
 
@@ -168,12 +168,13 @@ function makeNodeTxt(from, projectInfo, summary, options) {
     summaryUseTxt.push("Included by " + includedBy.length + " services: " + includedBy.map(linkProject).join(", "))
   }
 
-  var usedbyData = util.safeGet(data, "summary.used_by." + from, [])
+  // exclude current node loopback from "usedby" list because it's rendered already in the "uses" list
+  var usedbyData = util.safeGet(data, "summary.used_by." + from, []).filter(function(destLabel){return from != destLabel})
   if (usedbyData.length > 0) {
     var info = util.copyMap({count: 0}, options)
-    usedByTxt = util.flatten(usedbyData.map(function (destLabel) {
+    usedByTxt = usedbyData.map(function (destLabel) {
         return makeService2ServiceText([[destLabel, from]], [destLabel, from], info)
-      })).join("")
+      }).join("")
     summaryUseTxt.push("Used by: " + usedbyData.length + " services with " + info.count + " urls")
   }
 
