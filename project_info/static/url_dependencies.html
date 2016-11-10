@@ -39,7 +39,7 @@
 
     function redraw() {
         redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
-            addNode(addNode(infoRow, "td"), "a", {text: row.project, href: "#" + row.project, class: "blacktextHoverUnderline"}).attr
+            addNode(addNode(infoRow, "td"), "a", {text: row.project, href: "#" + row.project, class: "blacktextHoverUnderline"})
             addNode(infoRow, "td", row.url)
             addNode(infoRow, "td", row.count)
             var useTable = addNode(addNode(infoRow, "td"))

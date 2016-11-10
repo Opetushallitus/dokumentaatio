@@ -28,7 +28,9 @@
 
   function redraw() {
     redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
-      data.headers.forEach(function(header){addNode(infoRow, "td", row[header])})
+      addNode(addNode(infoRow, "td"), "a", {text: row.from, href: "#" + row.from, class: "blacktextHoverUnderline"})
+      addNode(addNode(infoRow, "td"), "a", {text: row.to, href: "#" + row.to, class: "blacktextHoverUnderline"})
+      addNode(infoRow, "td", row.url)
     }, function (row, included, excluded) {
       var lookup = [row.from, row.to, row.url]
       var hide = util.someMatches(lookup, excluded) || !(included.length == 0 || util.someMatches(lookup, included))
@@ -53,6 +55,8 @@
     };
     redraw();
   }
+
+  window.onhashchange = handleHash
 </script>
 
 </body>
