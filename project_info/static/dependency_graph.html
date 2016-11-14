@@ -26,18 +26,19 @@
     [<a href="/">menu</a>] Filter by name: <input onkeyup="filter(this.value);" type="text" id="q">
     <span id="filterInfo"></span>
     Show hidden: <input id="showHidden" type="checkbox" onchange="redraw()" value="checked"/>
-    <a href="javascript:void(0)" onclick="exportCanvas()">Tee PNG</a>
-    <a href="" id="download" download="palveluriippuvuudet.png"></a>
+    <button onclick="exportCanvas()">Export PNG</button>
+    <a href="" id="download" download="url_dependencies.png"></a>
 </p>
 
 <div id="mynetwork"></div>
 
 <script type="text/javascript">
 
-    var nodes, edges, data = {}, originalJSON, viewInfo = {
+    var nodes, edges, data = {}, viewInfo = {
         graphType: undefined,
         showHidden: undefined,
-        filterValue: undefined
+        filterValue: undefined,
+        originalJSON: undefined
     };
 
     function makeEdgeLine(edgeInfo) {
@@ -63,7 +64,6 @@
 
     function makeNode(nodeInfo) {
         var borderWidth = 0.5;
-        var summary = data.summary;
         var projectInfoMap = data.projectInfoMap;
         var from = nodeInfo.name
         var projectInfo = projectInfoMap[from]
@@ -94,8 +94,8 @@
     }
 
     function initGraph(json) {
-        originalJSON = json
-        data.projectInfoMap = util.combineSourcesToProjectInfoMap(originalJSON.sources)
+        data.originalJSON = json
+        data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
         data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
 
         var container = document.getElementById('mynetwork');
@@ -147,7 +147,6 @@
                 var name = data.summary.id_name_map[id]
                 var newWnd = window.open("/project.html#"+name, "dep_info", {})
                 if(newWnd) {
-                    newWnd.focus()
                     newWnd.opener = null
                     newWnd.selectNodeFromGraph = function (label) {
                         viewInfo.network.selectNodes([data.summary.name_id_map[label]], true)
@@ -229,7 +228,7 @@
             var img = mycanvas.toDataURL("image/png;base64;");
             anchor = document.getElementById("download");
             anchor.href = img;
-            anchor.innerHTML = "Download";
+            anchor.innerHTML = anchor.getAttribute("download");
         }
     }
 

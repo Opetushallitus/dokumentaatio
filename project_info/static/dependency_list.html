@@ -27,7 +27,7 @@
   ajaxJson('GET', "/rest/server_state", initTable)
 
   function redraw() {
-    redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
+    var visibleRows = redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
       addNode(addNode(infoRow, "td"), "a", {text: row.from, href: "#" + row.from, class: "blacktextHoverUnderline"})
       addNode(addNode(infoRow, "td"), "a", {text: row.to, href: "#" + row.to, class: "blacktextHoverUnderline"})
       addNode(infoRow, "td", row.url)
@@ -36,6 +36,7 @@
       var hide = util.someMatches(lookup, excluded) || !(included.length == 0 || util.someMatches(lookup, included))
       return !hide
     })
+    document.getElementById("filterInfo").textContent = "Rows:" + visibleRows.length + "/" + data.rows.length
     sorttable.makeSortable(table);
   }
 

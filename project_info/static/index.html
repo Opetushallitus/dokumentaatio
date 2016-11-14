@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" type="text/css" href="common.css"/>
   <script src="common_ui.js"></script>
+  <script src="util.js"></script>
 </head>
 <body>
 
@@ -21,15 +22,15 @@ To add more projects:
   <li>ssh to USER@pulpetti.hard.ware.fi, cd /data00/oph/project_info/all_repos/ and clone the repo there</li>
 </ul>
 
-<h1>Previous scan</h1>
+<h1>Info</h1>
 
-<p id="infoTxt"></p>
-
-<table class="dataTable" id="infos"></table>
+<table id="infos"></table>
+<table class="dataTable" id="errors"></table>
 
 <h1>Development stuff</h1>
 
 <pre>
+  <a href="system_info.html">Troubleshoot issues</a>
   <a href="filter_project_infos.html">/filter_project_infos.html</a>
   <a href="project_infos.md">/project_infos.md</a>
   <a href="rest/reload">/rest/reload</a> - reload data from project_info*.json files
@@ -38,20 +39,30 @@ To add more projects:
 
 <script type="text/javascript">
 
-  var table = document.getElementById('infos');
+  var data = {}
+  ajaxJson('GET', "/rest/server_state", initTable)
 
-  ajaxJson('GET', "/rest/server_state/scaninfo", initTable)
-
+  function addRow(info, txt) {
+    addNode(addNode(info, "tr"), "td", txt)
+  }
   function initTable(json) {
-    var infoTxt = "Previous scan took " + Number((json.duration/1000.0).toFixed(1)) + " seconds. It started at " + json.start + ". Scanned files: " + json.files.length
-    document.getElementById('infoTxt').textContent=infoTxt
-    if(json.errors.length > 0) {
-      addNode(addNode(table, "th"), "td", "Errors: " + json.errors.length);
-      json.errors.forEach(function (errorTxt) {
-        var tr = addNode(table, "tr");
-        addNode(tr, "td", errorTxt)
-      })
-    }
+    data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
+    data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
+    data.urlUse = util.collectUrlUse(data.projectInfoMap)
+    var scanInfo = json.scanInfo;
+
+    var projectLinkCount = util.flatten(util.values(data.summary.uses)).length
+    var urlCount = util.values(data.summary.service2service).map(function(urls){return Object.keys(urls).length}).reduce(function(a,b){return a+b}, 0)
+
+    var info = document.getElementById('infos');
+    var errors = document.getElementById('errors');
+    addRow(info, "Files: " + scanInfo.files.length +
+            " Projects: " + data.summary.items.length +
+            " Links between projects: " + projectLinkCount +
+            " Urls: " + urlCount + " (common: " + data.urlUse.length + ")" );
+    addRow(info, "Scan duration: " + + Number((scanInfo.duration/1000.0).toFixed(1)) + " seconds.");
+    addRow(info, "Scan start: " + scanInfo.start);
+    createSingleTextColumnTable(errors, scanInfo.errors, "Errors: " + scanInfo.errors.length);
   }
 </script>
 

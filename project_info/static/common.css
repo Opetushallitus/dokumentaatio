@@ -4,6 +4,10 @@
 .dataTable tr:nth-child(2n) {
     background-color: #f8f8f8;
 }
+.dataTable th {
+    text-align: left;
+}
+
 tr {
     vertical-align: top;
 }

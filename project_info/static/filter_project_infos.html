@@ -30,9 +30,10 @@
           var hide = util.someMatches([f], filter.excluded) || !(filter.included.length == 0 || util.someMatches([f], filter.included))
           return !hide
       })
-      redrawFilteredInfoTable(data.project_infos, table, fields, function(row, infoRow){
+      var visibleRows = redrawFilteredInfoTable(data.project_infos, table, fields, function(row, infoRow){
           fields.forEach(function(header){addNode(infoRow, "td", JSON.stringify(row[header]))})
       })
+    document.getElementById("filterInfo").textContent = "Projects: " + visibleRows.length
   }
 
   function initTable(json) {

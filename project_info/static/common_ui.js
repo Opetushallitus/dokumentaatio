@@ -19,6 +19,9 @@ function handleHash() {
 }
 
 function addNode(dest, elementType, args) {
+  if(!elementType) {
+    throw "Element type not defined: " + elementType
+  }
   var node = document.createElement(elementType);
   if(args) {
     if(typeof args === 'object') {
@@ -50,15 +53,16 @@ function redrawFilteredInfoTable(rows, table, headers, drawRow, showRow) {
       return showRow(row, filter.included, filter.excluded)
     })
   }
-  var thead = addNode(table, "thead")
-  var headerRow = addNode(thead, "tr")
-  headers.forEach(function(f){addNode(headerRow, "th", f)})
+  if(headers) {
+    var headerRow = addNode(addNode(table, "thead"), "tr")
+    headers.forEach(function(f){addNode(headerRow, "th", f)})
+  }
   var tbody = addNode(table, "tbody")
   visibleRows.forEach(function(row){
     var infoRow = addNode(tbody, "tr")
     drawRow(row, infoRow)
   })
-  document.getElementById("filterInfo").textContent = "Rows:" + visibleRows.length + "/" + data.rows.length
+  return visibleRows
 }
 
 var filter = function(value) {
@@ -80,7 +84,7 @@ var filter = function(value) {
 filter.included = [], filter.excluded = [], filter.value = ""
 
 function linkProject(name) {
-  return '<a href="#' + name + '">' + name + '</a>'
+  return '<a href="project.html#' + name + '">' + name + '</a>'
 }
 
 function convertProjectNamesToLinks(arr, excludes) {
@@ -108,7 +112,13 @@ function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
       excludeFromProjectLinks = info.excludeFromProjectLinks || []
     }
     var txt = listOfTitleArrs.map(function (titleArr) {
-      return "<b>" + convertProjectNamesToLinks(titleArr, excludeFromProjectLinks).join(" -> ") + "</b>"
+        var projectNamesAsLinks = convertProjectNamesToLinks(titleArr, excludeFromProjectLinks);
+        if(projectNamesAsLinks.length > 2) {
+          projectNamesAsLinks[0] = "( " + projectNamesAsLinks[0]
+          projectNamesAsLinks[projectNamesAsLinks.length-2] = projectNamesAsLinks[projectNamesAsLinks.length-2] + " )"
+        }
+
+        return "<b>" + projectNamesAsLinks.join(" -> ") + "</b>"
     }).join("<br>") + " [" + urlCount + "]";
 
     if(!info || info.showUrls) {
@@ -148,7 +158,7 @@ function makeNodeTxt(from, projectInfo, summary, options) {
   var includes = util.safeGet(summary.resolved_includes, from, {})
   if (!util.isEmptyObject(includes)) {
     var info = util.copyMap({count: 0}, options)
-    includesTxt = util.mapEachPair(includes, function (libraryName, includePaths) {
+    includesTxt = util.flatten(util.mapEachPair(includes, function (libraryName, includePaths) {
         // iterate through library's direct uses
         var libraryUses = summary.uses[libraryName] || []
         return libraryUses.map(function (libraryUse) {
@@ -159,7 +169,8 @@ function makeNodeTxt(from, projectInfo, summary, options) {
           // generate link information for library and its used service
           return makeService2ServiceText(fullToPaths, [libraryName, libraryUse], info)
         })
-      }).join("") + "<br>"
+      })).join("") + "<br>"
+
     summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
   }
 
@@ -196,4 +207,16 @@ function makeNodeTxt(from, projectInfo, summary, options) {
   title += usedByTxt
 
   return title;
+}
+
+function createSingleTextColumnTable(destTable, list, title) {
+  if (list.length > 0) {
+    if(title) {
+      addNode(addNode(destTable, "tr"), "th", title);
+    }
+    list.forEach(function (errorTxt) {
+      var tr = addNode(destTable, "tr");
+      addNode(tr, "td", errorTxt)
+    })
+  }
 }
