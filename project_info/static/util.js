@@ -306,7 +306,7 @@ function exportUtil(module, window) {
 
     collectSummaryFromProjectInfoMap(projectInfoMap, summary)
     var allMapsThatDefineProjectNames = [projectInfoMap, summary.uses, summary.used_by, summary.resolved_includes, summary.included_by];
-    summary.items = util.uniq(util.flatten(allMapsThatDefineProjectNames.map(Object.keys)))
+    summary.items = util.uniq(util.flatten(allMapsThatDefineProjectNames.map(Object.keys))).sort()
     summary.items.forEach(function (name, index) {
       summary.id_name_map[index] = name
       summary.name_id_map[name] = index

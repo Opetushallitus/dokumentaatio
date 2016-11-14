@@ -212,11 +212,10 @@ function makeNodeTxt(from, projectInfo, summary, options) {
 function createSingleTextColumnTable(destTable, list, title) {
   if (list.length > 0) {
     if(title) {
-      addNode(addNode(destTable, "tr"), "th", title);
+      title = [title]
     }
-    list.forEach(function (errorTxt) {
-      var tr = addNode(destTable, "tr");
-      addNode(tr, "td", errorTxt)
+    redrawFilteredInfoTable(list, destTable, title, function (row, infoRow) {
+      addNode(infoRow, "td", row)
     })
   }
 }

@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="common.css"/>
     <script src="common_ui.js"></script>
     <script src="util.js"></script>
+    <script src="lib/sorttable.js"></script>
 </head>
 <body>
 
@@ -47,8 +48,9 @@
         }
 
         addNode(document.body, "h1", "Scanned files " + scanInfo.files.length)
-        createSingleTextColumnTable(addNode(document.body, "table", {class: "dataTable"}), scanInfo.files)
-
+        var files = addNode(document.body, "table", {class: "dataTable"});
+        createSingleTextColumnTable(files, scanInfo.files, "Files")
+        sorttable.makeSortable(files);
 
     }
 </script>
