@@ -1,6 +1,6 @@
-Kaikkien projektien checkout, ohittaa olemassaolevat repot ja lataa vain uudet
+Kaikkien projektien checkout, ohittaa olemassaolevat repot ja lataa vain uudet. Lopuksi tulostaa hakemistot mitkä voi poistaa.
 
-    curl -u [USER] -s https://api.github.com/orgs/Opetushallitus/repos?per_page=200 | ruby -rubygems -e 'require "json"; JSON.load(STDIN.read).each { |repo| %x[git clone #{repo["ssh_url"]}] unless File.exist?(repo["name"])}'
+    curl -u [USER] -s https://api.github.com/orgs/Opetushallitus/repos?per_page=200 | ruby -rubygems -e 'require "json";repos=Dir.glob("*");JSON.load(STDIN.read).each { |repo| repos.delete(repo["name"]);%x[git clone #{repo["ssh_url"]}] unless File.exist?(repo["name"])}; puts "Deleted repos: #{repos}"'
 
 Kaikkien projektien pull
 
