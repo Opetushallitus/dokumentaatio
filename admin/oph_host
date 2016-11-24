@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 HOST=$1
-SERVICE=$2
+SERVICE=${2/\//}
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PATH_TO_DEPLOY="${SCRIPT_DIR}/../../deploy"
 if [ ! -d "${PATH_TO_DEPLOY}" ]
