@@ -25,6 +25,29 @@ describe("util.js", function () {
     assert.deepEqual(util.flattenNested([{a: {b: 1}}]), {"a.b": 1})
     assert.deepEqual(util.flattenNested({a: [{b: 1}, {c: 2}]}), {"a.b": 1, "a.c": 2})
     assert.deepEqual(util.flattenNested({a: [{b: 1}, [{c: 2}, {d: 3}]]}), {"a.b": 1, "a.c": 2, "a.d": 3})
+    assert.deepEqual(util.flattenNested([
+      {
+        "links":[
+          {
+            "href":"/org-ui/"
+          },
+          {
+            "href":"/addr/#/"
+          }
+        ]
+      },
+      {
+        "links":[
+          {
+            "href":"/auth/html/request"
+          }
+        ]
+      },
+      {
+        "href":"/tuai/",
+      }
+    ], true), { 'links.href': [ '/org-ui/', '/addr/#/', '/auth/html/request' ],
+      href: [ '/tuai/' ] })
   })
 
   it('safeCollect', function () {
@@ -32,16 +55,21 @@ describe("util.js", function () {
     assert.deepEqual(util.safeCollect([], "a"), [])
     assert.deepEqual(util.safeCollect([[]], "a"), [])
     assert.deepEqual(util.safeCollect([[{}]], "a"), [])
-    assert.deepEqual(util.safeCollect({a: 1}, "a"), [1])
+    assert.deepEqual(util.safeCollect({b:2}, "a"), [])
+    assert.deepEqual(util.safeCollect([], "a"), [])
+    assert.deepEqual(util.safeCollect([[]], "a"), [])
+    assert.deepEqual(util.safeCollect([[{b:2}]], "a"), [])
+    assert.deepEqual(util.safeCollect({a: 1, b:2}, "a"), [1])
+    assert.deepEqual(util.safeCollect({a: 1, b:2}, "**.a"), [1])
     assert.deepEqual(util.safeCollect({a: 1, b: 2, ab: 3}, "a*"), [1, 3])
-    assert.deepEqual(util.safeCollect([{a: 1}, {a: 2}], "a"), [1, 2])
-    assert.deepEqual(util.safeCollect([[{a: 1}]], "a"), [1])
-    assert.deepEqual(util.safeCollect([{b: {a: 1}}], "a"), [])
-    assert.deepEqual(util.safeCollect([{b: {a: 1}}], "*.a"), [1])
-    assert.deepEqual(util.safeCollect([{c: {b: {a: 1}}}], "*.a"), [])
-    assert.deepEqual(util.safeCollect([{c: {b: {a: 1}}}], "**.a"), [1])
-    assert.deepEqual(util.safeCollect([{b: {a: 1}}], "**.a"), [1])
-    assert.deepEqual(util.safeCollect([{b: [{a: 1}]}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{a: 1, b:2}, {a: 2, b:2}], "a"), [1, 2])
+    assert.deepEqual(util.safeCollect([[{a: 1, b:2}]], "a"), [1])
+    assert.deepEqual(util.safeCollect([{b: {a: 1, b:2}}], "a"), [])
+    assert.deepEqual(util.safeCollect([{b: {a: 1, b:2}}], "*.a"), [1])
+    assert.deepEqual(util.safeCollect([{c: {b: {a: 1, b:2}}}], "*.a"), [])
+    assert.deepEqual(util.safeCollect([{c: {b: {a: 1, b:2}}}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{b: {a: 1, b:2}}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{b: [{a: 1, b:2}]}], "**.a"), [1])
   })
 })
 
@@ -234,6 +262,31 @@ describe("scan.js", function () {
           }
         ]
       })
+      done()
+    })
+  })
+  it("should scan url-config configs", function(done){
+    var workDir = __dirname + "/url-config";
+    var serverState = {workDir: workDir}
+    scan.scan(serverState, function () {
+      delete serverState.scanInfo.duration
+      delete serverState.scanInfo.start
+      delete serverState.sources[1].sources[0].content
+      assert.deepEqual(serverState.sources[1], {
+          "name": "virkailija-raamit",
+          "properties": {
+            "org-ui.": "/org-ui/",
+            "addr.#.": "/addr/#/",
+            "auth.html.request": "/auth/html/request",
+            "tuai.": "/tuai/"
+          },
+          "sources": [
+            {
+              "path": "data/data.json"
+            }
+          ]
+        }
+      )
       done()
     })
   })

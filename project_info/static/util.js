@@ -31,14 +31,21 @@ function exportUtil(module, window) {
     }).reverse();
   }
 
-  util.groupBy = function (list, fn) {
+  util.groupBy = function (list, fn, multi) {
+    if(multi === undefined) {
+      multi = true
+    }
     var ret = {}
     list.forEach(function (i) {
       var key = fn(i)
-      if (!ret[key]) {
-        ret[key] = []
+      if(multi) {
+        if (!ret[key]) {
+          ret[key] = []
+        }
+        ret[key].push(i)
+      } else {
+        ret[key]=i
       }
-      ret[key].push(i)
     })
     return ret
   }
@@ -75,20 +82,46 @@ function exportUtil(module, window) {
 // note: supports only strings or maps as values
   util.flattenNested = function (obj, multi) {
     var ret = {}
+    function add(key, value) {
+      if(ret[key]) {
+        if(!Array.isArray(ret[key])) {
+          ret = [ret[key]]
+        }
+        ret[key].push(value)
+      } else {
+        if(multi || Array.isArray(value)) {
+          ret[key]=[value]
+        } else {
+          ret[key]=value
+        }
+      }
+    }
+    function addAll(key, values) {
+      if(Array.isArray(values)) {
+        values.forEach(function (value) {
+          add(key, value)
+        })
+      } else {
+        add(key, values)
+      }
+    }
     if (Array.isArray(obj)) {
       obj.forEach(function (i){
-        util.copyMap(util.flattenNested(i), ret, multi)
+        var tmp = util.flattenNested(i, multi);
+        Object.keys(tmp).forEach(function (key) {
+          addAll(key, tmp[key])
+        })
       })
     } else if (typeof obj === 'object') {
       Object.keys(obj).forEach(function (key) {
         var val = obj[key];
         if(Array.isArray(obj) || typeof val === 'object') {
-          var tmp = util.flattenNested(val)
+          var tmp = util.flattenNested(val, multi)
           Object.keys(tmp).forEach(function(tmpKey){
-            ret[key + "." + tmpKey]= tmp[tmpKey]
+            addAll(key + "." + tmpKey, tmp[tmpKey])
           })
         } else {
-          ret[key]=val
+          add(key, val)
         }
       })
     }
@@ -125,13 +158,14 @@ function exportUtil(module, window) {
   util.safeCollect = function (obj, prefix) {
     var matchAll = ";;;;;;";
     var flattened = util.flattenNested(obj, true);
+    var prefixStartsWithStarStarDot = prefix.startsWith("**.")
     var str = replaceAll(prefix, '.', "\\.")
     str = replaceAll(str, '**', matchAll)
     str = replaceAll(str, '*', "[^.]*")
     str = "^" + replaceAll(str, matchAll, ".*")
     var regexp = new RegExp(str)
     var matchingKeys = Object.keys(flattened).filter(function (key) {
-      return key.match(regexp)
+      return key.match(regexp) || prefixStartsWithStarStarDot && ("."+key).match(regexp)
     })
     var ret = []
     matchingKeys.forEach(function (key) {
@@ -201,7 +235,7 @@ function exportUtil(module, window) {
       Object.keys(source).forEach(function (key) {
         var value = source[key];
         // key already defined, merge or ..?
-        if (Array.isArray(dest[key]) || ["sources", "uses", "includes", "projects", "spring"].indexOf(key) > -1) {
+        if (Array.isArray(dest[key]) || ["sources", "uses", "includes", "projects", "spring", "url-config"].indexOf(key) > -1) {
           // arrays can be merged
           dest[key] = util.flatten(dest[key] || []).concat(util.flatten(value))
         } else if (["properties"].indexOf(key) > -1) {
@@ -434,6 +468,15 @@ function exportUtil(module, window) {
       value = value.slice(value.indexOf("}}") + 2, value.length)
     }
     return value;
+  }
+
+  // resolve key for relative url
+  util.resolveKeyForRelativeUrl = function(value) {
+    value = util.parsePlainUrl(value);
+    if(value[0] == "/") {
+      value = value.slice(1, value.length)
+    }
+    return value.replace(/\//g,".")
   }
 
   util.resolvePropertyReferences = function (value, properties) {

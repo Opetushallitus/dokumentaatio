@@ -1,0 +1,34 @@
+[
+  {
+    "requiresRole":["app_org"],
+    "key":"orgs",
+    "links":[
+      {
+        "key":"org-ui",
+        "requiresRole":["app_org-ui"],
+        "href":"/org-ui/"
+      },
+      {
+        "key":"addr",
+        "href":"/addr/#/",
+        "requiresRole":["app_addr"]
+      }
+    ]
+  },
+  {
+    "key":"system",
+    "requiresRole":["app_filter","app_select"],
+    "links":[
+      {
+        "key":"request",
+        "href":"/auth/html/request",
+        "requiresRole":["app_request"]
+      }
+    ]
+  },
+  {
+    "key":"tuai",
+    "href":"/tuai/",
+    "requiresRole":["app_tuai"]
+  }
+]

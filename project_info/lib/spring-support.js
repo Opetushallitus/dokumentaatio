@@ -8,17 +8,13 @@ module.exports = spring
 
 spring.scanForJaxUrls = function (fileTree, serverState) {
   var projectInfos = util.values(util.combineSourcesToProjectInfoMap(serverState.sources))
-  processProjectInfoList(projectInfos, serverState, fileTree.createFileLookupFn())
-}
-
-function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
-  list.forEach(function (projectInfo) {
+  projectInfos.forEach(function (projectInfo) {
     var project = projectInfo.name
-    if(project && projectInfo.spring && projectInfo.spring.length > 0) {
+    if (project && projectInfo.spring && projectInfo.spring.length > 0) {
       projectInfo.spring.forEach(function (springConfig) {
         var filePath = projectInfo.sources[0].path;
-        var root = filePath || pathRoot
-        if(!root) {
+        var root = filePath
+        if (!root) {
           throw "Can't resolve root directory for " + JSON.stringify(projectInfo)
         }
         function resolveFullPath(filePath) {
@@ -35,7 +31,7 @@ function processProjectInfoList(list, serverState, fileLookupFn, pathRoot) {
           .forEach(function (xmlPath) {
             var relativePath = fileutil.removeRootPath(xmlPath, serverState.workDir);
             serverState.scanInfo.files.push(relativePath)
-            var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileLookupFn, serverState)
+            var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileTree.createFileLookupFn(), serverState)
             var parsedProperties = fileutil.parseProperties(originalFileContent)
             var source = {
               name: project,
@@ -71,14 +67,6 @@ spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLooku
   }
 }
 
-function resolveKey(value) {
-  value = util.parsePlainUrl(value);
-  if(value[0] == "/") {
-    value = value.slice(1, value.length)
-  }
-  return value.replace(/\//g,".")
-}
-
 function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState) {
   var classNameArr = serviceClass.split(".");
   var className = classNameArr.pop()
@@ -106,7 +94,7 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
     error = error + " Creating a key for the baseUrl " + baseUrl
     scanInfo.errors.push(error)
     var fullPath = util.resolvePropertyReferences(baseUrl, properties)
-    var key=resolveKey(fullPath)
+    var key=util.resolveKeyForRelativeUrl(fullPath)
     str.push("# " + error)
     str.push( key + "=" + fullPath)
   }
@@ -128,7 +116,7 @@ function convertAnnotationsToUrlProperties(serviceClass, classFilePath, baseUrl,
   bodyPaths.forEach(function(pathString){
     var unresolvedPath = path.join(baseUrl, pathPrefix, pathString);
     var fullPath = util.resolvePropertyReferences(unresolvedPath, properties)
-    var key=resolveKey(fullPath)
+    var key=util.resolveKeyForRelativeUrl(fullPath)
     if(urlDefinitions[key]) {
       if (urlDefinitions[key] != fullPath) {
         throw "Key " + key + " has been defined to be " + urlDefinitions[key] + " but " + classFilePath + " contains path " + fullPath

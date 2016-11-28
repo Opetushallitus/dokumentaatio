@@ -55,6 +55,10 @@ fileutil.createFileTree = function (root, files) {
   return ret
 }
 
+fileutil.readJSON = function(filePath) {
+  return JSON.parse(fileutil.read(filePath))
+}
+
 fileutil.parseProperties = function(originalFileContent) {
   return PropertiesParser.parse(originalFileContent)
 }

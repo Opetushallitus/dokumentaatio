@@ -2,6 +2,7 @@ var safeEval = require('safe-eval')
 var util = require('../static/util.js')
 var fileutil = require('./fileutil.js')
 var spring = require('./spring-support.js')
+var urlparsers = require('./urlparsers.js')
 require("./polyfills.js")
 
 var scan = {}
@@ -32,6 +33,7 @@ scan.scan = function (serverState, fn) {
     scanProjectInfoJsonFiles(fileTree, state)
     scanUrlProperties(fileTree, state)
     spring.scanForJaxUrls(fileTree, state)
+    urlparsers.parseUrlConfigs(fileTree, state)
     state.scanInfo.duration = (new Date).getTime() - start
     util.copyMap(state, serverState)
     console.log("Parsed", state.scanInfo.files.length, "files")
@@ -53,7 +55,7 @@ function scanProjectInfoJsonFiles(fileTree, serverState) {
   var files = fileTree.filesBySuffix("project_info.json")
   return files.map(function (filePath) {
     serverState.scanInfo.files.push(fileutil.removeRootPath(filePath, serverState.workDir))
-    var ret = readJSON(filePath);
+    var ret = fileutil.readJSON(filePath);
     if (ret.name) {
       ret.sources = [
         {
@@ -70,10 +72,6 @@ function scanProjectInfoJsonFiles(fileTree, serverState) {
 
 function parseJSON(originalFileContent) {
   return JSON.parse(originalFileContent)
-}
-
-function readJSON(filePath) {
-  return parseJSON(fileutil.read(filePath))
 }
 
 function evalJS(originalFileContent) {
