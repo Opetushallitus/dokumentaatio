@@ -1,5 +1,3 @@
-var glob = require("glob")
-var Path = require('path')
 var safeEval = require('safe-eval')
 var util = require('../static/util.js')
 var fileutil = require('./fileutil.js')
@@ -12,7 +10,7 @@ module.exports = scan
 scan.scan = function (serverState, fn) {
   console.log("Scanning", serverState.workDir)
   var start = (new Date).getTime()
-  scanFileTree(serverState.workDir, function (er, fileTree) {
+  fileutil.fileTree(serverState.workDir, function (er, fileTree) {
     if (serverState.scanInfo) {
       if (serverState.scanInfo.latestScan) {
         console.log("There is a scan running which started at ", serverState.scanInfo.latestScan, " aborting new scan...")
@@ -43,14 +41,6 @@ scan.scan = function (serverState, fn) {
     if (fn) {
       fn()
     }
-  })
-}
-
-
-function scanFileTree(root, fn) {
-  var p = Path.join(root, "**/*")
-  glob(p, function (er, files) {
-    fn(er, fileutil.createFileTree(root, files))
   })
 }
 
@@ -113,6 +103,10 @@ function evalJS(originalFileContent) {
   return ctx.module.exports || ctx.window.urls.override || ctx.window.urls.properties || ctx.window.urls.defaults;
 }
 
+
+var urlPropertiesSuffixes = ["oph.properties", "url.properties", "oph.json", "oph_properties.json", "url_properties.json", "oph.js", "oph_properties.js", "url_properties.js"];
+scan.supportedFileSuffixes = urlPropertiesSuffixes.concat("project_info.json");
+
 // scans for .properties .json and .js files and loads them in to urlProperties
 // creates a list of project_info kind of map with {name: .. properties: .. path: .. originalFileContent: ..}
 function scanUrlProperties(fileTree, serverState) {
@@ -128,8 +122,7 @@ function scanUrlProperties(fileTree, serverState) {
     }
   }
 
-  var supportedFileSuffixes = ["oph.properties", "url.properties", "oph.json", "oph_properties.json", "url_properties.json", "oph.js", "oph_properties.js", "url_properties.js"];
-  fileTree.filesBySuffix(supportedFileSuffixes).forEach(function (filePath) {
+  fileTree.filesBySuffix(urlPropertiesSuffixes).forEach(function (filePath) {
     try {
       // figure out project from filename
       var filename = filePath.substr(filePath.lastIndexOf('/') + 1)

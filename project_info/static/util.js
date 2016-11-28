@@ -58,9 +58,14 @@ function exportUtil(module, window) {
     return dest
   }
 
-  util.copyMap = function (from, target) {
+  // copies values from object to target. if multi is set values are stored to a list
+  util.copyMap = function (from, target, multi) {
     Object.keys(from).forEach(function (key) {
-      target[key] = from[key];
+      if(multi) {
+        util.addUniqueToMultiMap(target, key, from[key]);
+      } else {
+        target[key] = from[key];
+      }
     })
     return target
   }
@@ -68,23 +73,26 @@ function exportUtil(module, window) {
 // flattens nested map by concatenating keys with commas
 // {test: {map: {key: value}}} -> {"test.map.key": value}
 // note: supports only strings or maps as values
-  util.flattenNested = function (obj, dest, keyprefix) {
-    if (!dest) {
-      dest = {}
+  util.flattenNested = function (obj, multi) {
+    var ret = {}
+    if (Array.isArray(obj)) {
+      obj.forEach(function (i){
+        util.copyMap(util.flattenNested(i), ret, multi)
+      })
+    } else if (typeof obj === 'object') {
+      Object.keys(obj).forEach(function (key) {
+        var val = obj[key];
+        if(Array.isArray(obj) || typeof val === 'object') {
+          var tmp = util.flattenNested(val)
+          Object.keys(tmp).forEach(function(tmpKey){
+            ret[key + "." + tmpKey]= tmp[tmpKey]
+          })
+        } else {
+          ret[key]=val
+        }
+      })
     }
-    Object.keys(obj).forEach(function (key) {
-      var val = obj[key];
-      var newkey = key
-      if (keyprefix) {
-        newkey = keyprefix + "." + key;
-      }
-      if (typeof val === 'string') {
-        dest[newkey] = val
-      } else {
-        util.flattenNested(val, dest, newkey)
-      }
-    })
-    return dest
+    return ret
   }
 
   util.safeGet = function (o, path, defaultValue) {
@@ -107,10 +115,29 @@ function exportUtil(module, window) {
     }
   }
 
-  util.safeCollect = function (list, key, defaultValue) {
-    return list.map(function (o) {
-      return util.safeGet(o, key, defaultValue)
+  function replaceAll(source, from, to) {
+    return source.split(from).join(to);
+  }
+
+  // collect values based on named path
+  //   util.safeCollect([{href: 1}, {href: 2}], "href") -> [1,2]
+  // supports regex. "*" matches any key, "**" matches any path, "." is escaped
+  util.safeCollect = function (obj, prefix) {
+    var matchAll = ";;;;;;";
+    var flattened = util.flattenNested(obj, true);
+    var str = replaceAll(prefix, '.', "\\.")
+    str = replaceAll(str, '**', matchAll)
+    str = replaceAll(str, '*', "[^.]*")
+    str = "^" + replaceAll(str, matchAll, ".*")
+    var regexp = new RegExp(str)
+    var matchingKeys = Object.keys(flattened).filter(function (key) {
+      return key.match(regexp)
     })
+    var ret = []
+    matchingKeys.forEach(function (key) {
+      ret = ret.concat(flattened[key])
+    })
+    return ret
   }
 
   util.parseServiceName = function (key) {
@@ -132,27 +159,28 @@ function exportUtil(module, window) {
     })
   }
 
-  util.addUniqueToMultiMap = function(dest, key, value) {
-    if(!dest[key]) {
-      dest[key]=[]
+  util.addUniqueToMultiMap = function (dest, key, value) {
+    if (!dest[key]) {
+      dest[key] = []
     }
-    if(dest[key].indexOf(value) == -1) {
+    if (dest[key].indexOf(value) == -1) {
       dest[key].push(value)
     }
   }
 
-  util.mapEachPair=function(obj, fn) {
+  util.mapEachPair = function (obj, fn) {
     return Object.keys(obj).map(function (key) {
       return fn(key, obj[key])
     })
   }
 
-  util.addLookup=function(lookupMap, key, o) {
-    if(!(key in lookupMap)) {
-      if(typeof o === "function") {
-        lookupMap[key]=o()
+  // create the value for key only once and return generated value for following calls
+  util.singletonValue = function (lookupMap, key, o) {
+    if (!(key in lookupMap)) {
+      if (typeof o === "function") {
+        lookupMap[key] = o()
       } else {
-        lookupMap[key]=o
+        lookupMap[key] = o
       }
     }
     return lookupMap[key]
@@ -169,7 +197,7 @@ function exportUtil(module, window) {
         // subProject is defined by the same sources as its parent, so copy the value here
         originalProjectInfo.sources = parent.sources
       }
-      var dest = util.addLookup(map, name, originalProjectInfo)
+      var dest = util.singletonValue(map, name, originalProjectInfo)
       Object.keys(source).forEach(function (key) {
         var value = source[key];
         // key already defined, merge or ..?
@@ -206,6 +234,7 @@ function exportUtil(module, window) {
     function addUsedBy(user, target) {
       util.addUniqueToMultiMap(summary.used_by, target, user)
     }
+
     Object.keys(projectInfoMap).forEach(function (project) {
       var s2sInfo = {}
       var projectInfo = projectInfoMap[project];
@@ -223,7 +252,7 @@ function exportUtil(module, window) {
       })
       util.copyMap(s2sInfo, summary.service2service)
       var includesMap = resolveIncludesToMap(projectInfoMap, projectInfo);
-      if(!util.isEmptyObject(includesMap)) {
+      if (!util.isEmptyObject(includesMap)) {
         summary.resolved_includes[project] = includesMap
         Object.keys(includesMap).forEach(function (resolvedIncludeName) {
           util.addUniqueToMultiMap(summary.included_by, resolvedIncludeName, project)
@@ -238,7 +267,7 @@ function exportUtil(module, window) {
     var includes = projectInfo.includes || []
     includes.forEach(function (includedProjectName) {
       var nextProjectInfo = projectInfoMap[includedProjectName];
-      if(nextProjectInfo.properties && !util.isEmptyObject(nextProjectInfo.properties)) {
+      if (nextProjectInfo.properties && !util.isEmptyObject(nextProjectInfo.properties)) {
         list.push([includedProjectName])
       }
       resolveIncludes(projectInfoMap, nextProjectInfo).forEach(function (resolvedInclude) {
@@ -261,12 +290,12 @@ function exportUtil(module, window) {
 
 // list of all urls and their uses: {project: "xx", url: "/rest/url", count: 20, uses: [{project: "", key: "", original_url: ""}]}
 // TODO: does not support include, instead lists direct dependencies
-  util.collectUrlUse=function(projectInfoMap) {
+  util.collectUrlUse = function (projectInfoMap) {
     var urlUseLookup = {}
 
     function addUrl(destService, plainUrl, userProject, userKey, originalUrl) {
       var lookupKey = destService + "." + plainUrl
-      var info = util.addLookup(urlUseLookup, lookupKey, {
+      var info = util.singletonValue(urlUseLookup, lookupKey, {
         project: destService,
         url: plainUrl,
         count: 0,
@@ -314,8 +343,9 @@ function exportUtil(module, window) {
     return summary
   }
 
-  util.generateGraphInfo = function(projectInfoMap, summary, showLibrariesAsNodes) {
+  util.generateGraphInfo = function (projectInfoMap, summary, showLibrariesAsNodes) {
     var edgeLookup = {}
+
     function projectInfoIsVisible(name) {
       return showLibrariesAsNodes || "library" != util.safeGet(projectInfoMap, name + ".type")
     }
@@ -327,7 +357,7 @@ function exportUtil(module, window) {
           id: summary.name_id_map[name],
           hasSources: util.safeGet(projectInfoMap, name + ".sources", []).length > 0,
         };
-        if(util.safeGet(projectInfoMap, name + ".type")) {
+        if (util.safeGet(projectInfoMap, name + ".type")) {
           nodeInfo.type = util.safeGet(projectInfoMap, name + ".type")
         }
         return nodeInfo
@@ -336,15 +366,15 @@ function exportUtil(module, window) {
 
     function makeEdgeData(from, to, fromInclude) {
       var edgeKey = from + "." + to
-      var edgeData = util.addLookup(edgeLookup, edgeKey, {
+      var edgeData = util.singletonValue(edgeLookup, edgeKey, {
         from: summary.name_id_map[from],
         to: summary.name_id_map[to]
       })
-      if(from != to && summary.service2service[from + "." + to] && summary.service2service[to + "." + from]) {
-        edgeData.twoway= true
+      if (from != to && summary.service2service[from + "." + to] && summary.service2service[to + "." + from]) {
+        edgeData.twoway = true
       }
-      if(fromInclude) {
-        edgeData.include=true
+      if (fromInclude) {
+        edgeData.include = true
       }
       return edgeData
     }
@@ -354,8 +384,8 @@ function exportUtil(module, window) {
         var edges = util.safeGet(summary.uses, from, []).filter(projectInfoIsVisible).map(function (to) {
           return makeEdgeData(from, to);
         })
-        if(showLibrariesAsNodes) {
-          var projectInfoDirectIncludeEdges = util.safeGet(projectInfoMap, from+".includes", []).filter(projectInfoIsVisible).map(function (to) {
+        if (showLibrariesAsNodes) {
+          var projectInfoDirectIncludeEdges = util.safeGet(projectInfoMap, from + ".includes", []).filter(projectInfoIsVisible).map(function (to) {
             return makeEdgeData(from, to, true);
           })
           edges = edges.concat(projectInfoDirectIncludeEdges)
@@ -432,7 +462,7 @@ function exportUtil(module, window) {
     return value
   }
 
-  util.isEmptyObject = function(o) {
+  util.isEmptyObject = function (o) {
     return Object.keys(o).length == 0
   }
 

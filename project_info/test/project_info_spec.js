@@ -14,6 +14,35 @@ describe("util.js", function () {
     assert.equal(util.safeGet({b: {a: 1}}, "b.a"), 1)
     assert.equal(util.safeGet({"b.a": 1}, "b.a"), 1)
   })
+
+  it('flattenNested', function () {
+    assert.deepEqual(util.flattenNested({test: {map: {key: 1}}}), {"test.map.key": 1})
+    assert.deepEqual(util.flattenNested({}), {})
+    assert.deepEqual(util.flattenNested([]), {})
+    assert.deepEqual(util.flattenNested([{}]), {})
+    assert.deepEqual(util.flattenNested({a: 1}), {a: 1})
+    assert.deepEqual(util.flattenNested([{a: 1}, {b: 2}]), {a: 1, b: 2})
+    assert.deepEqual(util.flattenNested([{a: {b: 1}}]), {"a.b": 1})
+    assert.deepEqual(util.flattenNested({a: [{b: 1}, {c: 2}]}), {"a.b": 1, "a.c": 2})
+    assert.deepEqual(util.flattenNested({a: [{b: 1}, [{c: 2}, {d: 3}]]}), {"a.b": 1, "a.c": 2, "a.d": 3})
+  })
+
+  it('safeCollect', function () {
+    assert.deepEqual(util.safeCollect({}, "a"), [])
+    assert.deepEqual(util.safeCollect([], "a"), [])
+    assert.deepEqual(util.safeCollect([[]], "a"), [])
+    assert.deepEqual(util.safeCollect([[{}]], "a"), [])
+    assert.deepEqual(util.safeCollect({a: 1}, "a"), [1])
+    assert.deepEqual(util.safeCollect({a: 1, b: 2, ab: 3}, "a*"), [1, 3])
+    assert.deepEqual(util.safeCollect([{a: 1}, {a: 2}], "a"), [1, 2])
+    assert.deepEqual(util.safeCollect([[{a: 1}]], "a"), [1])
+    assert.deepEqual(util.safeCollect([{b: {a: 1}}], "a"), [])
+    assert.deepEqual(util.safeCollect([{b: {a: 1}}], "*.a"), [1])
+    assert.deepEqual(util.safeCollect([{c: {b: {a: 1}}}], "*.a"), [])
+    assert.deepEqual(util.safeCollect([{c: {b: {a: 1}}}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{b: {a: 1}}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{b: [{a: 1}]}], "**.a"), [1])
+  })
 })
 
 describe('util.js', function () {

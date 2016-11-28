@@ -1,5 +1,8 @@
 var fs = require('fs')
+var glob = require("glob")
+var Path = require('path')
 var PropertiesParser = require('properties-parser')
+
 var util = require('../static/util.js')
 
 var fileutil = {}
@@ -7,6 +10,16 @@ module.exports = fileutil
 
 fileutil.read = function(filePath) {
   return fs.readFileSync(filePath, 'utf8')
+}
+
+fileutil.globFileTree = function (root, pattern, fn) {
+  glob(Path.join(root, pattern), function (er, files) {
+    fn(er, fileutil.createFileTree(root, files))
+  })
+};
+
+fileutil.fileTree = function(root, fn) {
+  this.globFileTree(root, "**/*", fn);
 }
 
 fileutil.createFileTree = function (root, files) {
