@@ -1,7 +1,7 @@
 var xml2js = require('xml2js')
 var util = require('../static/util.js')
 var fileutil = require('./fileutil.js')
-var path = require('path')
+var Path = require('path')
 
 var urlParsers = {}
 module.exports = urlParsers
@@ -19,28 +19,30 @@ urlParsers.parseUrlConfigs = function (fileTree, serverState) {
           throw "Can't resolve root directory for " + JSON.stringify(projectInfo)
         }
         function resolveFullPath(filePath) {
-          return path.join(serverState.workDir, path.dirname(root), filePath)
+          return Path.join(serverState.workDir, Path.dirname(root), filePath)
+        }
+        function resolveProjectPath(filePath) {
+          return Path.join(Path.dirname(root), filePath)
         }
         if (!urlConfig.path || !urlConfig["values-for-key"]) {
           serverState.scanInfo.errors.push("Project " + projectInfo.name + " has bad url-config: " + JSON.stringify(urlConfig, null, 2))
         } else {
-          var jsonPath = resolveFullPath(urlConfig.path)
-          var relativePath = fileutil.removeRootPath(jsonPath, serverState.workDir)
-          var originalFileContent = fileutil.read(jsonPath)
-          var sourceProperties = JSON.parse(originalFileContent)
-          var parsedValues = util.safeCollect(sourceProperties, urlConfig["values-for-key"])
-          var parsedProperties = util.groupBy(parsedValues, util.resolveKeyForRelativeUrl, false)
-          serverState.scanInfo.files.push(jsonPath)
-          var source = {
-            name: project,
-            properties: parsedProperties,
-            sources: [
-              {
-                path: relativePath,
-                content: originalFileContent
-              }]
-          };
-          serverState.sources.push(source)
+          util.flatten(resolveFullPath(urlConfig.path)).forEach(function (jsonPath) {
+            var originalFileContent = fileutil.read(jsonPath)
+            var sourceProperties = JSON.parse(originalFileContent)
+            var parsedValues = util.safeCollect(sourceProperties, urlConfig["values-for-key"])
+            var parsedProperties = util.groupBy(parsedValues, util.resolveKeyForRelativeUrl, false)
+            var source = {
+              name: project,
+              properties: parsedProperties,
+              sources: [
+                {
+                  path: resolveProjectPath(urlConfig.path),
+                  content: originalFileContent
+                }]
+            };
+            serverState.sources.push(source)
+          })
         }
       })
     }
