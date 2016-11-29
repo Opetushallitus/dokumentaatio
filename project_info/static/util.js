@@ -509,10 +509,6 @@ function exportUtil(module, window) {
     return Object.keys(o).length == 0
   }
 
-  util.sourceFileList = function (serverState) {
-    return util.uniq(util.safeCollect(serverState, "sources.sources.path"))
-  }
-
 }
 if (typeof window === 'undefined') {
   exportUtil(module)

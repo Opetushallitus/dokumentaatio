@@ -56,7 +56,7 @@ To add more projects:
 
     var info = document.getElementById('infos');
     var errors = document.getElementById('errors');
-    addRow(info, "Files: " + util.sourceFileList(json).length +
+    addRow(info, "Files: " + scanInfo.files.length +
             " Projects: " + data.summary.items.length +
             " Links between projects: " + projectLinkCount +
             " Urls: " + urlCount + " (common: " + data.urlUse.length + ")" );
