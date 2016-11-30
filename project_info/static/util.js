@@ -231,7 +231,10 @@ function exportUtil(module, window) {
         // subProject is defined by the same sources as its parent, so copy the value here
         originalProjectInfo.sources = parent.sources
       }
-      var dest = util.singletonValue(map, name, originalProjectInfo)
+      var dest = {}
+      if(name) {
+        dest = util.singletonValue(map, name, originalProjectInfo)
+      }
       Object.keys(source).forEach(function (key) {
         var value = source[key];
         // key already defined, merge or ..?

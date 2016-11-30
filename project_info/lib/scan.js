@@ -157,5 +157,4 @@ function calculateDirsWithConfigFiles(fileTree, state) {
   })).filter(function (dir) {
     return !state.scanInfo.dirsWithProjectInfoFiles[dir]
   })
-  console.log(JSON.stringify(state.scanInfo,null, 2))
 }

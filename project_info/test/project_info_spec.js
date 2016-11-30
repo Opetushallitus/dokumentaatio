@@ -27,27 +27,29 @@ describe("util.js", function () {
     assert.deepEqual(util.flattenNested({a: [{b: 1}, [{c: 2}, {d: 3}]]}), {"a.b": 1, "a.c": 2, "a.d": 3})
     assert.deepEqual(util.flattenNested([
       {
-        "links":[
+        "links": [
           {
-            "href":"/org-ui/"
+            "href": "/org-ui/"
           },
           {
-            "href":"/addr/#/"
+            "href": "/addr/#/"
           }
         ]
       },
       {
-        "links":[
+        "links": [
           {
-            "href":"/auth/html/request"
+            "href": "/auth/html/request"
           }
         ]
       },
       {
-        "href":"/tuai/",
+        "href": "/tuai/",
       }
-    ], true), { 'links.href': [ '/org-ui/', '/addr/#/', '/auth/html/request' ],
-      href: [ '/tuai/' ] })
+    ], true), {
+      'links.href': ['/org-ui/', '/addr/#/', '/auth/html/request'],
+      href: ['/tuai/']
+    })
   })
 
   it('safeCollect', function () {
@@ -55,21 +57,21 @@ describe("util.js", function () {
     assert.deepEqual(util.safeCollect([], "a"), [])
     assert.deepEqual(util.safeCollect([[]], "a"), [])
     assert.deepEqual(util.safeCollect([[{}]], "a"), [])
-    assert.deepEqual(util.safeCollect({b:2}, "a"), [])
+    assert.deepEqual(util.safeCollect({b: 2}, "a"), [])
     assert.deepEqual(util.safeCollect([], "a"), [])
     assert.deepEqual(util.safeCollect([[]], "a"), [])
-    assert.deepEqual(util.safeCollect([[{b:2}]], "a"), [])
-    assert.deepEqual(util.safeCollect({a: 1, b:2}, "a"), [1])
-    assert.deepEqual(util.safeCollect({a: 1, b:2}, "**.a"), [1])
+    assert.deepEqual(util.safeCollect([[{b: 2}]], "a"), [])
+    assert.deepEqual(util.safeCollect({a: 1, b: 2}, "a"), [1])
+    assert.deepEqual(util.safeCollect({a: 1, b: 2}, "**.a"), [1])
     assert.deepEqual(util.safeCollect({a: 1, b: 2, ab: 3}, "a*"), [1, 3])
-    assert.deepEqual(util.safeCollect([{a: 1, b:2}, {a: 2, b:2}], "a"), [1, 2])
-    assert.deepEqual(util.safeCollect([[{a: 1, b:2}]], "a"), [1])
-    assert.deepEqual(util.safeCollect([{b: {a: 1, b:2}}], "a"), [])
-    assert.deepEqual(util.safeCollect([{b: {a: 1, b:2}}], "*.a"), [1])
-    assert.deepEqual(util.safeCollect([{c: {b: {a: 1, b:2}}}], "*.a"), [])
-    assert.deepEqual(util.safeCollect([{c: {b: {a: 1, b:2}}}], "**.a"), [1])
-    assert.deepEqual(util.safeCollect([{b: {a: 1, b:2}}], "**.a"), [1])
-    assert.deepEqual(util.safeCollect([{b: [{a: 1, b:2}]}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{a: 1, b: 2}, {a: 2, b: 2}], "a"), [1, 2])
+    assert.deepEqual(util.safeCollect([[{a: 1, b: 2}]], "a"), [1])
+    assert.deepEqual(util.safeCollect([{b: {a: 1, b: 2}}], "a"), [])
+    assert.deepEqual(util.safeCollect([{b: {a: 1, b: 2}}], "*.a"), [1])
+    assert.deepEqual(util.safeCollect([{c: {b: {a: 1, b: 2}}}], "*.a"), [])
+    assert.deepEqual(util.safeCollect([{c: {b: {a: 1, b: 2}}}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{b: {a: 1, b: 2}}], "**.a"), [1])
+    assert.deepEqual(util.safeCollect([{b: [{a: 1, b: 2}]}], "**.a"), [1])
   })
 })
 
@@ -196,7 +198,16 @@ describe("spring-support.js", function () {
       assert.deepEqual(serverState, {
         "workDir": __dirname + "/spring",
         "scanInfo": {
-          "files": ["project_info.json", "spring-test.xml", "ViestintapalveluResource.java"],
+        "dirsWithProjectInfoFiles": {
+          "project_info.json": [
+              "project_info.json"
+            ]
+        },
+      "dirsWithoutInfoFiles": [
+          "spring-test.xml",
+          "spring.properties",
+          "ViestintapalveluResource.java"
+        ],
           "errors": []
         },
         "sources": [{
@@ -214,7 +225,10 @@ describe("spring-support.js", function () {
             "viestintapalvelu.foo.bar.api.v1.addresslabel.sync.pdf": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/addresslabel/sync/pdf",
             "viestintapalvelu.foo.bar.api.v1.template.getHistory": "https://{{host_virkailija}}/viestintapalvelu/foo/bar/api/v1/template/getHistory"
           },
-          "sources": [{"path": "spring-test.xml"}]
+          "sources": [
+            {"path": "spring.properties"},
+            {"path": "spring-test.xml"},
+            {"path": "ViestintapalveluResource.java"}]
         }]
       })
       done()
@@ -233,10 +247,15 @@ describe("scan.js", function () {
         "workDir": __dirname + "/project_info_and_url_properties",
         "scanInfo": {
           "errors": [],
-          "files": [
-            "project_info.json",
-            "koodisto-client-url.properties"
-          ]
+          "dirsWithProjectInfoFiles": {
+            "koodisto-client-url.properties": [
+              "koodisto-client-url.properties"
+            ],
+            "project_info.json": [
+              "project_info.json"
+            ]
+          },
+          "dirsWithoutInfoFiles": []
         },
         "sources": [
           {
@@ -265,7 +284,8 @@ describe("scan.js", function () {
       done()
     })
   })
-  it("should scan url-config configs", function(done){
+
+  it("should scan url-config configs", function (done) {
     var workDir = __dirname + "/url-config";
     var serverState = {workDir: workDir}
     scan.scan(serverState, function () {
@@ -311,7 +331,7 @@ describe('util.combineSourcesToProjectInfoMap', function () {
       properties: {
         f: 10
       }
-    }]), {
+    }, {}]), {
       "a": {
         "name": "a",
         "uses": [1, 2, 3, 4],
