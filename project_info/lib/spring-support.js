@@ -1,7 +1,7 @@
 var xml2js = require('xml2js')
 var util = require('../static/util.js')
 var fileutil = require('./fileutil.js')
-var path = require('path')
+var Path = require('path')
 
 var spring = {}
 module.exports = spring
@@ -18,28 +18,32 @@ spring.scanForJaxUrls = function (fileTree, serverState) {
           throw "Can't resolve root directory for " + JSON.stringify(projectInfo)
         }
         function resolveFullPath(filePath) {
-          return path.join(serverState.workDir, path.dirname(root), filePath)
+          return Path.join(serverState.workDir, Path.dirname(root), filePath)
+        }
+        function resolveProjectPath(filePath) {
+          return Path.join(Path.dirname(root), filePath)
         }
         var properties = {}
+        var propertyPaths = []
         util.flatten(springConfig.properties || [])
-          .map(resolveFullPath)
-          .forEach(function (props) {
-            util.copyMap(fileutil.readProperties(props), properties)
+          .forEach(function (filePath) {
+            propertyPaths.push(resolveProjectPath(filePath))
+            util.copyMap(fileutil.readProperties(resolveFullPath(filePath)), properties)
           })
         util.flatten(springConfig.xml || [])
-          .map(resolveFullPath)
-          .forEach(function (xmlPath) {
-            var relativePath = fileutil.removeRootPath(xmlPath, serverState.workDir);
-            serverState.scanInfo.files.push(relativePath)
-            var originalFileContent = spring.createUrlPropertiesForJax(xmlPath, properties, fileTree.createFileLookupFn(), serverState)
+          .forEach(function (filePath) {
+            var sourceFiles = []
+            sourceFiles.push(resolveProjectPath(filePath))
+            var originalFileContent = spring.createUrlPropertiesForJax(resolveFullPath(filePath), properties, fileTree.createFileLookupFn(), serverState, sourceFiles)
             var parsedProperties = fileutil.parseProperties(originalFileContent)
             var source = {
               name: project,
               properties: parsedProperties,
-              sources: [
-                {
-                  path: relativePath
-                }]
+              sources: propertyPaths.concat(sourceFiles).map(function (path) {
+                return {
+                  path: path
+                }
+              })
             };
             serverState.sources.push(source)
           })
@@ -48,36 +52,36 @@ spring.scanForJaxUrls = function (fileTree, serverState) {
   })
 }
 
-spring.createUrlPropertiesForJax = function(springXmlPath, properties, fileLookupFn, serverState) {
- var xml = parseXmlFile(springXmlPath)
-  if(xml) {
+spring.createUrlPropertiesForJax = function (springXmlPath, properties, fileLookupFn, serverState, sourceFiles) {
+  var xml = parseXmlFile(springXmlPath)
+  if (xml) {
     function parseXmlClientDef(client) {
       var attrs = client["$"];
-      if(attrs) {
+      if (attrs) {
         var baseUrl = attrs["address"]
         var serviceClass = attrs["serviceClass"]
         var urlDefinitions = {}
-        return resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState)
+        return resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState, sourceFiles)
       } else {
         return []
       }
     }
+
     return util.flatten([collectTagsRecursively("jaxrs-client:client", xml).map(parseXmlClientDef),
-    collectTagsRecursively("jaxws:client", xml).map(parseXmlClientDef)]).join("\n")
+      collectTagsRecursively("jaxws:client", xml).map(parseXmlClientDef)]).join("\n")
   }
 }
 
-function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState) {
+function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn, urlDefinitions, serverState, sourceFiles) {
   var classNameArr = serviceClass.split(".");
   var className = classNameArr.pop()
   var package = classNameArr.join(".")
-  var scanInfo = serverState.scanInfo
   var found = []
   var str = []
   var classFiles = fileLookupFn(className + ".java") || []
   classFiles.forEach(function (classFilePath) {
-    scanInfo.files.push(fileutil.removeRootPath(classFilePath, serverState.workDir))
-    var fileStr = fileutil.read(classFilePath)
+    sourceFiles.push(classFilePath)
+    var fileStr = fileutil.read(Path.join(serverState.workDir, classFilePath))
     if (fileStr.indexOf(package) > -1) {
       if (found.length != 0) {
         throw "Already found " + found.join(", ") + " for " + serviceClass + " Has configuration also in " + classFilePath
@@ -88,45 +92,45 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
   })
   if (found.length == 0) {
     var error = "Could not find matching file for " + serviceClass
-    if(classFiles.length > 0) {
+    if (classFiles.length > 0) {
       error = "Could not find definition for " + serviceClass + " from " + classFiles.join(", ")
     }
     error = error + " Creating a key for the baseUrl " + baseUrl
-    scanInfo.errors.push(error)
+    serverState.scanInfo.errors.push(error)
     var fullPath = util.resolvePropertyReferences(baseUrl, properties)
-    var key=util.resolveKeyForRelativeUrl(fullPath)
+    var key = util.resolveKeyForRelativeUrl(fullPath)
     str.push("# " + error)
-    str.push( key + "=" + fullPath)
+    str.push(key + "=" + fullPath)
   }
   return str
 }
 
 function convertAnnotationsToUrlProperties(serviceClass, classFilePath, baseUrl, fileStr, properties, urlDefinitions) {
-  var str = []
-  str.push("# " + serviceClass +" (from: " + classFilePath+")")
+  var arr = []
+  arr.push("# " + serviceClass + " (from: " + classFilePath + ")")
   var indexOfFirstOpenCurly = fileStr.indexOf("{")
   var header = fileStr.slice(0, indexOfFirstOpenCurly)
   var body = fileStr.slice(indexOfFirstOpenCurly, fileStr.length)
   var headerPaths = collectPathAnnotations(header)
   var bodyPaths = collectPathAnnotations(body)
   if (headerPaths.length > 1) {
-    throw classFilePath +" has more than one path in header part: " + headerPaths
+    throw classFilePath + " has more than one path in header part: " + headerPaths
   }
   var pathPrefix = headerPaths[0] || ""
-  bodyPaths.forEach(function(pathString){
-    var unresolvedPath = path.join(baseUrl, pathPrefix, pathString);
+  bodyPaths.forEach(function (pathString) {
+    var unresolvedPath = Path.join(baseUrl, pathPrefix, pathString);
     var fullPath = util.resolvePropertyReferences(unresolvedPath, properties)
-    var key=util.resolveKeyForRelativeUrl(fullPath)
-    if(urlDefinitions[key]) {
+    var key = util.resolveKeyForRelativeUrl(fullPath)
+    if (urlDefinitions[key]) {
       if (urlDefinitions[key] != fullPath) {
         throw "Key " + key + " has been defined to be " + urlDefinitions[key] + " but " + classFilePath + " contains path " + fullPath
       }
     } else {
       urlDefinitions[key] = fullPath
-      str.push(key + "=" + fullPath)
+      arr.push(key + "=" + fullPath)
     }
   })
-  return str
+  return arr
 }
 
 function collectPathAnnotations(str) {
@@ -150,7 +154,7 @@ function parseXmlFile(xmlPath) {
     retErr = err;
     ret = result;
   });
-  if(retErr) {
+  if (retErr) {
     throw retErr
   }
   return ret;
@@ -159,10 +163,10 @@ function parseXmlFile(xmlPath) {
 // depth first recursive search
 function collectTagsRecursively(tagName, o) {
   var list = []
-  if(o["#name"] == tagName) {
+  if (o["#name"] == tagName) {
     list.push(o)
   }
-  if(o["$$"]) {
+  if (o["$$"]) {
     o["$$"].forEach(function (i) {
       list = list.concat(collectTagsRecursively(tagName, i))
     })

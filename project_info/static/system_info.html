@@ -13,46 +13,79 @@
 
 <script type="text/javascript">
 
-    var data = {}
+  var data = {}
 
-    ajaxJson('GET', "/rest/server_state", initTable)
+  ajaxJson('GET', "/rest/server_state", initTable)
 
-    function initTable(json) {
-        data.originalJSON = json
-        data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
-        data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
-        var scanInfo = json.scanInfo;
+  function initTable(json) {
+    data.originalJSON = json
+    data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
+    data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
+    var scanInfo = json.scanInfo;
 
-        // errors
+    // errors
 
-        var errors = scanInfo.errors;
-        if(errors.length > 0 ) {
-            addNode(document.body, "h1", "Errors " + errors.length)
-            createSingleTextColumnTable(addNode(document.body, "table", {class: "dataTable"}), errors);
-        }
-
-        // projects without definition
-
-        var noDefinition = data.summary.items.filter(function (name) {
-            return !(name in data.projectInfoMap)
-        })
-
-        if(noDefinition.length > 0 ) {
-            addNode(document.body, "h1", "Projects with no definition " + noDefinition.length + "/" + Object.keys(data.projectInfoMap).length)
-            redrawFilteredInfoTable(noDefinition, addNode(document.body, "table", {class: "dataTable"}), null, function (row, rowTr) {
-                addNode(addNode(rowTr, "td"), "a", {
-                    href: "project.html#" + row,
-                    text: row
-                })
-            })
-        }
-
-        addNode(document.body, "h1", "Scanned files " + scanInfo.files.length)
-        var files = addNode(document.body, "table", {class: "dataTable"});
-        createSingleTextColumnTable(files, scanInfo.files, "Files")
-        sorttable.makeSortable(files);
-
+    var errors = scanInfo.errors;
+    if (errors.length > 0) {
+      addNode(document.body, "h1", "Errors " + errors.length)
+      createSingleTextColumnTable(addNode(document.body, "table", {class: "dataTable"}), errors);
     }
+
+    var tr = addNode(addNode(document.body, "table"), "tr")
+
+    // projects without definition
+
+    var noDefinition = data.summary.items.filter(function (name) {
+      return !(name in data.projectInfoMap)
+    })
+
+    if (noDefinition.length > 0) {
+      var dest = addNode(tr, "td");
+      addNode(dest, "h1", "Projects with no definition " + noDefinition.length + "/" + Object.keys(data.projectInfoMap).length)
+      var undefinedProjectTable = addNode(dest, "table", {class: "dataTable"});
+      redrawFilteredInfoTable(noDefinition, undefinedProjectTable, ["Project"], function (row, rowTr) {
+        addNode(addNode(rowTr, "td"), "a", {
+          href: "project.html#" + row,
+          text: row
+        })
+      })
+      sorttable.makeSortable(undefinedProjectTable);
+    }
+    var dirsWithProjectInfoFiles = Object.keys(json.scanInfo.dirsWithProjectInfoFiles)
+    var dirsWithoutProjectInfoFiles = json.scanInfo.dirsWithoutInfoFiles
+    var allDirCount= dirsWithProjectInfoFiles.length + dirsWithoutProjectInfoFiles.length
+    if(dirsWithProjectInfoFiles.length  > 0) {
+      var dest = addNode(tr, "td");
+      addNode(dest, "h1", "Dirs with project info files " + dirsWithProjectInfoFiles.length + "/" + allDirCount)
+      var dirsWithInfoFilesTable = addNode(dest, "table", {class: "dataTable"});
+      redrawFilteredInfoTable(dirsWithProjectInfoFiles, dirsWithInfoFilesTable, ["Directory"], function (row, rowTr) {
+        addNode(rowTr, "td", row)
+      })
+      sorttable.makeSortable(dirsWithInfoFilesTable);
+    }
+    if(dirsWithoutProjectInfoFiles.length  > 0) {
+      var dest = addNode(tr, "td");
+      addNode(dest, "h1", "Dirs with no project info files " + dirsWithoutProjectInfoFiles.length + "/" + allDirCount)
+      var dirsWithoutInfoFilesTable = addNode(dest, "table", {class: "dataTable"});
+      redrawFilteredInfoTable(dirsWithoutProjectInfoFiles, dirsWithoutInfoFilesTable, ["Directory"], function (row, rowTr) {
+        addNode(rowTr, "td", row)
+      })
+      sorttable.makeSortable(dirsWithoutInfoFilesTable);
+    }
+
+    var sourceFiles = util.sourceFileList(json);
+    addNode(document.body, "h1", "Scanned files by project: " +sourceFiles.length)
+    var fileTable = addNode(document.body, "table", {class: "dataTable"});
+    redrawFilteredInfoTable(util.values(data.projectInfoMap), fileTable, ["Project", "File count", "Files"], function (row, infoRow) {
+      var files = util.safeCollect(row, "sources.path");
+      addNode(infoRow, "td", row.name)
+      addNode(infoRow, "td", files.length)
+      redrawFilteredInfoTable(files, addNode(addNode(infoRow, "td"), "table"), null, function(row, rowTr){
+        addNode(rowTr, "td", row)
+      })
+    })
+    sorttable.makeSortable(fileTable);
+  }
 </script>
 
 

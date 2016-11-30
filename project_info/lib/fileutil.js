@@ -13,8 +13,13 @@ fileutil.read = function(filePath) {
 }
 
 fileutil.globFileTree = function (root, pattern, fn) {
-  glob(Path.join(root, pattern), function (er, files) {
-    fn(er, fileutil.createFileTree(root, files))
+  var globPattern = Path.join(root, pattern);
+  var rootAfterJoining = globPattern.substr(0,globPattern.length-pattern.length)
+  glob(globPattern, function (er, files) {
+    var shortenedFiles = files.map(function(filePath){
+      return filePath.substr(rootAfterJoining.length, filePath.length)
+    });
+    fn(er, fileutil.createFileTree(root, shortenedFiles))
   })
 };
 
@@ -50,6 +55,9 @@ fileutil.createFileTree = function (root, files) {
           return file.endsWith(suffix)
         })
       })
+    },
+    fullPath: function(path) {
+      return Path.join(ret.root, path)
     }
   };
   return ret
@@ -71,9 +79,5 @@ fileutil.removeRootPath = function(path, root) {
   if(!root.endsWith("/")) {
     root = root + "/"
   }
-  if(!path.startsWith(root)) {
-    throw "Path "+path+" doesn't start with " + root
-  }
   return path.substring(root.length)
-
 }

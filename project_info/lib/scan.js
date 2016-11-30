@@ -23,10 +23,11 @@ scan.scan = function (serverState, fn) {
     var state = {
       workDir: serverState.workDir,
       scanInfo: {
-        files: [],
         errors: [],
         duration: 0,
-        start: new Date().toString()
+        start: new Date().toString(),
+        dirsWithProjectInfoFiles: {},
+        dirsWithoutInfoFiles: []
       },
       sources: []
     }
@@ -35,8 +36,9 @@ scan.scan = function (serverState, fn) {
     spring.scanForJaxUrls(fileTree, state)
     urlparsers.parseUrlConfigs(fileTree, state)
     state.scanInfo.duration = (new Date).getTime() - start
+    calculateDirsWithConfigFiles(fileTree, state)
     util.copyMap(state, serverState)
-    console.log("Parsed", state.scanInfo.files.length, "files")
+    console.log("Parsed", util.sourceFileList(state).length, "files")
     if (state.scanInfo.errors.length > 0) {
       console.log("Errors", state.scanInfo.errors.length, ":", state.scanInfo.errors)
     }
@@ -54,19 +56,16 @@ scan.scan = function (serverState, fn) {
 function scanProjectInfoJsonFiles(fileTree, serverState) {
   var files = fileTree.filesBySuffix("project_info.json")
   return files.map(function (filePath) {
-    serverState.scanInfo.files.push(fileutil.removeRootPath(filePath, serverState.workDir))
-    var ret = fileutil.readJSON(filePath);
-    if (ret.name) {
-      ret.sources = [
-        {
-          path: fileutil.removeRootPath(filePath, serverState.workDir)
-        }]
-      // backwards compatability
-      if (ret.uses && !Array.isArray(ret.uses)) {
-        ret.uses = ret.uses.split(" ")
-      }
-      serverState.sources.push(ret)
+    var ret = fileutil.readJSON(fileTree.fullPath(filePath));
+    ret.sources = [
+      {
+        path: filePath
+      }]
+    // backwards compatability
+    if (ret.uses && !Array.isArray(ret.uses)) {
+      ret.uses = ret.uses.split(" ")
     }
+    serverState.sources.push(ret)
   })
 }
 
@@ -101,7 +100,6 @@ function evalJS(originalFileContent) {
   return ctx.module.exports || ctx.window.urls.override || ctx.window.urls.properties || ctx.window.urls.defaults;
 }
 
-
 var urlPropertiesSuffixes = ["oph.properties", "url.properties", "oph.json", "oph_properties.json", "url_properties.json", "oph.js", "oph_properties.js", "url_properties.js"];
 scan.supportedFileSuffixes = urlPropertiesSuffixes.concat("project_info.json");
 
@@ -126,23 +124,20 @@ function scanUrlProperties(fileTree, serverState) {
       var filename = filePath.substr(filePath.lastIndexOf('/') + 1)
       var postfix = filename.lastIndexOf("url") != -1 ? "url" : "oph"
       var project = filename.substring(0, filename.lastIndexOf(postfix) - 1)
-      var relativeFilePath = fileutil.removeRootPath(filePath, serverState.workDir);
       if (project != "") {
-        serverState.scanInfo.files.push(relativeFilePath)
-        var originalFileContent = fileutil.read(filePath);
+        var originalFileContent = fileutil.read(fileTree.fullPath(filePath));
         var properties = parse(filePath, originalFileContent);
-        if (properties) {
           var sourceInfo = {
             name: project,
-            properties: util.flattenNested(properties),
+            properties: util.flattenNested(properties || {}),
             sources: [
               {
-                path: relativeFilePath,
+                path: filePath,
                 content: originalFileContent
               }]
           };
           serverState.sources.push(sourceInfo)
-        } else {
+        if (!properties || util.isEmptyObject(properties)) {
           serverState.scanInfo.errors.push(filePath + " does not include url_properties: " + originalFileContent)
         }
       }
@@ -152,3 +147,15 @@ function scanUrlProperties(fileTree, serverState) {
   })
 }
 
+function calculateDirsWithConfigFiles(fileTree, state) {
+  var projectSourceFiles = fileTree.filesBySuffix(scan.supportedFileSuffixes);
+  state.scanInfo.dirsWithProjectInfoFiles = util.groupBy(projectSourceFiles, function (path) {
+    return path.split("/")[0]
+  });
+  state.scanInfo.dirsWithoutInfoFiles = Object.keys(util.groupBy(fileTree.files, function (path) {
+    return path.split("/")[0]
+  })).filter(function (dir) {
+    return !state.scanInfo.dirsWithProjectInfoFiles[dir]
+  })
+  console.log(JSON.stringify(state.scanInfo,null, 2))
+}
