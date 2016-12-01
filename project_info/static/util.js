@@ -304,12 +304,14 @@ function exportUtil(module, window) {
     var includes = projectInfo.includes || []
     includes.forEach(function (includedProjectName) {
       var nextProjectInfo = projectInfoMap[includedProjectName];
-      if (nextProjectInfo.properties && !util.isEmptyObject(nextProjectInfo.properties)) {
-        list.push([includedProjectName])
+      if (nextProjectInfo) {
+        if (nextProjectInfo.properties && !util.isEmptyObject(nextProjectInfo.properties)) {
+            list.push([includedProjectName])
+        }
+        resolveIncludes(projectInfoMap, nextProjectInfo).forEach(function (resolvedInclude) {
+            list.push([includedProjectName].concat(resolvedInclude))
+        })
       }
-      resolveIncludes(projectInfoMap, nextProjectInfo).forEach(function (resolvedInclude) {
-        list.push([includedProjectName].concat(resolvedInclude))
-      })
     })
     return list
   }
