@@ -13,7 +13,8 @@ COMMAND="$1"
 shift
 SERVERS=$@
 
-MULTITAIL_COMMAND="multitail --mergeall "
+MULTITAIL_OPTS="--mergeall -D -m 1000000"
+MULTITAIL_COMMAND="multitail $MULTITAIL_OPTS "
 for S in $SERVERS; do
   MULTITAIL_COMMAND="${MULTITAIL_COMMAND} -l 'ssh $S \"$COMMAND\"' "
 done
