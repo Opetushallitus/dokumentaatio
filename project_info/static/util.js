@@ -395,8 +395,6 @@ function exportUtil(module, window) {
       // list of project.names
       items: [],
       items_by_type: {},
-      // maps for project.name's id in items
-      id_name_map: {}, name_id_map: {},
       // lists each myProject.destProject dep and  {"thisProject.destProject": {key: value}, ...}
       service2service: {}
     };
@@ -405,8 +403,6 @@ function exportUtil(module, window) {
     var allMapsThatDefineProjectNames = [projectInfoMap, summary.uses, summary.used_by, summary.resolved_includes, summary.included_by];
     summary.items = util.uniq(util.flatten(allMapsThatDefineProjectNames.map(Object.keys))).sort()
     summary.items.forEach(function (name, index) {
-      summary.id_name_map[index] = name
-      summary.name_id_map[name] = index
       util.addUniqueToMultiMap(summary.items_by_type, util.safeGet(projectInfoMap, name+".type", "project"), name)
     })
     return summary
@@ -416,8 +412,7 @@ function exportUtil(module, window) {
     function generateNodeList(projectInfoMap, summary) {
         var nodeInfos = summary.items.map(function (name) {
             var nodeInfo = {
-                name: name,
-                id: summary.name_id_map[name],
+                id: name,
                 hasSources: util.safeGet(projectInfoMap, name + ".sources", []).length > 0,
             };
             var type = util.safeGet(projectInfoMap, name + ".type", "project");
@@ -432,8 +427,8 @@ function exportUtil(module, window) {
     function addEdgeData(from, to, edgeType, edgeLookup) {
       var edgeKey = from + "." + to
       var edgeData = util.singletonValue(edgeLookup, edgeKey, {
-        from: summary.name_id_map[from],
-        to: summary.name_id_map[to],
+        from: from,
+        to: to,
         id: edgeKey
       })
       if (from != to && summary.service2service[from + "." + to] && summary.service2service[to + "." + from]) {
@@ -449,7 +444,7 @@ function exportUtil(module, window) {
         var edgeLookup = {}
 
         function isLibrary(id) {
-            return "library" == util.safeGet(projectInfoMap, summary.id_name_map[id] + ".type")
+            return "library" == util.safeGet(projectInfoMap, id + ".type")
         }
 
         summary.items.forEach(function (from) {

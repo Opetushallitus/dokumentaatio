@@ -42,8 +42,8 @@
     };
 
     function makeEdgeLine(edgeInfo) {
-        var label = data.summary.id_name_map[edgeInfo.from]
-        var destLabel = data.summary.id_name_map[edgeInfo.to]
+        var label = edgeInfo.from
+        var destLabel = edgeInfo.to
         var edgeData = {
             from: edgeInfo.from,
             to: edgeInfo.to,
@@ -66,7 +66,7 @@
     function makeNode(nodeInfo) {
         var borderWidth = 0.5;
         var projectInfoMap = data.projectInfoMap;
-        var from = nodeInfo.name
+        var from = nodeInfo.id
         var projectInfo = projectInfoMap[from]
 
         var sources = util.safeCollect(util.safeGet(projectInfo, "sources", []), "path")
@@ -78,7 +78,7 @@
 
         var node = {
             id: nodeInfo.id,
-            label: nodeInfo.name,
+            label: nodeInfo.id,
             borderWidth: borderWidth
         };
         if (nodeInfo.type == "library") {
@@ -152,12 +152,12 @@
         viewInfo.network.on("click", function (params) {
             if(params.nodes && params.nodes.length > 0) {
                 var id = params.nodes[0]
-                var name = data.summary.id_name_map[id]
+                var name = id
                 var newWnd = window.open("/project.html#"+name, "dep_info", {})
                 if(newWnd) {
                     newWnd.opener = null
                     newWnd.selectNodeFromGraph = function (label) {
-                        viewInfo.network.selectNodes([data.summary.name_id_map[label]], true)
+                        viewInfo.network.selectNodes([label], true)
                     }
                 } else {
                     alert("Could not open popup window. You need to enable window.open()")
@@ -206,7 +206,7 @@
                 })
             }
             if (show) {
-                visibleNodeIds.push(data.summary.name_id_map[i.label])
+                visibleNodeIds.push(i.label)
                 visibleNodeCount += 1
             }
         })

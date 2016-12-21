@@ -121,8 +121,6 @@ describe('util.js', function () {
             "items_by_type": {
                 "project": ["a", "b"]
             },
-            "id_name_map": {"0": "a", "1": "b"},
-            "name_id_map": {"a": 0, "b": 1},
             "service2service": {"a.b": {"b.url": "1"}, "b.a": {"a.url": "1"}}
         })
     })
@@ -359,8 +357,6 @@ describe('util.collectProjectInfoSummary', function () {
                 },
                 "items": ["a", "b", "c", "d", "e"],
                 "items_by_type": {"project": ["a", "b", "c", "e"], "library": ["d"]},
-                "id_name_map": {"0": "a", "1": "b", "2": "c", "3": "d", "4": "e"},
-                "name_id_map": {"a": 0, "b": 1, "c": 2, "d": 3, "e": 4},
                 "service2service": {
                     "a.b": {"b.url": "1"},
                     "b.a": {"a.url": "1"},
@@ -390,8 +386,6 @@ describe('util.collectProjectInfoSummary', function () {
                 "direct_uses_from_includes": {},
                 "items": ["a", "b", "c", "d"],
                 "items_by_type": {"project": ["a", "b", "c", "d"]},
-                "id_name_map": {"0": "a", "1": "b", "2": "c", "3": "d"},
-                "name_id_map": {"a": 0, "b": 1, "c": 2, "d": 3},
                 "service2service": {"a.b": {"b.url": "1"}, "a.d": {}}
             }
         )
@@ -435,8 +429,6 @@ describe('util.collectProjectInfoSummary', function () {
                 },
                 "items": ["a", "b", "c", "d", "x", "y", "z"],
                 "items_by_type": {"project": ["a", "b", "c", "d", "x", "y", "z"]},
-                "id_name_map": {"0": "a", "1": "b", "2": "c", "3": "d", "4": "x", "5": "y", "6": "z"},
-                "name_id_map": {"a": 0, "b": 1, "c": 2, "d": 3, "x": 4, "y": 5, "z": 6},
                 "service2service": {"b.x": {}, "c.y": {}, "d.z": {}}
             }
         )
@@ -453,13 +445,12 @@ describe('util.generateGraphInfo', function () {
         assert.deepEqual(util.generateGraphInfo(projectInfoMap, summary), {
                 "nodes": {
                     "project": [{
-                        "name": "a",
-                        "id": 0,
+                        "id": "a",
                         "hasSources": true,
                         "type": "project"
-                    }, {"name": "b", "id": 1, "hasSources": false, "type": "project"}]
+                    }, {"id": "b", "hasSources": false, "type": "project"}]
                 }, "edges": {
-                    "node": [{"from": 0, "id": "a.b", "to": 1, "use": true}]
+                    "node": [{"from": "a", "id": "a.b", "to": "b", "use": true}]
                 }
             }
         )
@@ -475,26 +466,24 @@ describe('util.generateGraphInfo', function () {
         assert.deepEqual(util.generateGraphInfo(projectInfoMap, summary), {
                 "nodes": {
                     "library": [{
-                        "name": "a",
-                        "id": 0,
+                        "id": "a",
                         "hasSources": true,
                         "type": "library"
                     }],
-                    "project": [{"name": "b", "id": 1, "hasSources": false, "type": "project"}, {
-                        "name": "c",
-                        "id": 2,
+                    "project": [{"id": "b", "hasSources": false, "type": "project"}, {
+                        "id": "c",
                         "hasSources": false,
                         "type": "project"
                     }]
                 },
                 "edges": {
-                    "library": [{"from": 0, "id": "a.b", "to": 1, "use": true}, {
-                        "from": 2,
+                    "library": [{"from": "a", "id": "a.b", "to": "b", "use": true}, {
+                        "from": "c",
                         "id": "c.a",
-                        "to": 0,
+                        "to": "a",
                         "include": true
                     }],
-                    "directFromInclude": [{"from": 2, "id": "c.b", "to": 1, "directFromInclude": true}]
+                    "directFromInclude": [{"from": "c", "id": "c.b", "to": "b", "directFromInclude": true}]
                 }
             }
         )
