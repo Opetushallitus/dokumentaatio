@@ -47,7 +47,8 @@
         var edgeData = {
             from: edgeInfo.from,
             to: edgeInfo.to,
-            title: util.flatten(makeService2ServiceText([[label, destLabel]], [label, destLabel])).join("<br>"),
+            id: edgeInfo.id,
+            title: util.flatten(makeService2ServiceText([[label, destLabel]], [label, destLabel])).join("<br>")
         };
         if (edgeInfo.twoway) {
             edgeData.color = "red"
@@ -97,6 +98,9 @@
         data.originalJSON = json
         data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
         data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
+        data.graphInfo = util.generateGraphInfo(data.projectInfoMap, data.summary)
+        nodes = new vis.DataSet((data.graphInfo.nodes.project || []).map(makeNode))
+        edges = new vis.DataSet((data.graphInfo.edges.node || []).map(makeEdgeLine))
 
         var container = document.getElementById('mynetwork');
         var options = {
@@ -140,6 +144,10 @@
         };
 
         viewInfo.network = new vis.Network(container, {}, options);
+        viewInfo.network.setData({
+            nodes: nodes,
+            edges: edges
+        })
 
         viewInfo.network.on("click", function (params) {
             if(params.nodes && params.nodes.length > 0) {
@@ -162,14 +170,25 @@
     }
 
     function generateData(showHidden) {
-        data.graphInfo = util.generateGraphInfo(data.projectInfoMap, data.summary, showHidden)
-        nodes = new vis.DataSet(data.graphInfo.nodes.map(makeNode))
-        edges = new vis.DataSet(data.graphInfo.edges.map(makeEdgeLine))
+        function removeData(dataset, remove) {
+            dataset.remove((remove || []).map(function (r) {
+                return {id: r.id}
+            }))
+        }
+        function addData(dataset, add, fn) {
+            dataset.add((add || []).map(fn))
+        }
+        if(showHidden) {
+            addData(nodes, data.graphInfo.nodes.library, makeNode)
+            addData(edges, data.graphInfo.edges.library, makeEdgeLine)
+            removeData(edges, data.graphInfo.edges.directFromInclude)
+        } else {
+            removeData(nodes, data.graphInfo.nodes.library)
+            removeData(edges, data.graphInfo.edges.library)
+            addData(edges, data.graphInfo.edges.directFromInclude, makeEdgeLine)
+        }
+
         document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
-        viewInfo.network.setData({
-            nodes: nodes,
-            edges: edges
-        })
     }
 
     function applyFilter() {

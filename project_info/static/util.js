@@ -267,48 +267,66 @@ function exportUtil(module, window) {
 
 // collects "uses", "service2service", "resolved_includes", "included_by" information from project info "properties"
 // "service2service" groups properties by {"thisProject.destProject": ["key=value"]}
-  function collectSummaryFromProjectInfoMap(projectInfoMap, summary) {
-    function addUsedBy(user, target) {
-      util.addUniqueToMultiMap(summary.used_by, target, user)
+    function collectSummaryFromProjectInfoMap(projectInfoMap, summary) {
+        var includeListLookup = {}
+        function addUses(user, target) {
+            var s2sKey = user + "." + target;
+            if (!summary.service2service[s2sKey]) {
+                summary.service2service[s2sKey] = {}
+            }
+            util.addUniqueToMultiMap(summary.uses, user, target);
+            util.addUniqueToMultiMap(summary.used_by, target, user)
+        }
+
+        util.mapEachPair(projectInfoMap, function (project, projectInfo) {
+            var properties = projectInfo.properties || {};
+            Object.keys(properties).forEach(function (key) {
+                var destService = util.parseServiceName(key);
+                // ignore keys without .
+                if (destService) {
+                    addUses(project, destService)
+                    var s2sKey = project + "." + destService;
+                    summary.service2service[s2sKey][key] = properties[key];
+                }
+            });
+            (projectInfo.uses || []).forEach(function (use) {
+                addUses(project, use)
+            });
+            var list = resolveIncludesInList(projectInfoMap, projectInfo);
+            if (list.length > 0) {
+                includeListLookup[project]=list
+                // prepend name to all lists
+                list.map(function (l) {
+                    l.unshift(project)
+                })
+                var includesMap = groupByLastItem(list);
+                summary.resolved_includes[project] = includesMap;
+                Object.keys(includesMap).forEach(function (resolvedIncludeName) {
+                    util.addUniqueToMultiMap(summary.included_by, resolvedIncludeName, project)
+                })
+            }
+        })
+
+        // summary.uses resolve was completed on previous forEach, so we need to loop again
+        Object.keys(projectInfoMap).forEach(function (project) {
+          if(includeListLookup[project]) {
+              var groupedUses = groupByLastItem(resolveUsesFromIncludes(includeListLookup[project], summary.uses));
+              if(!util.isEmptyObject(groupedUses)) {
+                  summary.direct_uses_from_includes[project] = groupedUses
+              }
+          }
+        })
     }
 
-    Object.keys(projectInfoMap).forEach(function (project) {
-      var s2sInfo = {}
-      var projectInfo = projectInfoMap[project];
-      var properties = projectInfo.properties || {}
-      Object.keys(properties).forEach(function (key) {
-        var destService = util.parseServiceName(key);
-        // ignore keys without .
-        if (destService) {
-          var s2sKey = project + "." + destService;
-          s2sInfo[s2sKey] = (s2sInfo[s2sKey] || {})
-          s2sInfo[s2sKey][key] = properties[key]
-          util.addUniqueToMultiMap(summary.uses, project, destService)
-          addUsedBy(project, destService)
-        }
-      })
-      util.copyMap(s2sInfo, summary.service2service)
-      var includesMap = resolveIncludesToMap(projectInfoMap, projectInfo);
-      if (!util.isEmptyObject(includesMap)) {
-        summary.resolved_includes[project] = includesMap
-        Object.keys(includesMap).forEach(function (resolvedIncludeName) {
-          util.addUniqueToMultiMap(summary.included_by, resolvedIncludeName, project)
-        })
-      }
-    })
-  }
-
   // return list of all includes which include urls. recursive
-  function resolveIncludes(projectInfoMap, projectInfo) {
+  function resolveIncludesInList(projectInfoMap, projectInfo) {
     var list = []
     var includes = projectInfo.includes || []
     includes.forEach(function (includedProjectName) {
+      list.push([includedProjectName])
       var nextProjectInfo = projectInfoMap[includedProjectName];
       if (nextProjectInfo) {
-        if (nextProjectInfo.properties && !util.isEmptyObject(nextProjectInfo.properties)) {
-            list.push([includedProjectName])
-        }
-        resolveIncludes(projectInfoMap, nextProjectInfo).forEach(function (resolvedInclude) {
+        resolveIncludesInList(projectInfoMap, nextProjectInfo).forEach(function (resolvedInclude) {
             list.push([includedProjectName].concat(resolvedInclude))
         })
       }
@@ -316,16 +334,25 @@ function exportUtil(module, window) {
     return list
   }
 
-  function resolveIncludesToMap(projectInfoMap, projectInfo) {
-    var list = resolveIncludes(projectInfoMap, projectInfo);
-    list.map(function (l) {
-      l.unshift(projectInfo.name)
-    })
-    var groupBy = util.groupBy(list, function (includeList) {
+  function groupByLastItem(list) {
+      return util.groupBy(list, function (includeList) {
       return includeList[includeList.length - 1]
-    });
-    return groupBy
+    })
   }
+
+    function resolveUsesFromIncludes(list, uses) {
+        var ret = []
+        list.forEach(function (includeList) {
+          var lastItem = includeList[includeList.length-1]
+          var usesForLastItem = uses[lastItem]
+          if(usesForLastItem) {
+              usesForLastItem.forEach(function(useForLastItem){
+                ret.push(includeList.concat(useForLastItem))
+              })
+          }
+        })
+        return ret
+    }
 
 // list of all urls and their uses: {project: "xx", url: "/rest/url", count: 20, uses: [{project: "", key: "", original_url: ""}]}
 // TODO: does not support include, instead lists direct dependencies
@@ -362,10 +389,12 @@ function exportUtil(module, window) {
     var summary = {
       // use information, by project.name
       uses: {}, used_by: {},
-      // resolved includes: {project: {library: [[project, library], [project, dep, library]]}]}
-      resolved_includes: {}, included_by: {},
+      // includes are resolved from node to the end of the include chain: {project: {library: [[project, library], [project, dep, library]]}]}
+      // you might need to parse dependency from each node
+      resolved_includes: {}, included_by: {}, direct_uses_from_includes: {},
       // list of project.names
       items: [],
+      items_by_type: {},
       // maps for project.name's id in items
       id_name_map: {}, name_id_map: {},
       // lists each myProject.destProject dep and  {"thisProject.destProject": {key: value}, ...}
@@ -378,71 +407,84 @@ function exportUtil(module, window) {
     summary.items.forEach(function (name, index) {
       summary.id_name_map[index] = name
       summary.name_id_map[name] = index
+      util.addUniqueToMultiMap(summary.items_by_type, util.safeGet(projectInfoMap, name+".type", "project"), name)
     })
     return summary
   }
 
-  util.generateGraphInfo = function (projectInfoMap, summary, showLibrariesAsNodes) {
-    var edgeLookup = {}
-
-    function projectInfoIsVisible(name) {
-      return showLibrariesAsNodes || "library" != util.safeGet(projectInfoMap, name + ".type")
+  util.generateGraphInfo = function (projectInfoMap, summary) {
+    function generateNodeList(projectInfoMap, summary) {
+        var nodeInfos = summary.items.map(function (name) {
+            var nodeInfo = {
+                name: name,
+                id: summary.name_id_map[name],
+                hasSources: util.safeGet(projectInfoMap, name + ".sources", []).length > 0,
+            };
+            var type = util.safeGet(projectInfoMap, name + ".type", "project");
+            if (type) {
+                nodeInfo.type = type
+            }
+            return nodeInfo
+        });
+        return util.groupBy(nodeInfos, function(nodeInfo){return nodeInfo.type}, true)
     }
 
-    function generateNodeList(projectInfoMap, summary, visibleItems) {
-      return visibleItems.map(function (name) {
-        var nodeInfo = {
-          name: name,
-          id: summary.name_id_map[name],
-          hasSources: util.safeGet(projectInfoMap, name + ".sources", []).length > 0,
-        };
-        if (util.safeGet(projectInfoMap, name + ".type")) {
-          nodeInfo.type = util.safeGet(projectInfoMap, name + ".type")
-        }
-        return nodeInfo
-      })
-    }
-
-    function makeEdgeData(from, to, fromInclude) {
+    function addEdgeData(from, to, edgeType, edgeLookup) {
       var edgeKey = from + "." + to
       var edgeData = util.singletonValue(edgeLookup, edgeKey, {
         from: summary.name_id_map[from],
-        to: summary.name_id_map[to]
+        to: summary.name_id_map[to],
+        id: edgeKey
       })
       if (from != to && summary.service2service[from + "." + to] && summary.service2service[to + "." + from]) {
         edgeData.twoway = true
       }
-      if (fromInclude) {
-        edgeData.include = true
+      if (edgeType) {
+        edgeData[edgeType] = true
       }
       return edgeData
     }
 
-    function generateEdgeList(projectInfoMap, summary, visibleItems) {
-      return util.flatten(visibleItems.map(function (from) {
-        var edges = util.safeGet(summary.uses, from, []).filter(projectInfoIsVisible).map(function (to) {
-          return makeEdgeData(from, to);
-        })
-        if (showLibrariesAsNodes) {
-          var projectInfoDirectIncludeEdges = util.safeGet(projectInfoMap, from + ".includes", []).filter(projectInfoIsVisible).map(function (to) {
-            return makeEdgeData(from, to, true);
-          })
-          edges = edges.concat(projectInfoDirectIncludeEdges)
-        } else {
-          // skip libraries
-          var resolvedIncludesEdges = Object.keys(util.safeGet(summary.resolved_includes, from, [])).filter(projectInfoIsVisible).map(function (to) {
-            return makeEdgeData(from, to, true);
-          })
-          edges = edges.concat(resolvedIncludesEdges)
+    function generateEdgeList(projectInfoMap, summary) {
+        var edgeLookup = {}
+
+        function isLibrary(id) {
+            return "library" == util.safeGet(projectInfoMap, summary.id_name_map[id] + ".type")
         }
+
+        summary.items.forEach(function (from) {
+            util.safeGet(summary.uses, from, []).forEach(function (to) {
+                addEdgeData(from, to, "use", edgeLookup)
+            })
+            util.safeGet(projectInfoMap, from + ".includes", []).forEach(function (to) {
+                addEdgeData(from, to, "include", edgeLookup)
+            })
+            Object.keys(util.safeGet(summary.direct_uses_from_includes, from, {})).forEach(function (to) {
+                addEdgeData(from, to, "directFromInclude", edgeLookup)
+            })
+        })
+        var edges = util.groupBy(util.values(edgeLookup), function(edge){
+            var isLib = isLibrary(edge.from) || isLibrary(edge.to)
+            if(edge["directFromInclude"] && !(edge["use"] || edge["include"])) {
+                if(isLib) {
+                    return "exclude"
+                } else {
+                    return "directFromInclude"
+                }
+            }
+            if(isLib) {
+                return "library"
+            } else {
+                return "node"
+            }
+        });
+        delete edges.exclude
         return edges
-      }))
     }
 
-    var visibleItems = summary.items.filter(projectInfoIsVisible);
     return {
-      nodes: generateNodeList(projectInfoMap, summary, visibleItems),
-      edges: generateEdgeList(projectInfoMap, summary, visibleItems)
+      nodes: generateNodeList(projectInfoMap, summary),
+      edges: generateEdgeList(projectInfoMap, summary)
     }
   }
 // generates map for showing the project info table
