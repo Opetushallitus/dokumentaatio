@@ -352,8 +352,8 @@ describe('util.collectProjectInfoSummary', function () {
         "resolved_includes": {"a": {"c": [["a", "c"]], "d": [["a", "c", "d"]]}, "c": {"d": [["c", "d"]]}},
         "included_by": {"c": ["a"], "d": ["a", "c"]},
         "uses_from_includes": {
-          "a": {"b": [["a", "c", "b"], ["a", "c", "d", "b"]]},
-          "c": {"b": [["c", "d", "b"]]}
+          "a": {"b": {"c": [["a", "c", "b"]], "d": [["a", "c", "d", "b"]]}},
+          "c": {"b": {"d": [["c", "d", "b"]]}}
         },
         "items": ["a", "b", "c", "d", "e"],
         "items_by_type": {"project": ["a", "b", "c", "e"], "library": ["d"]},
@@ -422,10 +422,10 @@ describe('util.collectProjectInfoSummary', function () {
         "included_by": {"b": ["a"], "c": ["a", "b"], "d": ["a", "b", "c"]},
         "uses_from_includes": {
           "a": {
-            "x": [["a", "b", "x"]],
-            "y": [["a", "b", "c", "y"]],
-            "z": [["a", "b", "c", "d", "z"]]
-          }, "b": {"y": [["b", "c", "y"]], "z": [["b", "c", "d", "z"]]}, "c": {"z": [["c", "d", "z"]]}
+            "x": {"b": [["a", "b", "x"]]},
+            "y": {"c": [["a", "b", "c", "y"]]},
+            "z": {"d": [["a", "b", "c", "d", "z"]]}
+          }, "b": {"y": {"c": [["b", "c", "y"]]}, "z": {"d": [["b", "c", "d", "z"]]}}, "c": {"z": {"d": [["c", "d", "z"]]}}
         },
         "items": ["a", "b", "c", "d", "x", "y", "z"],
         "items_by_type": {"project": ["a", "b", "c", "d", "x", "y", "z"]},
@@ -483,7 +483,7 @@ describe('util.generateGraphInfo', function () {
             "to": "a",
             "include": true
           }],
-          "directFromInclude": [{"from": "c", "id": "c.b", "to": "b", "directFromInclude": true}]
+          "node": [{"from": "c", "id": "c.b", "to": "b", "useFromInclude": true}]
         }
       }
     )

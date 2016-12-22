@@ -99,8 +99,14 @@ function convertProjectNamesToLinks(arr, excludes) {
     }
   })
 }
-
-function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
+/*
+options = {
+  count: 0,
+ excludeFromProjectLinks: [],
+ showUrls: true
+}
+ */
+function makeService2ServiceText(listOfTitleArrs, e2eArr, options) {
   var summary = data.summary;
   var e2eUrlMap = summary.service2service[e2eArr.join(".")]
   if (e2eUrlMap) {
@@ -109,9 +115,9 @@ function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
       return '<a class="blueUpArrowLink" href="/url_dependencies.html#' + util.parsePlainUrl(value) + '"></a>' + key + "=" + value
     }).join("<br>")
     var excludeFromProjectLinks = []
-    if (info) {
-      info.count += urlCount
-      excludeFromProjectLinks = info.excludeFromProjectLinks || []
+    if (options) {
+      options.count += urlCount
+      excludeFromProjectLinks = options.excludeFromProjectLinks || []
     }
     var txt = listOfTitleArrs.map(function (titleArr) {
         var projectNamesAsLinks = convertProjectNamesToLinks(titleArr, excludeFromProjectLinks);
@@ -123,7 +129,7 @@ function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
         return "<b>" + projectNamesAsLinks.join(" -> ") + "</b>"
       }).join("<br>") + " [" + urlCount + "]";
 
-    if (!info || info.showUrls) {
+    if (!options || options.showUrls) {
       txt += ':<br><pre class="leftMargin2 noMargins">' + e2eUrlsTxt + "</pre>"
     } else {
       txt += "<br>"
@@ -159,19 +165,13 @@ function makeNodeTxt(from, projectInfo, summary, options) {
   // resolved includes: {project: {library: [[project, library], [project, dep, library]]}]}
   var includes = util.safeGet(summary.resolved_includes, from, {})
   if (!util.isEmptyObject(includes)) {
-    var includePaths = util.values(util.safeGet(summary.uses_from_includes, from, {})).reduce(function (a, b) {
-      return a.concat(b)
-    }, [])
-    var sortedPaths = util.groupBy(includePaths, function (l) {
-      return l[l.length - 2] + "." + l[l.length - 1]
-    })
     var info = util.copyMap({count: 0}, options)
-    includesTxt = util.mapEachPair(sortedPaths, function (useKey, fullPaths) {
-        var firstPath = fullPaths[0]
-        var includeFrom = firstPath[firstPath.length - 2]
-        var includeTo = firstPath[firstPath.length - 1]
-        return makeService2ServiceText(fullPaths, [includeFrom, includeTo], info)
-      }).join("") + "<br>"
+    var includeUses = util.safeGet(summary.uses_from_includes, from, {})
+    includesTxt = util.flatten(util.mapEachPair(includeUses, function(includeTo, fromMap){
+        return util.mapEachPair(fromMap, function(includeFrom, fullPaths) {
+          return makeService2ServiceText(fullPaths, [includeFrom, includeTo], info)
+        })
+    })).join("") + "<br>"
     summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
   }
 

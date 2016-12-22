@@ -32,7 +32,9 @@
     var projectName = getHash()
     if (projectName.length > 0) {
       info.innerHTML = makeNodeTxt(projectName, data.projectInfoMap[projectName], data.summary)
-      selectNodeFromGraph(projectName)
+      if(typeof selectNodeFromGraph !== 'undefined') {
+        selectNodeFromGraph(projectName)
+      }
     }
   }
 

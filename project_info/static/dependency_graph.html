@@ -42,19 +42,24 @@
   };
 
   function makeEdgeLine(edgeInfo) {
-    var label = edgeInfo.from
-    var destLabel = edgeInfo.to
+    var from = edgeInfo.from
+    var to = edgeInfo.to
+    var edgeUsesFromIncludes = util.safeGet(data.summary.uses_from_includes, from + "." + to, {});
+    var title = util.flatten([makeService2ServiceText([[from, to]], [from, to]),
+      util.mapEachPair(edgeUsesFromIncludes, function(includeFrom, fullPaths){
+      return makeService2ServiceText(fullPaths, [includeFrom, to])
+    })]).join("");
     var edgeData = {
-      from: edgeInfo.from,
-      to: edgeInfo.to,
+      from: from,
+      to: to,
       id: edgeInfo.id,
-      title: util.flatten(makeService2ServiceText([[label, destLabel]], [label, destLabel])).join("<br>")
+      title: title +"<br>"
     };
     if (edgeInfo.twoway) {
       edgeData.color = "red"
     }
     if (edgeInfo.include) {
-      edgeData.title = "<b>" + label + "</b><br>" + " includes " + destLabel
+      edgeData.title = "<b>" + from + "</b><br>" + " includes " + to
       edgeData.color = {
         inherit: false,
         color: "rgba(43,233,124,1)"
@@ -169,25 +174,23 @@
     redraw()
   }
 
+  function removeData(dataset, remove) {
+    dataset.remove((remove || []).map(function (r) {
+      return {id: r.id}
+    }))
+  }
+
+  function addData(dataset, add, fn) {
+    dataset.add((add || []).map(fn))
+  }
+
   function generateData(showHidden) {
-    function removeData(dataset, remove) {
-      dataset.remove((remove || []).map(function (r) {
-        return {id: r.id}
-      }))
-    }
-
-    function addData(dataset, add, fn) {
-      dataset.add((add || []).map(fn))
-    }
-
     if (showHidden) {
       addData(nodes, data.graphInfo.nodes.library, makeNode)
       addData(edges, data.graphInfo.edges.library, makeEdgeLine)
-      removeData(edges, data.graphInfo.edges.directFromInclude)
     } else {
       removeData(nodes, data.graphInfo.nodes.library)
       removeData(edges, data.graphInfo.edges.library)
-      addData(edges, data.graphInfo.edges.directFromInclude, makeEdgeLine)
     }
 
     document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length

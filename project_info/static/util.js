@@ -314,7 +314,15 @@ function exportUtil(module, window) {
     // summary.uses resolve was completed on previous forEach, so we need to loop again
     Object.keys(projectInfoMap).forEach(function (project) {
       if (includeListLookup[project]) {
-        var groupedUses = groupByLastItem(resolveUsesFromIncludes(includeListLookup[project], summary.uses));
+        var groupedUses = {};
+        var includesUsesList = resolveUsesFromIncludes(includeListLookup[project], summary.uses);
+        includesUsesList.forEach(function (includePath) {
+          var includeFrom = includePath[includePath.length - 2]
+          var includeTo = includePath[includePath.length - 1]
+          var toMap = util.singletonValue(groupedUses, includeTo, {})
+          var fromList = util.singletonValue(toMap, includeFrom, [])
+          fromList.push(includePath)
+        })
         if (!util.isEmptyObject(groupedUses)) {
           summary.uses_from_includes[project] = groupedUses
         }
@@ -463,18 +471,11 @@ function exportUtil(module, window) {
           addEdgeData(from, to, "include", edgeLookup)
         })
         Object.keys(util.safeGet(summary.uses_from_includes, from, {})).forEach(function (to) {
-          addEdgeData(from, to, "directFromInclude", edgeLookup)
+          addEdgeData(from, to, "useFromInclude", edgeLookup)
         })
       })
       var edges = util.groupBy(util.values(edgeLookup), function (edge) {
         var isLib = isLibrary(edge.from) || isLibrary(edge.to)
-        if (edge["directFromInclude"] && !(edge["use"] || edge["include"])) {
-          if (isLib) {
-            return "exclude"
-          } else {
-            return "directFromInclude"
-          }
-        }
         if (isLib) {
           return "library"
         } else {
