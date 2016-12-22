@@ -14,18 +14,18 @@ function getHash() {
 
 function handleHash() {
   var h = getHash()
-  document.getElementById("q").value=h
+  document.getElementById("q").value = h
   filter(h)
 }
 
 function addNode(dest, elementType, args) {
-  if(!elementType) {
+  if (!elementType) {
     throw "Element type not defined: " + elementType
   }
   var node = document.createElement(elementType);
-  if(args) {
-    if(typeof args === 'object') {
-      if(args.text) {
+  if (args) {
+    if (typeof args === 'object') {
+      if (args.text) {
         node.appendChild(document.createTextNode(args.text))
         delete args.text
       }
@@ -48,36 +48,38 @@ function removeChildren(table) {
 function redrawFilteredInfoTable(rows, table, headers, drawRow, showRow) {
   removeChildren(table);
   var visibleRows = rows;
-  if(showRow) {
-    visibleRows = rows.filter(function(row){
+  if (showRow) {
+    visibleRows = rows.filter(function (row) {
       return showRow(row, filter.included, filter.excluded)
     })
   }
-  if(headers) {
+  if (headers) {
     var headerRow = addNode(addNode(table, "thead"), "tr")
-    headers.forEach(function(f){addNode(headerRow, "th", f)})
+    headers.forEach(function (f) {
+      addNode(headerRow, "th", f)
+    })
   }
   var tbody = addNode(table, "tbody")
-  visibleRows.forEach(function(row){
+  visibleRows.forEach(function (row) {
     var infoRow = addNode(tbody, "tr")
     drawRow(row, infoRow)
   })
   return visibleRows
 }
 
-var filter = function(value) {
-  window.location.hash=value
-  filter.included = [], filter.excluded = [], filter.value=value
-  value.split(" ").forEach(function(s){
-    if(s.length>0) {
-      if(s.startsWith("-")) {
-        filter.excluded.push(s.substring(1,s.length + 1))
+var filter = function (value) {
+  window.location.hash = value
+  filter.included = [], filter.excluded = [], filter.value = value
+  value.split(" ").forEach(function (s) {
+    if (s.length > 0) {
+      if (s.startsWith("-")) {
+        filter.excluded.push(s.substring(1, s.length + 1))
       } else {
         filter.included.push(s);
       }
     }
   })
-  if(data) {
+  if (data) {
     redraw()
   }
 }
@@ -90,7 +92,7 @@ function linkProject(name) {
 function convertProjectNamesToLinks(arr, excludes) {
   excludes = excludes || []
   return arr.map(function (name) {
-    if(excludes.indexOf(name) !== -1) {
+    if (excludes.indexOf(name) !== -1) {
       return name
     } else {
       return linkProject(name)
@@ -104,7 +106,7 @@ function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
   if (e2eUrlMap) {
     var urlCount = Object.keys(e2eUrlMap).length;
     var e2eUrlsTxt = util.mapEachPair(e2eUrlMap, function (key, value) {
-      return '<a class="blueUpArrowLink" href="/url_dependencies.html#'+util.parsePlainUrl(value)+'"></a>' + key + "=" + value
+      return '<a class="blueUpArrowLink" href="/url_dependencies.html#' + util.parsePlainUrl(value) + '"></a>' + key + "=" + value
     }).join("<br>")
     var excludeFromProjectLinks = []
     if (info) {
@@ -113,18 +115,18 @@ function makeService2ServiceText(listOfTitleArrs, e2eArr, info) {
     }
     var txt = listOfTitleArrs.map(function (titleArr) {
         var projectNamesAsLinks = convertProjectNamesToLinks(titleArr, excludeFromProjectLinks);
-        if(projectNamesAsLinks.length > 2) {
+        if (projectNamesAsLinks.length > 2) {
           projectNamesAsLinks[0] = "( " + projectNamesAsLinks[0]
-          projectNamesAsLinks[projectNamesAsLinks.length-2] = projectNamesAsLinks[projectNamesAsLinks.length-2] + " )"
+          projectNamesAsLinks[projectNamesAsLinks.length - 2] = projectNamesAsLinks[projectNamesAsLinks.length - 2] + " )"
         }
 
         return "<b>" + projectNamesAsLinks.join(" -> ") + "</b>"
-    }).join("<br>") + " [" + urlCount + "]";
+      }).join("<br>") + " [" + urlCount + "]";
 
-    if(!info || info.showUrls) {
+    if (!info || info.showUrls) {
       txt += ':<br><pre class="leftMargin2 noMargins">' + e2eUrlsTxt + "</pre>"
     } else {
-      txt +="<br>"
+      txt += "<br>"
     }
 
     return txt;
@@ -150,26 +152,26 @@ function makeNodeTxt(from, projectInfo, summary, options) {
     var info = util.copyMap({count: 0}, options)
     usesTxt = usesData.map(function (to) {
         return makeService2ServiceText([[from, to]], [from, to], info)
-      }).join("")  + "<br>"
+      }).join("") + "<br>"
     summaryUseTxt.push("Uses: " + usesData.length + " services with " + info.count + " urls")
   }
 
   // resolved includes: {project: {library: [[project, library], [project, dep, library]]}]}
   var includes = util.safeGet(summary.resolved_includes, from, {})
   if (!util.isEmptyObject(includes)) {
-    var includePaths = util.values(util.safeGet(summary.uses_from_includes, from, {})).reduce(function(a,b){
+    var includePaths = util.values(util.safeGet(summary.uses_from_includes, from, {})).reduce(function (a, b) {
       return a.concat(b)
     }, [])
-    var sortedPaths = util.groupBy(includePaths, function(l){
-      return l[l.length-2] + "." + l[l.length-1]
+    var sortedPaths = util.groupBy(includePaths, function (l) {
+      return l[l.length - 2] + "." + l[l.length - 1]
     })
     var info = util.copyMap({count: 0}, options)
-    includesTxt = util.mapEachPair(sortedPaths, function(useKey, fullPaths){
-      var firstPath = fullPaths[0]
-      var includeFrom = firstPath[firstPath.length-2]
-      var includeTo = firstPath[firstPath.length-1]
-      return makeService2ServiceText(fullPaths, [includeFrom, includeTo], info)
-    }).join("") + "<br>"
+    includesTxt = util.mapEachPair(sortedPaths, function (useKey, fullPaths) {
+        var firstPath = fullPaths[0]
+        var includeFrom = firstPath[firstPath.length - 2]
+        var includeTo = firstPath[firstPath.length - 1]
+        return makeService2ServiceText(fullPaths, [includeFrom, includeTo], info)
+      }).join("") + "<br>"
     summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
   }
 
@@ -179,12 +181,14 @@ function makeNodeTxt(from, projectInfo, summary, options) {
   }
 
   // exclude current node loopback from "usedby" list because it's rendered already in the "uses" list
-  var usedbyData = util.safeGet(data, "summary.used_by." + from, []).filter(function(destLabel){return from != destLabel})
+  var usedbyData = util.safeGet(data, "summary.used_by." + from, []).filter(function (destLabel) {
+    return from != destLabel
+  })
   if (usedbyData.length > 0) {
     var info = util.copyMap({count: 0}, options)
     usedByTxt = usedbyData.map(function (destLabel) {
-        return makeService2ServiceText([[destLabel, from]], [destLabel, from], info)
-      }).join("")
+      return makeService2ServiceText([[destLabel, from]], [destLabel, from], info)
+    }).join("")
     summaryUseTxt.push("Used by: " + usedbyData.length + " services with " + info.count + " urls")
   }
 
@@ -210,7 +214,7 @@ function makeNodeTxt(from, projectInfo, summary, options) {
 
 function createSingleTextColumnTable(destTable, list, title) {
   if (list.length > 0) {
-    if(title) {
+    if (title) {
       title = [title]
     }
     redrawFilteredInfoTable(list, destTable, title, function (row, infoRow) {

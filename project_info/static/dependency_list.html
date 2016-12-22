@@ -1,13 +1,13 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Url dependency list</title>
+    <meta charset="utf-8">
+    <title>Url dependency list</title>
 
-  <script src="lib/sorttable.js"></script>
-  <script src="common_ui.js"></script>
-  <link rel="stylesheet" type="text/css" href="common.css"/>
-  <script src="util.js"></script>
+    <script src="lib/sorttable.js"></script>
+    <script src="common_ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css"/>
+    <script src="util.js"></script>
 </head>
 <body>
 
@@ -27,7 +27,7 @@
   ajaxJson('GET', "/rest/server_state", initTable)
 
   function redraw() {
-    var visibleRows = redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
+    var visibleRows = redrawFilteredInfoTable(data.rows, table, data.headers, function (row, infoRow) {
       addNode(addNode(infoRow, "td"), "a", {text: row.from, href: "#" + row.from, class: "blacktextHoverUnderline"})
       addNode(addNode(infoRow, "td"), "a", {text: row.to, href: "#" + row.to, class: "blacktextHoverUnderline"})
       addNode(infoRow, "td", row.url)
@@ -51,7 +51,7 @@
       })
     }))
     data = {
-      headers: ["from","to","url"],
+      headers: ["from", "to", "url"],
       rows: rows
     };
     redraw();

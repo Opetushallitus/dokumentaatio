@@ -17,26 +17,26 @@
 
 <script type="text/javascript">
 
-    var data = {};
-    var info = document.getElementById("info");
+  var data = {};
+  var info = document.getElementById("info");
 
-    ajaxJson('GET', "/rest/server_state", initGraph)
+  ajaxJson('GET', "/rest/server_state", initGraph)
 
-    function initGraph(json) {
-        data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
-        data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
-        redraw()
+  function initGraph(json) {
+    data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
+    data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
+    redraw()
+  }
+
+  function redraw() {
+    var projectName = getHash()
+    if (projectName.length > 0) {
+      info.innerHTML = makeNodeTxt(projectName, data.projectInfoMap[projectName], data.summary)
+      selectNodeFromGraph(projectName)
     }
+  }
 
-    function redraw() {
-        var projectName = getHash()
-        if (projectName.length > 0) {
-            info.innerHTML = makeNodeTxt(projectName, data.projectInfoMap[projectName], data.summary)
-            selectNodeFromGraph(projectName)
-        }
-    }
-
-    window.onhashchange = redraw
+  window.onhashchange = redraw
 
 </script>
 </body>

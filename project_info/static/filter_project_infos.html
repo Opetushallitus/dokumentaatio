@@ -1,12 +1,12 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>OPH project_info.json yhteenveto</title>
+    <meta charset="utf-8">
+    <title>OPH project_info.json yhteenveto</title>
 
-  <link rel="stylesheet" type="text/css" href="common.css"/>
-  <script src="common_ui.js"></script>
-  <script src="util.js"></script>
+    <link rel="stylesheet" type="text/css" href="common.css"/>
+    <script src="common_ui.js"></script>
+    <script src="util.js"></script>
 </head>
 <body>
 
@@ -26,13 +26,15 @@
   ajaxJson('GET', "/rest/server_state", initTable)
 
   function redraw() {
-      var fields = data.fields.filter(function(f){
-          var hide = util.someMatches([f], filter.excluded) || !(filter.included.length == 0 || util.someMatches([f], filter.included))
-          return !hide
+    var fields = data.fields.filter(function (f) {
+      var hide = util.someMatches([f], filter.excluded) || !(filter.included.length == 0 || util.someMatches([f], filter.included))
+      return !hide
+    })
+    var visibleRows = redrawFilteredInfoTable(data.project_infos, table, fields, function (row, infoRow) {
+      fields.forEach(function (header) {
+        addNode(infoRow, "td", JSON.stringify(row[header]))
       })
-      var visibleRows = redrawFilteredInfoTable(data.project_infos, table, fields, function(row, infoRow){
-          fields.forEach(function(header){addNode(infoRow, "td", JSON.stringify(row[header]))})
-      })
+    })
     document.getElementById("filterInfo").textContent = "Projects: " + visibleRows.length
   }
 

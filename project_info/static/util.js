@@ -32,19 +32,19 @@ function exportUtil(module, window) {
   }
 
   util.groupBy = function (list, fn, multi) {
-    if(multi === undefined) {
+    if (multi === undefined) {
       multi = true
     }
     var ret = {}
     list.forEach(function (i) {
       var key = fn(i)
-      if(multi) {
+      if (multi) {
         if (!ret[key]) {
           ret[key] = []
         }
         ret[key].push(i)
       } else {
-        ret[key]=i
+        ret[key] = i
       }
     })
     return ret
@@ -68,7 +68,7 @@ function exportUtil(module, window) {
   // copies values from object to target. if multi is set values are stored to a list
   util.copyMap = function (from, target, multi) {
     Object.keys(from).forEach(function (key) {
-      if(multi) {
+      if (multi) {
         util.addUniqueToMultiMap(target, key, from[key]);
       } else {
         target[key] = from[key];
@@ -82,22 +82,24 @@ function exportUtil(module, window) {
 // note: supports only strings or maps as values
   util.flattenNested = function (obj, multi) {
     var ret = {}
+
     function add(key, value) {
-      if(ret[key]) {
-        if(!Array.isArray(ret[key])) {
+      if (ret[key]) {
+        if (!Array.isArray(ret[key])) {
           ret = [ret[key]]
         }
         ret[key].push(value)
       } else {
-        if(multi || Array.isArray(value)) {
-          ret[key]=[value]
+        if (multi || Array.isArray(value)) {
+          ret[key] = [value]
         } else {
-          ret[key]=value
+          ret[key] = value
         }
       }
     }
+
     function addAll(key, values) {
-      if(Array.isArray(values)) {
+      if (Array.isArray(values)) {
         values.forEach(function (value) {
           add(key, value)
         })
@@ -105,8 +107,9 @@ function exportUtil(module, window) {
         add(key, values)
       }
     }
+
     if (Array.isArray(obj)) {
-      obj.forEach(function (i){
+      obj.forEach(function (i) {
         var tmp = util.flattenNested(i, multi);
         Object.keys(tmp).forEach(function (key) {
           addAll(key, tmp[key])
@@ -115,9 +118,9 @@ function exportUtil(module, window) {
     } else if (typeof obj === 'object') {
       Object.keys(obj).forEach(function (key) {
         var val = obj[key];
-        if(Array.isArray(obj) || typeof val === 'object') {
+        if (Array.isArray(obj) || typeof val === 'object') {
           var tmp = util.flattenNested(val, multi)
-          Object.keys(tmp).forEach(function(tmpKey){
+          Object.keys(tmp).forEach(function (tmpKey) {
             addAll(key + "." + tmpKey, tmp[tmpKey])
           })
         } else {
@@ -165,7 +168,7 @@ function exportUtil(module, window) {
     str = "^" + replaceAll(str, matchAll, ".*")
     var regexp = new RegExp(str)
     var matchingKeys = Object.keys(flattened).filter(function (key) {
-      return key.match(regexp) || prefixStartsWithStarStarDot && ("."+key).match(regexp)
+      return key.match(regexp) || prefixStartsWithStarStarDot && ("." + key).match(regexp)
     })
     var ret = []
     matchingKeys.forEach(function (key) {
@@ -232,7 +235,7 @@ function exportUtil(module, window) {
         originalProjectInfo.sources = parent.sources
       }
       var dest = {}
-      if(name) {
+      if (name) {
         dest = util.singletonValue(map, name, originalProjectInfo)
       }
       Object.keys(source).forEach(function (key) {
@@ -267,56 +270,57 @@ function exportUtil(module, window) {
 
 // collects "uses", "service2service", "resolved_includes", "included_by" information from project info "properties"
 // "service2service" groups properties by {"thisProject.destProject": ["key=value"]}
-    function collectSummaryFromProjectInfoMap(projectInfoMap, summary) {
-        var includeListLookup = {}
-        function addUses(user, target) {
-            var s2sKey = user + "." + target;
-            if (!summary.service2service[s2sKey]) {
-                summary.service2service[s2sKey] = {}
-            }
-            util.addUniqueToMultiMap(summary.uses, user, target);
-            util.addUniqueToMultiMap(summary.used_by, target, user)
-        }
+  function collectSummaryFromProjectInfoMap(projectInfoMap, summary) {
+    var includeListLookup = {}
 
-        util.mapEachPair(projectInfoMap, function (project, projectInfo) {
-            var properties = projectInfo.properties || {};
-            Object.keys(properties).forEach(function (key) {
-                var destService = util.parseServiceName(key);
-                // ignore keys without .
-                if (destService) {
-                    addUses(project, destService)
-                    var s2sKey = project + "." + destService;
-                    summary.service2service[s2sKey][key] = properties[key];
-                }
-            });
-            (projectInfo.uses || []).forEach(function (use) {
-                addUses(project, use)
-            });
-            var list = resolveIncludesInList(projectInfoMap, projectInfo);
-            if (list.length > 0) {
-                includeListLookup[project]=list
-                // prepend name to all lists
-                list.map(function (l) {
-                    l.unshift(project)
-                })
-                var includesMap = groupByLastItem(list);
-                summary.resolved_includes[project] = includesMap;
-                Object.keys(includesMap).forEach(function (resolvedIncludeName) {
-                    util.addUniqueToMultiMap(summary.included_by, resolvedIncludeName, project)
-                })
-            }
-        })
-
-        // summary.uses resolve was completed on previous forEach, so we need to loop again
-        Object.keys(projectInfoMap).forEach(function (project) {
-          if(includeListLookup[project]) {
-              var groupedUses = groupByLastItem(resolveUsesFromIncludes(includeListLookup[project], summary.uses));
-              if(!util.isEmptyObject(groupedUses)) {
-                  summary.uses_from_includes[project] = groupedUses
-              }
-          }
-        })
+    function addUses(user, target) {
+      var s2sKey = user + "." + target;
+      if (!summary.service2service[s2sKey]) {
+        summary.service2service[s2sKey] = {}
+      }
+      util.addUniqueToMultiMap(summary.uses, user, target);
+      util.addUniqueToMultiMap(summary.used_by, target, user)
     }
+
+    util.mapEachPair(projectInfoMap, function (project, projectInfo) {
+      var properties = projectInfo.properties || {};
+      Object.keys(properties).forEach(function (key) {
+        var destService = util.parseServiceName(key);
+        // ignore keys without .
+        if (destService) {
+          addUses(project, destService)
+          var s2sKey = project + "." + destService;
+          summary.service2service[s2sKey][key] = properties[key];
+        }
+      });
+      (projectInfo.uses || []).forEach(function (use) {
+        addUses(project, use)
+      });
+      var list = resolveIncludesInList(projectInfoMap, projectInfo);
+      if (list.length > 0) {
+        includeListLookup[project] = list
+        // prepend name to all lists
+        list.map(function (l) {
+          l.unshift(project)
+        })
+        var includesMap = groupByLastItem(list);
+        summary.resolved_includes[project] = includesMap;
+        Object.keys(includesMap).forEach(function (resolvedIncludeName) {
+          util.addUniqueToMultiMap(summary.included_by, resolvedIncludeName, project)
+        })
+      }
+    })
+
+    // summary.uses resolve was completed on previous forEach, so we need to loop again
+    Object.keys(projectInfoMap).forEach(function (project) {
+      if (includeListLookup[project]) {
+        var groupedUses = groupByLastItem(resolveUsesFromIncludes(includeListLookup[project], summary.uses));
+        if (!util.isEmptyObject(groupedUses)) {
+          summary.uses_from_includes[project] = groupedUses
+        }
+      }
+    })
+  }
 
   // return list of all includes which include urls. recursive
   function resolveIncludesInList(projectInfoMap, projectInfo) {
@@ -327,7 +331,7 @@ function exportUtil(module, window) {
       var nextProjectInfo = projectInfoMap[includedProjectName];
       if (nextProjectInfo) {
         resolveIncludesInList(projectInfoMap, nextProjectInfo).forEach(function (resolvedInclude) {
-            list.push([includedProjectName].concat(resolvedInclude))
+          list.push([includedProjectName].concat(resolvedInclude))
         })
       }
     })
@@ -335,24 +339,24 @@ function exportUtil(module, window) {
   }
 
   function groupByLastItem(list) {
-      return util.groupBy(list, function (includeList) {
+    return util.groupBy(list, function (includeList) {
       return includeList[includeList.length - 1]
     })
   }
 
-    function resolveUsesFromIncludes(list, uses) {
-        var ret = []
-        list.forEach(function (includeList) {
-          var lastItem = includeList[includeList.length-1]
-          var usesForLastItem = uses[lastItem]
-          if(usesForLastItem) {
-              usesForLastItem.forEach(function(useForLastItem){
-                ret.push(includeList.concat(useForLastItem))
-              })
-          }
+  function resolveUsesFromIncludes(list, uses) {
+    var ret = []
+    list.forEach(function (includeList) {
+      var lastItem = includeList[includeList.length - 1]
+      var usesForLastItem = uses[lastItem]
+      if (usesForLastItem) {
+        usesForLastItem.forEach(function (useForLastItem) {
+          ret.push(includeList.concat(useForLastItem))
         })
-        return ret
-    }
+      }
+    })
+    return ret
+  }
 
 // list of all urls and their uses: {project: "xx", url: "/rest/url", count: 20, uses: [{project: "", key: "", original_url: ""}]}
 // TODO: does not support include, instead lists direct dependencies
@@ -405,25 +409,27 @@ function exportUtil(module, window) {
     var allMapsThatDefineProjectNames = [projectInfoMap, summary.uses, summary.used_by, summary.resolved_includes, summary.included_by];
     summary.items = util.uniq(util.flatten(allMapsThatDefineProjectNames.map(Object.keys))).sort()
     summary.items.forEach(function (name, index) {
-      util.addUniqueToMultiMap(summary.items_by_type, util.safeGet(projectInfoMap, name+".type", "project"), name)
+      util.addUniqueToMultiMap(summary.items_by_type, util.safeGet(projectInfoMap, name + ".type", "project"), name)
     })
     return summary
   }
 
   util.generateGraphInfo = function (projectInfoMap, summary) {
     function generateNodeList(projectInfoMap, summary) {
-        var nodeInfos = summary.items.map(function (name) {
-            var nodeInfo = {
-                id: name,
-                hasSources: util.safeGet(projectInfoMap, name + ".sources", []).length > 0,
-            };
-            var type = util.safeGet(projectInfoMap, name + ".type", "project");
-            if (type) {
-                nodeInfo.type = type
-            }
-            return nodeInfo
-        });
-        return util.groupBy(nodeInfos, function(nodeInfo){return nodeInfo.type}, true)
+      var nodeInfos = summary.items.map(function (name) {
+        var nodeInfo = {
+          id: name,
+          hasSources: util.safeGet(projectInfoMap, name + ".sources", []).length > 0,
+        };
+        var type = util.safeGet(projectInfoMap, name + ".type", "project");
+        if (type) {
+          nodeInfo.type = type
+        }
+        return nodeInfo
+      });
+      return util.groupBy(nodeInfos, function (nodeInfo) {
+        return nodeInfo.type
+      }, true)
     }
 
     function addEdgeData(from, to, edgeType, edgeLookup) {
@@ -443,40 +449,40 @@ function exportUtil(module, window) {
     }
 
     function generateEdgeList(projectInfoMap, summary) {
-        var edgeLookup = {}
+      var edgeLookup = {}
 
-        function isLibrary(id) {
-            return "library" == util.safeGet(projectInfoMap, id + ".type")
-        }
+      function isLibrary(id) {
+        return "library" == util.safeGet(projectInfoMap, id + ".type")
+      }
 
-        summary.items.forEach(function (from) {
-            util.safeGet(summary.uses, from, []).forEach(function (to) {
-                addEdgeData(from, to, "use", edgeLookup)
-            })
-            util.safeGet(projectInfoMap, from + ".includes", []).forEach(function (to) {
-                addEdgeData(from, to, "include", edgeLookup)
-            })
-            Object.keys(util.safeGet(summary.uses_from_includes, from, {})).forEach(function (to) {
-                addEdgeData(from, to, "directFromInclude", edgeLookup)
-            })
+      summary.items.forEach(function (from) {
+        util.safeGet(summary.uses, from, []).forEach(function (to) {
+          addEdgeData(from, to, "use", edgeLookup)
         })
-        var edges = util.groupBy(util.values(edgeLookup), function(edge){
-            var isLib = isLibrary(edge.from) || isLibrary(edge.to)
-            if(edge["directFromInclude"] && !(edge["use"] || edge["include"])) {
-                if(isLib) {
-                    return "exclude"
-                } else {
-                    return "directFromInclude"
-                }
-            }
-            if(isLib) {
-                return "library"
-            } else {
-                return "node"
-            }
-        });
-        delete edges.exclude
-        return edges
+        util.safeGet(projectInfoMap, from + ".includes", []).forEach(function (to) {
+          addEdgeData(from, to, "include", edgeLookup)
+        })
+        Object.keys(util.safeGet(summary.uses_from_includes, from, {})).forEach(function (to) {
+          addEdgeData(from, to, "directFromInclude", edgeLookup)
+        })
+      })
+      var edges = util.groupBy(util.values(edgeLookup), function (edge) {
+        var isLib = isLibrary(edge.from) || isLibrary(edge.to)
+        if (edge["directFromInclude"] && !(edge["use"] || edge["include"])) {
+          if (isLib) {
+            return "exclude"
+          } else {
+            return "directFromInclude"
+          }
+        }
+        if (isLib) {
+          return "library"
+        } else {
+          return "node"
+        }
+      });
+      delete edges.exclude
+      return edges
     }
 
     return {
@@ -515,12 +521,12 @@ function exportUtil(module, window) {
   }
 
   // resolve key for relative url
-  util.resolveKeyForRelativeUrl = function(value) {
+  util.resolveKeyForRelativeUrl = function (value) {
     value = util.parsePlainUrl(value);
-    if(value[0] == "/") {
+    if (value[0] == "/") {
       value = value.slice(1, value.length)
     }
-    return value.replace(/\//g,".")
+    return value.replace(/\//g, ".")
   }
 
   util.resolvePropertyReferences = function (value, properties) {

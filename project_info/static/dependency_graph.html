@@ -34,222 +34,224 @@
 
 <script type="text/javascript">
 
-    var nodes, edges, data = {}, viewInfo = {
-        graphType: undefined,
-        showHidden: undefined,
-        filterValue: undefined,
-        originalJSON: undefined
+  var nodes, edges, data = {}, viewInfo = {
+    graphType: undefined,
+    showHidden: undefined,
+    filterValue: undefined,
+    originalJSON: undefined
+  };
+
+  function makeEdgeLine(edgeInfo) {
+    var label = edgeInfo.from
+    var destLabel = edgeInfo.to
+    var edgeData = {
+      from: edgeInfo.from,
+      to: edgeInfo.to,
+      id: edgeInfo.id,
+      title: util.flatten(makeService2ServiceText([[label, destLabel]], [label, destLabel])).join("<br>")
     };
-
-    function makeEdgeLine(edgeInfo) {
-        var label = edgeInfo.from
-        var destLabel = edgeInfo.to
-        var edgeData = {
-            from: edgeInfo.from,
-            to: edgeInfo.to,
-            id: edgeInfo.id,
-            title: util.flatten(makeService2ServiceText([[label, destLabel]], [label, destLabel])).join("<br>")
-        };
-        if (edgeInfo.twoway) {
-            edgeData.color = "red"
-        }
-        if (edgeInfo.include) {
-            edgeData.title = "<b>" + label + "</b><br>" + " includes " + destLabel
-            edgeData.color = {
-                inherit: false,
-                color: "rgba(43,233,124,1)"
-            }
-        }
-        return edgeData
+    if (edgeInfo.twoway) {
+      edgeData.color = "red"
     }
+    if (edgeInfo.include) {
+      edgeData.title = "<b>" + label + "</b><br>" + " includes " + destLabel
+      edgeData.color = {
+        inherit: false,
+        color: "rgba(43,233,124,1)"
+      }
+    }
+    return edgeData
+  }
 
-    function makeNode(nodeInfo) {
-        var borderWidth = 0.5;
-        var projectInfoMap = data.projectInfoMap;
-        var from = nodeInfo.id
-        var projectInfo = projectInfoMap[from]
+  function makeNode(nodeInfo) {
+    var borderWidth = 0.5;
+    var projectInfoMap = data.projectInfoMap;
+    var from = nodeInfo.id
+    var projectInfo = projectInfoMap[from]
 
-        var sources = util.safeCollect(util.safeGet(projectInfo, "sources", []), "path")
-        if (sources && sources.length > 0) {
-            borderWidth = 1.4;
-        }
+    var sources = util.safeCollect(util.safeGet(projectInfo, "sources", []), "path")
+    if (sources && sources.length > 0) {
+      borderWidth = 1.4;
+    }
 
 //            title: makeNodeTxt(from, projectInfo, summary, {showUrls: false}),
 
-        var node = {
-            id: nodeInfo.id,
-            label: nodeInfo.id,
-            borderWidth: borderWidth
-        };
-        if (nodeInfo.type == "library") {
-            node.color = {
-                background: "rgba(245,255,245,1)",
-                border: "rgba(43,233,124,1)",
-                highlight: {
-                    border: "rgba(43,233,124,1)",
-                    background: "rgba(210,255, 229,1)"
-                }
-            }
+    var node = {
+      id: nodeInfo.id,
+      label: nodeInfo.id,
+      borderWidth: borderWidth
+    };
+    if (nodeInfo.type == "library") {
+      node.color = {
+        background: "rgba(245,255,245,1)",
+        border: "rgba(43,233,124,1)",
+        highlight: {
+          border: "rgba(43,233,124,1)",
+          background: "rgba(210,255, 229,1)"
         }
-        return node
+      }
     }
+    return node
+  }
 
-    function initGraph(json) {
-        data.originalJSON = json
-        data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
-        data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
-        data.graphInfo = util.generateGraphInfo(data.projectInfoMap, data.summary)
-        nodes = new vis.DataSet((data.graphInfo.nodes.project || []).map(makeNode))
-        edges = new vis.DataSet((data.graphInfo.edges.node || []).map(makeEdgeLine))
+  function initGraph(json) {
+    data.originalJSON = json
+    data.projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources)
+    data.summary = util.collectProjectInfoSummary(data.projectInfoMap)
+    data.graphInfo = util.generateGraphInfo(data.projectInfoMap, data.summary)
+    nodes = new vis.DataSet((data.graphInfo.nodes.project || []).map(makeNode))
+    edges = new vis.DataSet((data.graphInfo.edges.node || []).map(makeEdgeLine))
 
-        var container = document.getElementById('mynetwork');
-        var options = {
-            autoResize: true,
-            configure: {
-                enabled: true,
-                filter: true,
-                showButton: true
-            },
-            interaction: {
-                "multiselect": true
-            },
-            nodes: {
-                "color": {
-                    "background": "rgba(245,245,255,1)"
-                },
-                "font": {
-                    "size": 20
-                }
-            },
-            edges: {
-                "arrows": {
-                    "to": {
-                        "enabled": true,
-                        "scaleFactor": 1.0
-                    }
-                },
-                "smooth": {
-                    "forceDirection": "none"
-                }
-            },
-            physics: {
-                "forceAtlas2Based": {
-                    "springLength": 25,
-                    "avoidOverlap": 0.23,
-                    "damping": 0.89
-                },
-                "minVelocity": 0.75,
-                "solver": "forceAtlas2Based"
-            }
-        };
-
-        viewInfo.network = new vis.Network(container, {}, options);
-        viewInfo.network.setData({
-            nodes: nodes,
-            edges: edges
-        })
-
-        viewInfo.network.on("click", function (params) {
-            if(params.nodes && params.nodes.length > 0) {
-                var id = params.nodes[0]
-                var name = id
-                var newWnd = window.open("/project.html#"+name, "dep_info", {})
-                if(newWnd) {
-                    newWnd.opener = null
-                    newWnd.selectNodeFromGraph = function (label) {
-                        viewInfo.network.selectNodes([label], true)
-                    }
-                } else {
-                    alert("Could not open popup window. You need to enable window.open()")
-                }
-            }
-        });
-
-        handleHash()
-        redraw()
-    }
-
-    function generateData(showHidden) {
-        function removeData(dataset, remove) {
-            dataset.remove((remove || []).map(function (r) {
-                return {id: r.id}
-            }))
+    var container = document.getElementById('mynetwork');
+    var options = {
+      autoResize: true,
+      configure: {
+        enabled: true,
+        filter: true,
+        showButton: true
+      },
+      interaction: {
+        "multiselect": true
+      },
+      nodes: {
+        "color": {
+          "background": "rgba(245,245,255,1)"
+        },
+        "font": {
+          "size": 20
         }
-        function addData(dataset, add, fn) {
-            dataset.add((add || []).map(fn))
+      },
+      edges: {
+        "arrows": {
+          "to": {
+            "enabled": true,
+            "scaleFactor": 1.0
+          }
+        },
+        "smooth": {
+          "forceDirection": "none"
         }
-        if(showHidden) {
-            addData(nodes, data.graphInfo.nodes.library, makeNode)
-            addData(edges, data.graphInfo.edges.library, makeEdgeLine)
-            removeData(edges, data.graphInfo.edges.directFromInclude)
+      },
+      physics: {
+        "forceAtlas2Based": {
+          "springLength": 25,
+          "avoidOverlap": 0.23,
+          "damping": 0.89
+        },
+        "minVelocity": 0.75,
+        "solver": "forceAtlas2Based"
+      }
+    };
+
+    viewInfo.network = new vis.Network(container, {}, options);
+    viewInfo.network.setData({
+      nodes: nodes,
+      edges: edges
+    })
+
+    viewInfo.network.on("click", function (params) {
+      if (params.nodes && params.nodes.length > 0) {
+        var id = params.nodes[0]
+        var name = id
+        var newWnd = window.open("/project.html#" + name, "dep_info", {})
+        if (newWnd) {
+          newWnd.opener = null
+          newWnd.selectNodeFromGraph = function (label) {
+            viewInfo.network.selectNodes([label], true)
+          }
         } else {
-            removeData(nodes, data.graphInfo.nodes.library)
-            removeData(edges, data.graphInfo.edges.library)
-            addData(edges, data.graphInfo.edges.directFromInclude, makeEdgeLine)
+          alert("Could not open popup window. You need to enable window.open()")
         }
+      }
+    });
 
-        document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
+    handleHash()
+    redraw()
+  }
+
+  function generateData(showHidden) {
+    function removeData(dataset, remove) {
+      dataset.remove((remove || []).map(function (r) {
+        return {id: r.id}
+      }))
     }
 
-    function applyFilter() {
-        var uses = data.summary.uses
-        var usedBy = data.summary.used_by
-        var visibleNodeIds = []
-        var visibleNodeCount = 0, visibleEdgeCount = 0;
-        nodes.forEach(function (i) {
-            var show = ( filter.included.length == 0 || util.someMatches([i.label], filter.included) || (uses[i.label] && util.someMatches(uses[i.label], filter.included)) ||
-                    (usedBy[i.label] && util.someMatches(usedBy[i.label], filter.included))) && filter.excluded.indexOf(i.label) == -1
-            if (!show != i.hidden) {
-                nodes.update({
-                    id: i.id,
-                    hidden: !show
-                })
-            }
-            if (show) {
-                visibleNodeIds.push(i.label)
-                visibleNodeCount += 1
-            }
+    function addData(dataset, add, fn) {
+      dataset.add((add || []).map(fn))
+    }
+
+    if (showHidden) {
+      addData(nodes, data.graphInfo.nodes.library, makeNode)
+      addData(edges, data.graphInfo.edges.library, makeEdgeLine)
+      removeData(edges, data.graphInfo.edges.directFromInclude)
+    } else {
+      removeData(nodes, data.graphInfo.nodes.library)
+      removeData(edges, data.graphInfo.edges.library)
+      addData(edges, data.graphInfo.edges.directFromInclude, makeEdgeLine)
+    }
+
+    document.getElementById("filterInfo").textContent = "Nodes:" + nodes.length + " Links: " + edges.length
+  }
+
+  function applyFilter() {
+    var uses = data.summary.uses
+    var usedBy = data.summary.used_by
+    var visibleNodeIds = []
+    var visibleNodeCount = 0, visibleEdgeCount = 0;
+    nodes.forEach(function (i) {
+      var show = ( filter.included.length == 0 || util.someMatches([i.label], filter.included) || (uses[i.label] && util.someMatches(uses[i.label], filter.included)) ||
+        (usedBy[i.label] && util.someMatches(usedBy[i.label], filter.included))) && filter.excluded.indexOf(i.label) == -1
+      if (!show != i.hidden) {
+        nodes.update({
+          id: i.id,
+          hidden: !show
         })
+      }
+      if (show) {
+        visibleNodeIds.push(i.label)
+        visibleNodeCount += 1
+      }
+    })
 
-        edges.forEach(function (i) {
-            var show = visibleNodeIds.indexOf(i.from) != -1 && visibleNodeIds.indexOf(i.to) != -1
-            if (!show != i.hidden) {
-                edges.update({
-                    id: i.id,
-                    hidden: !show
-                })
-            }
-            if (show) {
-                visibleEdgeCount += 1
-            }
+    edges.forEach(function (i) {
+      var show = visibleNodeIds.indexOf(i.from) != -1 && visibleNodeIds.indexOf(i.to) != -1
+      if (!show != i.hidden) {
+        edges.update({
+          id: i.id,
+          hidden: !show
         })
-        document.getElementById("filterInfo").textContent = "Nodes:" + visibleNodeCount + "/" + nodes.length + " Links: " + visibleEdgeCount + "/" + edges.length
-    }
+      }
+      if (show) {
+        visibleEdgeCount += 1
+      }
+    })
+    document.getElementById("filterInfo").textContent = "Nodes:" + visibleNodeCount + "/" + nodes.length + " Links: " + visibleEdgeCount + "/" + edges.length
+  }
 
-    function redraw() {
-        var showHidden = !!document.getElementById("showHidden").checked
-        if (viewInfo.showHidden != showHidden) {
-            generateData(showHidden);
-            viewInfo.showHidden = showHidden
-            viewInfo.filterValue = undefined
-        }
-        if (viewInfo.filterValue != filter.value) {
-            applyFilter();
-            viewInfo.filterValue = filter.value
-        }
+  function redraw() {
+    var showHidden = !!document.getElementById("showHidden").checked
+    if (viewInfo.showHidden != showHidden) {
+      generateData(showHidden);
+      viewInfo.showHidden = showHidden
+      viewInfo.filterValue = undefined
     }
-
-    ajaxJson('GET', "/rest/server_state", initGraph)
-
-    function exportCanvas() {
-        var mycanvas = document.getElementsByTagName("canvas")[0];
-        if (mycanvas && mycanvas.getContext) {
-            var img = mycanvas.toDataURL("image/png;base64;");
-            anchor = document.getElementById("download");
-            anchor.href = img;
-            anchor.innerHTML = anchor.getAttribute("download");
-        }
+    if (viewInfo.filterValue != filter.value) {
+      applyFilter();
+      viewInfo.filterValue = filter.value
     }
+  }
+
+  ajaxJson('GET', "/rest/server_state", initGraph)
+
+  function exportCanvas() {
+    var mycanvas = document.getElementsByTagName("canvas")[0];
+    if (mycanvas && mycanvas.getContext) {
+      var img = mycanvas.toDataURL("image/png;base64;");
+      anchor = document.getElementById("download");
+      anchor.href = img;
+      anchor.innerHTML = anchor.getAttribute("download");
+    }
+  }
 
 </script>
 

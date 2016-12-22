@@ -22,49 +22,57 @@
 
 <script type="text/javascript">
 
-    var data;
-    var table = document.getElementById('infos');
+  var data;
+  var table = document.getElementById('infos');
 
-    handleHash()
-    ajaxJson('GET', "/rest/server_state", initTable)
+  handleHash()
+  ajaxJson('GET', "/rest/server_state", initTable)
 
-    function initTable(json) {
-        var projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources);
-        data = {
-            headers: ["project", "url", "count", "users"],
-            rows: util.collectUrlUse(projectInfoMap)
-        };
-        redraw()
-    }
+  function initTable(json) {
+    var projectInfoMap = util.combineSourcesToProjectInfoMap(json.sources);
+    data = {
+      headers: ["project", "url", "count", "users"],
+      rows: util.collectUrlUse(projectInfoMap)
+    };
+    redraw()
+  }
 
-    function redraw() {
-        var visibleRows = redrawFilteredInfoTable(data.rows, table, data.headers, function(row, infoRow){
-            addNode(addNode(infoRow, "td"), "a", {text: row.project, href: "#" + row.project, class: "blacktextHoverUnderline"})
-            addNode(infoRow, "td", row.url)
-            addNode(infoRow, "td", row.count)
-            var useTable = addNode(addNode(infoRow, "td"), "table")
-            row.uses.forEach(function(use){
-                var useTr = addNode(useTable, "tr")
-                addNode(addNode(addNode(useTr, "td"), "b"), "a", {text: use.project, href: "#" + use.project, class: "blacktextHoverUnderline"})
-
-                addNode(useTr, "td", use.original_url)
-                addNode(useTr, "td", use.key)
-            })
-        }, function(row, included, excluded){
-            // collect filtering strings from row. if any matches excludes don't show
-            var texts = [row.project, row.url]
-            row.uses.forEach(function(use){
-                texts.push(use.project, use.key, use.original_url)
-            })
-
-            var hide = util.someMatches(texts, excluded) || !(included.length == 0 || util.someMatches(texts, included))
-            return !hide
+  function redraw() {
+    var visibleRows = redrawFilteredInfoTable(data.rows, table, data.headers, function (row, infoRow) {
+      addNode(addNode(infoRow, "td"), "a", {
+        text: row.project,
+        href: "#" + row.project,
+        class: "blacktextHoverUnderline"
+      })
+      addNode(infoRow, "td", row.url)
+      addNode(infoRow, "td", row.count)
+      var useTable = addNode(addNode(infoRow, "td"), "table")
+      row.uses.forEach(function (use) {
+        var useTr = addNode(useTable, "tr")
+        addNode(addNode(addNode(useTr, "td"), "b"), "a", {
+          text: use.project,
+          href: "#" + use.project,
+          class: "blacktextHoverUnderline"
         })
-        document.getElementById("filterInfo").textContent = "Rows:" + visibleRows.length + "/" + data.rows.length
-        sorttable.makeSortable(table);
-    }
 
-    window.onhashchange = handleHash
+        addNode(useTr, "td", use.original_url)
+        addNode(useTr, "td", use.key)
+      })
+    }, function (row, included, excluded) {
+      // collect filtering strings from row. if any matches excludes don't show
+      var texts = [row.project, row.url]
+      row.uses.forEach(function (use) {
+        texts.push(use.project, use.key, use.original_url)
+      })
+
+      var hide = util.someMatches(texts, excluded) || !(included.length == 0 || util.someMatches(texts, included))
+      return !hide
+    })
+    document.getElementById("filterInfo").textContent = "Rows:" + visibleRows.length + "/" + data.rows.length
+    sorttable.makeSortable(table);
+  }
+
+  window.onhashchange = handleHash
 
 </script>
 

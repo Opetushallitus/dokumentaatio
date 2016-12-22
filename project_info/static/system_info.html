@@ -53,8 +53,8 @@
     }
     var dirsWithProjectInfoFiles = Object.keys(json.scanInfo.dirsWithProjectInfoFiles)
     var dirsWithoutProjectInfoFiles = json.scanInfo.dirsWithoutInfoFiles
-    var allDirCount= dirsWithProjectInfoFiles.length + dirsWithoutProjectInfoFiles.length
-    if(dirsWithProjectInfoFiles.length  > 0) {
+    var allDirCount = dirsWithProjectInfoFiles.length + dirsWithoutProjectInfoFiles.length
+    if (dirsWithProjectInfoFiles.length > 0) {
       var dest = addNode(tr, "td");
       addNode(dest, "h1", "Dirs with project info files " + dirsWithProjectInfoFiles.length + "/" + allDirCount)
       var dirsWithInfoFilesTable = addNode(dest, "table", {class: "dataTable"});
@@ -63,7 +63,7 @@
       })
       sorttable.makeSortable(dirsWithInfoFilesTable);
     }
-    if(dirsWithoutProjectInfoFiles.length  > 0) {
+    if (dirsWithoutProjectInfoFiles.length > 0) {
       var dest = addNode(tr, "td");
       addNode(dest, "h1", "Dirs with no project info files " + dirsWithoutProjectInfoFiles.length + "/" + allDirCount)
       var dirsWithoutInfoFilesTable = addNode(dest, "table", {class: "dataTable"});
@@ -74,13 +74,13 @@
     }
 
     var sourceFiles = util.sourceFileList(json);
-    addNode(document.body, "h1", "Scanned files by project: " +sourceFiles.length)
+    addNode(document.body, "h1", "Scanned files by project: " + sourceFiles.length)
     var fileTable = addNode(document.body, "table", {class: "dataTable"});
     redrawFilteredInfoTable(util.values(data.projectInfoMap), fileTable, ["Project", "File count", "Files"], function (row, infoRow) {
       var files = util.safeCollect(row, "sources.path");
       addNode(infoRow, "td", row.name)
       addNode(infoRow, "td", files.length)
-      redrawFilteredInfoTable(files, addNode(addNode(infoRow, "td"), "table"), null, function(row, rowTr){
+      redrawFilteredInfoTable(files, addNode(addNode(infoRow, "td"), "table"), null, function (row, rowTr) {
         addNode(rowTr, "td", row)
       })
     })
