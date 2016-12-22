@@ -116,7 +116,7 @@ describe('util.js', function () {
             "used_by": {"b": ["a"], "a": ["b"]},
             "resolved_includes": {},
             "included_by": {},
-            "direct_uses_from_includes": {},
+            "uses_from_includes": {},
             "items": ["a", "b"],
             "items_by_type": {
                 "project": ["a", "b"]
@@ -351,7 +351,7 @@ describe('util.collectProjectInfoSummary', function () {
                 "used_by": {"b": ["a", "c", "d"], "a": ["b", "e"]},
                 "resolved_includes": {"a": {"c": [["a", "c"]], "d": [["a", "c", "d"]]}, "c": {"d": [["c", "d"]]}},
                 "included_by": {"c": ["a"], "d": ["a", "c"]},
-                "direct_uses_from_includes": {
+                "uses_from_includes": {
                     "a": {"b": [["a", "c", "b"], ["a", "c", "d", "b"]]},
                     "c": {"b": [["c", "d", "b"]]}
                 },
@@ -383,7 +383,7 @@ describe('util.collectProjectInfoSummary', function () {
                 "used_by": {"b": ["a"], "d": ["a"]},
                 "resolved_includes": {"a": {"c": [["a", "c"]]}},
                 "included_by": {"c": ["a"]},
-                "direct_uses_from_includes": {},
+                "uses_from_includes": {},
                 "items": ["a", "b", "c", "d"],
                 "items_by_type": {"project": ["a", "b", "c", "d"]},
                 "service2service": {"a.b": {"b.url": "1"}, "a.d": {}}
@@ -420,7 +420,7 @@ describe('util.collectProjectInfoSummary', function () {
                     "c": {"d": [["c", "d"]]}
                 },
                 "included_by": {"b": ["a"], "c": ["a", "b"], "d": ["a", "b", "c"]},
-                "direct_uses_from_includes": {
+                "uses_from_includes": {
                     "a": {
                         "x": [["a", "b", "x"]],
                         "y": [["a", "b", "c", "y"]],

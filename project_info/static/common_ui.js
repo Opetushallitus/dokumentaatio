@@ -157,20 +157,19 @@ function makeNodeTxt(from, projectInfo, summary, options) {
   // resolved includes: {project: {library: [[project, library], [project, dep, library]]}]}
   var includes = util.safeGet(summary.resolved_includes, from, {})
   if (!util.isEmptyObject(includes)) {
+    var includePaths = util.values(util.safeGet(summary.uses_from_includes, from, {})).reduce(function(a,b){
+      return a.concat(b)
+    }, [])
+    var sortedPaths = util.groupBy(includePaths, function(l){
+      return l[l.length-2] + "." + l[l.length-1]
+    })
     var info = util.copyMap({count: 0}, options)
-    includesTxt = util.flatten(util.mapEachPair(includes, function (libraryName, includePaths) {
-        // iterate through library's direct uses
-        var libraryUses = summary.uses[libraryName] || []
-        return libraryUses.map(function (libraryUse) {
-          // each includePath is appended with libraryUse to get correct headers
-          var fullToPaths = includePaths.map(function (includePath) {
-            return includePath.concat([libraryUse])
-          })
-          // generate link information for library and its used service
-          return makeService2ServiceText(fullToPaths, [libraryName, libraryUse], info)
-        })
-      })).join("") + "<br>"
-
+    includesTxt = util.mapEachPair(sortedPaths, function(useKey, fullPaths){
+      var firstPath = fullPaths[0]
+      var includeFrom = firstPath[firstPath.length-2]
+      var includeTo = firstPath[firstPath.length-1]
+      return makeService2ServiceText(fullPaths, [includeFrom, includeTo], info)
+    }).join("") + "<br>"
     summaryUseTxt.push("Includes " + Object.keys(includes).length + " libraries with " + info.count + " urls")
   }
 

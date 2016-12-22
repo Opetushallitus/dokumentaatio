@@ -312,7 +312,7 @@ function exportUtil(module, window) {
           if(includeListLookup[project]) {
               var groupedUses = groupByLastItem(resolveUsesFromIncludes(includeListLookup[project], summary.uses));
               if(!util.isEmptyObject(groupedUses)) {
-                  summary.direct_uses_from_includes[project] = groupedUses
+                  summary.uses_from_includes[project] = groupedUses
               }
           }
         })
@@ -389,9 +389,11 @@ function exportUtil(module, window) {
     var summary = {
       // use information, by project.name
       uses: {}, used_by: {},
+      // uses from includes
+      uses_from_includes: {},
       // includes are resolved from node to the end of the include chain: {project: {library: [[project, library], [project, dep, library]]}]}
       // you might need to parse dependency from each node
-      resolved_includes: {}, included_by: {}, direct_uses_from_includes: {},
+      resolved_includes: {}, included_by: {},
       // list of project.names
       items: [],
       items_by_type: {},
@@ -454,7 +456,7 @@ function exportUtil(module, window) {
             util.safeGet(projectInfoMap, from + ".includes", []).forEach(function (to) {
                 addEdgeData(from, to, "include", edgeLookup)
             })
-            Object.keys(util.safeGet(summary.direct_uses_from_includes, from, {})).forEach(function (to) {
+            Object.keys(util.safeGet(summary.uses_from_includes, from, {})).forEach(function (to) {
                 addEdgeData(from, to, "directFromInclude", edgeLookup)
             })
         })
