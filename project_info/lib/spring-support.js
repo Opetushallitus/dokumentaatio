@@ -82,15 +82,15 @@ function resolveJavaAnnotations(serviceClass, baseUrl, properties, fileLookupFn,
   classFiles.forEach(function (classFilePath) {
     sourceFiles.push(classFilePath)
     var fileStr = fileutil.read(Path.join(serverState.workDir, classFilePath))
-    if (fileStr.indexOf(package) > -1) {
-      if (found.length != 0) {
-        throw "Already found " + found.join(", ") + " for " + serviceClass + " Has configuration also in " + classFilePath
+    if (fileStr.indexOf("package " + package) > -1) {
+      if (found.length !== 0) {
+        throw "Already found " + found.join(", ") + " for " + serviceClass + " Has configuration also in " + classFilePath;
       }
       found.push(classFilePath)
       str = str.concat(convertAnnotationsToUrlProperties(serviceClass, classFilePath, baseUrl, fileStr, properties, urlDefinitions))
     }
   })
-  if (found.length == 0) {
+  if (found.length === 0) {
     var error = "Could not find matching file for " + serviceClass
     if (classFiles.length > 0) {
       error = "Could not find definition for " + serviceClass + " from " + classFiles.join(", ")
