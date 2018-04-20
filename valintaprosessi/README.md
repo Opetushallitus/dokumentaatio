@@ -298,7 +298,7 @@ koulutuksen alkamiskaudesta.
 - Sijoittelun tila
   - Käyttöliittymä: valintatila, hakemuksen tila, sijoittelun tila, hyväksymisen tila
   - Koodi: valintaperusteet: HakemuksenTila, HakutoiveenValintatapajonoDTO.tila, valinta-tulos-service: Valintatila
-  - Tietokanta: sijoitteludb: Hakukohde.valintatapajonot.hakemukset.tila
+  - Tietokanta: valintarekisteri: valinnantilat.tila, jonosijat.tila
 - Vastaanoton tila
   - Käyttöliittymä: vastaanotto, valintatuloksen tila, vastaanottotieto
   - Koodi: valinta-tulos-service: Hakutoiveentulos.vastaanottotila, sijoittelu-algoritmi-domain: Valintatulos.tila
@@ -306,7 +306,7 @@ koulutuksen alkamiskaudesta.
 - Ilmoittautumisen tila
   - Käyttöliittymä: ilmoittautuminen, ilmoittautumistila, ilmoittautumistieto
   - Koodi: sijoittelu-algoritmi-domain: Valintatulos.ilmoittautumisTila
-  - Tietokanta: sijoitteludb: Valintatulos.ilmoittautumisTila
+  - Tietokanta: valintarekisteri: ilmoittautumiset
 
 # Dokumentaation kehitys
 
