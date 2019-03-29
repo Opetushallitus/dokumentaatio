@@ -1,10 +1,10 @@
 # opintopolku.fi HTTP-käytännöt
 
-## clientSubSystemCode header
+## Caller-id header
 
-HTTP-pyynnön tekevän sovelluksen pitää lisätä pyyntöön "clientSubSystemCode" header mikä määrittää sovellukselle yksiöllisen tunnuksen.
+Opintopolkuun integroituvien järjestelmien tulee lisätä "Caller-Id"-HTTP-otsikko kaikkiin rajapintakutsuihin.
 
-Sovellus voi lähettää clientSubSystemCode:n myös post parameter muodossa (case sensitive)
+Tarkemmat tiedot: https://confluence.csc.fi/pages/viewpage.action?pageId=50858064
 
 ## ID header
 
