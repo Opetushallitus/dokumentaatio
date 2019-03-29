@@ -30,7 +30,7 @@ Tilaa muuttavissa HTTP-pyynnöissä (verbi muu kuin "GET", "HEAD", "OPTIONS") pi
 * "CSRF" post parameter (case sensitive) samalla arvolla
 
 Tilaa muuttavia HTTP-pyyntöjä tekevien sovellusten pitää huomioida CSRF:
-* Backend-sovelluksien pitää kutsuessaan toisia palveluja asettaa HTTP-pyyntöön sekä cookie että header. Sovellukset voivat käyttää kovakoodattuja CSRF arvoa, esim. sama kuin clientSubSystemCode.
+* Backend-sovelluksien pitää kutsuessaan toisia palveluja asettaa HTTP-pyyntöön sekä cookie että header. Sovellukset voivat käyttää kovakoodattuja CSRF arvoa, esim. sama kuin Caller-Id.
 * Opintopolku.fi -selainsovelluksien pitää palauttaa tilaa muuttavissa pyynnöissä CSRF header, joka vastaa CSRF-cookieta
 * Selainsovellukset muissa kuin opintopolku.fi domaineissa: tilaa muuttavia pyyntöjä ei voi tehdä koska CSRF keksiä ei voi selaimessa lukea.
 
