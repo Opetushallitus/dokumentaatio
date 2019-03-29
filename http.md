@@ -6,7 +6,7 @@ Opintopolkuun integroituvien järjestelmien tulee lisätä "Caller-Id"-HTTP-otsi
 
 Tarkemmat tiedot: https://confluence.csc.fi/pages/viewpage.action?pageId=50858064
 
-## ID header
+## ID header (Suunnitelma, ei toteutettu)
 
 Jokainen HTTP-pyyntö menee opintopolku.fi:n nginx-proxyn läpi. nginx-proxy varmistaa että jokaisessa pyynnössä on ID header:
 * Jos pyynnössä ei ole ID-headeria, CSRF-keksin arvo kopioidaan ID-headerin arvoksi, ja siihen lisätään satunnainen merkkijono
