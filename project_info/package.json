@@ -11,7 +11,7 @@
     "express": "4.13.3",
     "express-handlebars": "2.0.1",
     "glob": "6.0.4",
-    "mocha": "3.1.2",
+    "mocha": "4.0.0",
     "properties-parser": "^0.3.1",
     "request": "^2.78.0",
     "safe-eval": "^0.3.0",
