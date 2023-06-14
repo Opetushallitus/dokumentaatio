@@ -4,7 +4,7 @@
 
 Opintopolkuun integroituvien järjestelmien tulee lisätä "Caller-Id"-HTTP-otsikko kaikkiin rajapintakutsuihin.
 
-Tarkemmat tiedot: https://confluence.csc.fi/pages/viewpage.action?pageId=50858064
+Tarkemmat tiedot: https://wiki.eduuni.fi/pages/viewpage.action?pageId=176867280
 
 ## ID header (Suunnitelma, ei toteutettu)
 
