@@ -15,7 +15,7 @@
     "properties-parser": "^0.3.1",
     "request": "^2.78.0",
     "safe-eval": "^0.3.0",
-    "xml2js": "^0.4.17"
+    "xml2js": "^0.5.0"
   },
   "scripts": {
     "test": "mocha test/project_info_spec.js"
